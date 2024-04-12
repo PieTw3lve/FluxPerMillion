@@ -7,7 +7,7 @@ debug:
   tree_feller: false
 farming:
   # The threshold represents the number of entities of the same type (e.g. cows, pigs, etc.)
-  overpopulate_threshold: 20 
+  overpopulate_threshold: 20
   preserved_threshold: 7
   check_radius: 10
 fishing:
@@ -119,10 +119,10 @@ effects:
           amplifier: 0
 deadly_disasters:
   # Ignore this section if Deadly Disasters plugin is disabled or not installed.
-  # Interval is in ticks (20 ticks = 1 second).
   enabled: false
   # Prevent disasters from occurring when no players are online.
   prevent_disasters_when_idle: true
+  # Interval is in ticks (20 ticks = 1 second).
   min_interval: 54000
   max_interval: 216000
   tier_0:
@@ -221,7 +221,7 @@ placeholderapi:
   # Ignore this section if PlaceholderAPI plugin is disabled or not installed.
   enabled: false
   percentage_colors:
-    tier_0: "§a"
-    tier_1: "§e"
-    tier_2: "§c"
-    tier_3: "§4"
+    tier_0: '§a'
+    tier_1: '§e'
+    tier_2: '§c'
+    tier_3: '§4'
