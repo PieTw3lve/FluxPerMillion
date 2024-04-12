@@ -1,5 +1,5 @@
 # FluxPerMillion Configuration File
-# Version 1.0.0
+# Version 1.0.1
 
 debug:
   # Enable debug messages in the console.
@@ -220,6 +220,11 @@ deadly_disasters:
 placeholderapi:
   # Ignore this section if PlaceholderAPI plugin is disabled or not installed.
   enabled: false
+  status_colors:
+    tier_0: '§a'
+    tier_1: '§e'
+    tier_2: '§c'
+    tier_3: '§4'
   percentage_colors:
     tier_0: '§a'
     tier_1: '§e'

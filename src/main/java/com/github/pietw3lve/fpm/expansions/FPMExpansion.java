@@ -1,5 +1,7 @@
 package com.github.pietw3lve.fpm.expansions;
 
+import java.util.List;
+
 import org.bukkit.OfflinePlayer;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
@@ -72,21 +74,36 @@ public class FPMExpansion extends PlaceholderExpansion {
         else if (identifier.equals("min_points")) {
             return String.format("%.0f", plugin.getFluxMeter().getMin());
         }
-        else if (identifier.equals("status")) {
+        else if (identifier.equals("status_level")) {
             return String.format("%s", plugin.getFluxMeter().getStatusLevel());
+        }
+        else if (identifier.equals("status_color")) {
+            List<String> statusColors = plugin.getPlaceholderHandler().getStatusColors();
+            int statusLevel = plugin.getFluxMeter().getStatusLevel();
+            if (statusLevel == 0) {
+                return statusColors.get(0);
+            } else if (statusLevel == 1) {
+                return statusColors.get(1);
+            } else if (statusLevel == 2) {
+                return statusColors.get(2);
+            } else if (statusLevel == 3) {
+                return statusColors.get(3);
+            }
         }
         else if (identifier.equals("percentage")) {
             return String.format("%.0f", plugin.getFluxMeter().getProgress() * 100);
         } 
         else if (identifier.equals("percentage_color")) {
-            if (plugin.getFluxMeter().getStatusLevel() == 0) {
-                return plugin.getPlaceholderHandler().getPercentColors().get(0);
-            } else if (plugin.getFluxMeter().getStatusLevel() == 1) {
-                return plugin.getPlaceholderHandler().getPercentColors().get(1);
-            } else if (plugin.getFluxMeter().getStatusLevel() == 2) {
-                return plugin.getPlaceholderHandler().getPercentColors().get(2);
-            } else if (plugin.getFluxMeter().getStatusLevel() == 3) {
-                return plugin.getPlaceholderHandler().getPercentColors().get(3);
+            List<String> percentColors = plugin.getPlaceholderHandler().getPercentColors();
+            int statusLevel = plugin.getFluxMeter().getStatusLevel();
+            if (statusLevel == 0) {
+                return percentColors.get(0);
+            } else if (statusLevel == 1) {
+                return percentColors.get(1);
+            } else if (statusLevel == 2) {
+                return percentColors.get(2);
+            } else if (statusLevel == 3) {
+                return percentColors.get(3);
             }
         }
         return null;

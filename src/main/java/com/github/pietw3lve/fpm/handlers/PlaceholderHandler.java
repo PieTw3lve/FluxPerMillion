@@ -12,6 +12,7 @@ public class PlaceholderHandler {
     
     private final FluxPerMillion plugin;
     private FPMExpansion expansion;
+    private List<String> statusColors;
     private List<String> percentColors;
     private boolean enabled;
 
@@ -22,6 +23,7 @@ public class PlaceholderHandler {
     public PlaceholderHandler(FluxPerMillion plugin) {
         this.plugin = plugin;
         this.expansion = new FPMExpansion(plugin);
+        this.statusColors = new ArrayList<>();
         this.percentColors = new ArrayList<>();
         this.enabled = false;
     }
@@ -46,6 +48,7 @@ public class PlaceholderHandler {
             return;
         }
         
+        statusColors = configToList(plugin.getConfig().getConfigurationSection("placeholderapi.status_colors"));
         percentColors = configToList(plugin.getConfig().getConfigurationSection("placeholderapi.percentage_colors"));
         expansion.register();
     }
@@ -60,6 +63,14 @@ public class PlaceholderHandler {
             list.add(configurationSection.getString(key));
         }
         return list;
+    }
+
+    /**
+     * Get status colors.
+     * @return List of status colors.
+     */
+    public List<String> getStatusColors() {
+        return statusColors;
     }
 
     /**

@@ -10,37 +10,38 @@
 
 ## Information
 
-This Bukkit/Spigot plugin aims to introduce environmental mechanics into Minecraft gameplay. It includes features such as tracking player actions affecting global warming, implementing sustainable practices, and promoting environmental awareness within the game. The plugin provides tools for server owners to monitor and manage environmental impacts, encouraging players to engage in eco-friendly behaviors. With customizable settings and interactive gameplay elements, this plugin offers a unique way to explore environmental themes in the Minecraft universe
+FluxPerMillion is a Minecraft plugin that adds an environmental twist to the gameplay. It introduces a new game mechanic, Flux, which is a measure of the environmental impact of player actions. The Flux value increases when players perform actions that would harm the environment in the real world, such as deforestation or excessive fishing, and decreases when players perform eco-friendly actions, such as planting trees or using renewable resources.
 
 ## Features
 
 - **Real-time Tracking**: Monitor player actions that contribute to Flux.
-- **Sustainable Practices**: Implement eco-friendly practices, such as using compost bins, replanting trees, and recycling materials.
-- **Environmental Awareness**: Promote awareness of environmental issues and encourage players to take action such as animal conservation, fire prevention, and pollution control.
-- **Customizable Settings**: Configure the plugin to suit your server's needs, including Flux thresholds, rewards, and penalties.
-- **Deadly Disasters Support**: Integrate with Deadly Disasters to create environmental challenges and natural disasters based on player actions.
-- **PlaceholderAPI Support**: Display Flux values and status in custom messages and scoreboards.
+- **Sustainable Practices**: Encourage eco-friendly practices like composting, reforestation, and recycling.
+- **Environmental Awareness**: Raise consciousness about real-world environmental issues, fostering player engagement in conservation efforts, fire prevention, and pollution control.
+- **Customizable Settings**: Configure Flux values, thresholds, decay rates, rewards, and penalties to suit your server's gameplay.
+- **Deadly Disasters Support**: Integrate with Deadly Disasters to enhance gameplay with environmental challenges.
+- **PlaceholderAPI Support**: Display Flux values in chat, action bar, and scoreboard using PlaceholderAPI placeholders.
 
 ## Commands
 
-| Command                                  | Description                     | Permission |
-| ---------------------------------------- | ------------------------------- | ---------- |
-| `/fpm inspect <player>`                  | Inspect a player's Flux value.  | default    |
-| `/fpm toggle`                            | Toggles Flux meter visibility.  | default    |
-| `/fpm status`                            | Display the Flux status.        | default    |
-| `/fpm lookup <player> <duration> <page>` | Lookup a player's Flux history. | fpm.lookup |
-| `/fpm reload`                            | Reload FluxPerMillion.          | fpm.reload |
+| Command                                  | Description                          | Permission |
+| ---------------------------------------- | ------------------------------------ | ---------- |
+| `/fpm inspect <player>`                  | Examine a player's Flux value.       | default    |
+| `/fpm toggle`                            | Toggle Flux meter visibility.        | default    |
+| `/fpm status`                            | View the Flux meter status.          | default    |
+| `/fpm lookup <player> <duration> <page>` | Lookup a player's Flux activity.     | fpm.lookup |
+| `/fpm reload`                            | Reload FluxPerMillion configuration. | fpm.reload |
 
 ## PlaceholderAPI
 
 | Placeholder                         | Description                           |
 | ----------------------------------- | ------------------------------------- |
-| `%fluxpermillion_points%`           | Display the total Flux value.         |
-| `%fluxpermillion_status%`           | Display the Flux meter status.        |
-| `%fluxpermillion_max_points%`       | Display the maximum Flux meter value. |
-| `%fluxpermillion_min_points%`       | Display the minimum Flux meter value. |
-| `%fluxpermillion_percentage%`       | Display the Flux meter percentage.    |
-| `%fluxpermillion_percentage_color%` | Display the Flux meter color code.    |
+| `%fluxpermillion_points%`           | Returns the current Flux value.       |
+| `%fluxpermillion_status_level%`     | Returns the Flux meter status level.  |
+| `%fluxpermillion_status_color%`     | Returns the Flux meter status color.  |
+| `%fluxpermillion_max_points%`       | Returns the maximum Flux meter value. |
+| `%fluxpermillion_min_points%`       | Returns the minimum Flux meter value. |
+| `%fluxpermillion_percentage%`       | Returns the Flux meter percentage.    |
+| `%fluxpermillion_percentage_color%` | Returns the Flux meter color code.    |
 
 ## Soft Dependencies
 
