@@ -33,15 +33,15 @@ FluxPerMillion is a Minecraft plugin that adds an environmental twist to the gam
 
 ## PlaceholderAPI
 
-| Placeholder                         | Description                           |
-| ----------------------------------- | ------------------------------------- |
-| `%fluxpermillion_points%`           | Returns the current Flux value.       |
-| `%fluxpermillion_status_level%`     | Returns the Flux meter status level.  |
-| `%fluxpermillion_status_color%`     | Returns the Flux meter status color.  |
-| `%fluxpermillion_max_points%`       | Returns the maximum Flux meter value. |
-| `%fluxpermillion_min_points%`       | Returns the minimum Flux meter value. |
-| `%fluxpermillion_percentage%`       | Returns the Flux meter percentage.    |
-| `%fluxpermillion_percentage_color%` | Returns the Flux meter color code.    |
+| Placeholder                         | Description                               |
+| ----------------------------------- | ----------------------------------------- |
+| `%fluxpermillion_points%`           | Returns the current Flux value.           |
+| `%fluxpermillion_status_level%`     | Returns the Flux meter status level.      |
+| `%fluxpermillion_status_color%`     | Returns the Flux meter status color code. |
+| `%fluxpermillion_max_points%`       | Returns the maximum Flux meter value.     |
+| `%fluxpermillion_min_points%`       | Returns the minimum Flux meter value.     |
+| `%fluxpermillion_percentage%`       | Returns the Flux meter percentage.        |
+| `%fluxpermillion_percentage_color%` | Returns the Flux meter color code.        |
 
 ## Soft Dependencies
 
