@@ -26,6 +26,11 @@
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
+		<!-- This adds the Local Maven repository to the build -->
+		<repository>
+			<id>local-repo</id>
+			<url>file://${project.basedir}/lib</url>
+		</repository>
 	</repositories>
 
 	<dependencies>

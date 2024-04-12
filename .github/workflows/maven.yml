@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Install Deadly Disasters dependency
-        run: mvn install:install-file -Dfile=src/main/resources/DeadlyDisasters-V11.0.jar -DgroupId=com.github.pietw3lve -DartifactId=DeadlyDisasters -Dversion=11.0 -Dpackaging=jar
+      - name: Install Deadly Disasters library
+        run: mvn install:install-file -Dfile=lib/DeadlyDisasters-V11.0.jar -DgroupId=com.github.pietw3lve -DartifactId=DeadlyDisasters -Dversion=11.0 -Dpackaging=jar
       - name: Build with Maven
         run: mvn -B package --file pom.xml
