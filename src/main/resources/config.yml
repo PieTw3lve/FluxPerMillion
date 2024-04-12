@@ -1,0 +1,227 @@
+# FluxPerMillion Configuration File
+# Version 1.0.0
+
+debug:
+  # Enable debug messages in the console.
+  messages: false
+  tree_feller: false
+farming:
+  # The threshold represents the number of entities of the same type (e.g. cows, pigs, etc.)
+  overpopulate_threshold: 20 
+  preserved_threshold: 7
+  check_radius: 10
+fishing:
+  # Every fish caught will reset the timer.
+  # Time is in ticks (20 ticks = 1 second).
+  timer: 36000
+  threshold: 50
+flux_meter:
+  # Refresh rate is in ticks (20 ticks = 1 second).
+  refresh_rate: 72000
+  # Total Flux can exceed the minimum and maximum values, but the meter will not display it.
+  maximum_flux_capacity: 1000000.0
+  minimum_flux_capacity: 0.0
+  # The threshold represents the percentage of the maximum flux capacity.
+  tier_1_threshold: 0.25
+  tier_2_threshold: 0.5
+  tier_3_threshold: 0.75
+  # Removes all actions that are older than the specified days (exclusive).
+  # Set to -1 to disable this feature.
+  decay: -1
+flux_points:
+  block_burn: 5.0
+  campfire_break: -1.0
+  campfire_place: 1.0
+  coal_break: -0.5
+  coal_place: 0.5
+  compost_complete: -5.0
+  entity_overpopulate: 0.25
+  entity_preserved: -1.0
+  flint_and_steel_use: 1.0
+  # Value for fuel_burn is multiplied by burn time.
+  fuel_burn: 0.25
+  over_fish: 0.25
+  torch_break: -0.25
+  torch_place: 0.25
+  # Values for tree_cut and tree_growth are multiplied by the number of logs in the tree.
+  tree_cut: 0.25
+  tree_growth: -0.25
+effects:
+  # Effects are applied to players when the flux meter reaches a specific tier.
+  # Interval is in ticks (20 ticks = 1 second).
+  interval: 1200
+  enabled: true
+  tier_0:
+    player:
+      attributes:
+        # More information about attributes can be found at https://minecraft.fandom.com/wiki/Attribute
+        armor: 0
+        armor_toughness: 0
+        attack_damage: 1.0
+        attack_speed: 4.0
+        knockback_resistance: 0
+        luck: 0
+        max_health: 20
+        movement_speed: 0.1
+      potion_effects:
+        # More information about potion effects can be found at https://minecraft.fandom.com/wiki/Status_effect
+        fast_digging:
+          amplifier: 0
+        speed:
+          amplifier: 0
+  tier_1:
+    player:
+      attributes:
+        armor: 0
+        armor_toughness: 0
+        attack_damage: 1.0
+        attack_speed: 4.0
+        knockback_resistance: 0
+        luck: 0
+        max_health: 20
+        movement_speed: 0.1
+      potion_effects:
+        weakness:
+          amplifier: 0
+  tier_2:
+    player:
+      attributes:
+        armor: 0
+        armor_toughness: 0
+        attack_damage: 1.0
+        attack_speed: 4.0
+        knockback_resistance: 0
+        luck: 0
+        max_health: 20
+        movement_speed: 0.1
+      potion_effects:
+        slow:
+          amplifier: 0
+        weakness:
+          amplifier: 0
+  tier_3:
+    player:
+      attributes:
+        armor: 0
+        armor_toughness: 0
+        attack_damage: 1.0
+        attack_speed: 4.0
+        knockback_resistance: 0
+        luck: 0
+        max_health: 20
+        movement_speed: 0.1
+      potion_effects:
+        slow_digging:
+          amplifier: 0
+        slow:
+          amplifier: 0
+        weakness:
+          amplifier: 0
+deadly_disasters:
+  # Ignore this section if Deadly Disasters plugin is disabled or not installed.
+  # Interval is in ticks (20 ticks = 1 second).
+  enabled: false
+  # Prevent disasters from occurring when no players are online.
+  prevent_disasters_when_idle: true
+  min_interval: 54000
+  max_interval: 216000
+  tier_0:
+    # The chance represents the probability of a disaster occurring.
+    chance: 0.1
+    # You can add or remove disasters from the list.
+    # The weight represents the probability of a specific disaster occurring.
+    # The total weight does not have to equal 100.
+    disasters:
+      blizzard:
+        weight: 25
+      extremewinds:
+        weight: 25
+      geyser:
+        weight: 25
+      sandstorm:
+        weight: 25
+  tier_1:
+    chance: 0.2
+    disasters:
+      blizzard:
+        weight: 30
+      cavein:
+        weight: 10
+      extremewinds:
+        weight: 30
+      geyser:
+        weight: 20
+      sandstorm:
+        weight: 30
+      soulstorm:
+        weight: 20
+  tier_2:
+    chance: 0.3
+    disasters:
+      blizzard:
+        weight: 30
+      cavein:
+        weight: 10
+      endstorm:
+        weight: 20
+      extremewinds:
+        weight: 30
+      hurricane:
+        weight: 30
+      geyser:
+        weight: 10
+      meteorshowers:
+        weight: 5
+      purge:
+        weight: 20
+      sandstorm:
+        weight: 30
+      soulstorm:
+        weight: 20
+      tsunami:
+        weight: 10
+  tier_3:
+    chance: 0.3
+    disasters:
+      acidstorm:
+        weight: 20
+      blizzard:
+        weight: 30
+      cavein:
+        weight: 10
+      earthquake:
+        weight: 10
+      endstorm:
+        weight: 30
+      extremewinds:
+        weight: 30
+      hurricane:
+        weight: 30
+      geyser:
+        weight: 5
+      meteorshowers:
+        weight: 20
+      plague:
+        weight: 5
+      purge:
+        weight: 20
+      sandstorm:
+        weight: 30
+      sinkhole:
+        weight: 10
+      soulstorm:
+        weight: 30
+      supernova:
+        weight: 1
+      tsunami:
+        weight: 20
+      tornado:
+        weight: 10
+placeholderapi:
+  # Ignore this section if PlaceholderAPI plugin is disabled or not installed.
+  enabled: false
+  percentage_colors:
+    tier_0: "§a"
+    tier_1: "§e"
+    tier_2: "§c"
+    tier_3: "§4"

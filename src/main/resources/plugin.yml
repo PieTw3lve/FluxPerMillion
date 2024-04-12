@@ -1,0 +1,18 @@
+name: FluxPerMillion
+main: com.github.pietw3lve.fpm.FluxPerMillion
+version: 1.0.0
+api-version: 1.15
+authors: ["PieTw3lve"]
+website: https://github.com/PieTw3lve/FluxPerMillion
+description: A Minecraft plugin that simulates environmental flux per million (FPM) based on player actions.
+commands:
+  fpm:
+      description: Main command for the FluxPerMillion plugin.
+      usage: /<command> <subcommand> [args]
+      aliases: [flux, fluxpermillion]
+      default: true
+
+# Dependencies
+depend: []
+# Soft Dependencies
+softdepend: [DeadlyDisasters, PlaceholderAPI]
