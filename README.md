@@ -23,13 +23,13 @@ FluxPerMillion is a Minecraft plugin that adds an environmental twist to the gam
 
 ## Commands
 
-| Command                                  | Description                          | Permission |
-| ---------------------------------------- | ------------------------------------ | ---------- |
-| `/fpm inspect <player>`                  | Examine a player's Flux value.       | default    |
-| `/fpm toggle`                            | Toggle Flux meter visibility.        | default    |
-| `/fpm status`                            | View the Flux meter status.          | default    |
-| `/fpm lookup <player> <duration> <page>` | Lookup a player's Flux activity.     | fpm.lookup |
-| `/fpm reload`                            | Reload FluxPerMillion configuration. | fpm.reload |
+| Command                                  | Description                       | Permission |
+| ---------------------------------------- | --------------------------------- | ---------- |
+| `/fpm inspect <player>`                  | Examine a player's Flux value.    | default    |
+| `/fpm toggle`                            | Toggle the Flux meter visibility. | default    |
+| `/fpm status`                            | View the Flux meter status.       | default    |
+| `/fpm lookup <player> <duration> <page>` | Lookup a player's Flux activity.  | fpm.lookup |
+| `/fpm reload`                            | Reload configuration.             | fpm.reload |
 
 ## PlaceholderAPI
 
