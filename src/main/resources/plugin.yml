@@ -4,7 +4,7 @@ version: 1.0.2
 api-version: 1.15
 authors: ['PieTw3lve']
 website: https://github.com/PieTw3lve/FluxPerMillion
-description: A Minecraft plugin that simulates environmental flux per million (FPM) based on player actions.
+description: Introduces a new game mechanic, Flux, which is a measure of the environmental impact of player actions.
 commands:
   fpm:
     description: Main command for the FluxPerMillion plugin.
