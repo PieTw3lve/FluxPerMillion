@@ -274,4 +274,4 @@ messages:
     # %usage% is the correct usage of the command.
     invalid_arguments: '§cInvalid arguments! Usage: %usage%'
     invalid_time_duration: '§cInvalid time duration! Usage: %usage%'
-    invalid_page_number: 'Invalid page number! Usage: %usage%'
+    invalid_page_number: '§cInvalid page number! Usage: %usage%'
