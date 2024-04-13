@@ -36,7 +36,7 @@ flux_points:
   coal_place: 0.25
   compost_complete: -2.0
   entity_overpopulate: 0.25
-  entity_preserved: -2.0
+  entity_preserve: -2.0
   flint_and_steel_use: 0.25
   # Value for fuel_burn is multiplied by burn time.
   fuel_burn: 0.25

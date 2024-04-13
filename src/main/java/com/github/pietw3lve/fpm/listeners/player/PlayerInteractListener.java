@@ -39,7 +39,7 @@ public class PlayerInteractListener implements Listener {
         if (action == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.COMPOSTER) {
             Levelled composter = (Levelled) block.getBlockData();
             if (composter.getLevel() == composter.getMaximumLevel()) {
-                double points = plugin.getConfig().getDouble("flux_points.compost_complete", -5.0);
+                double points = plugin.getConfig().getDouble("flux_points.compost_complete", -2.0);
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "filled", "composter", points);
             }
         }

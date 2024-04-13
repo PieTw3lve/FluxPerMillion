@@ -1,6 +1,7 @@
 package com.github.pietw3lve.fpm.utils;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.sqlite.SQLiteDataSource;
 
@@ -8,6 +9,7 @@ import com.github.pietw3lve.fpm.FluxPerMillion;
 
 import net.md_5.bungee.api.ChatColor;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,6 +29,19 @@ public class SQLiteUtil {
     private static final String INSERT_USER_ACTION_SQL = "INSERT INTO user_actions (uuid, action_type, type, points) VALUES (?, ?, ?, ?)";
     private static final String INSERT_NATURAL_ACTION_SQL = "INSERT INTO natural_actions (action_type, type, points) VALUES (?, ?, ?)";
     private static final String CALCULATE_TOTAL_POINTS_SQL = "SELECT COALESCE(SUM(points), 0) as total FROM (SELECT points FROM user_actions UNION ALL SELECT points FROM natural_actions)";
+
+    private enum ActionType {
+        BURNED,
+        REMOVED,
+        PLACED,
+        FILLED,
+        OVERPOPULATED,
+        PRESERVED,
+        USED,
+        OVER,
+        CUT,
+        GROWN
+    }
 
     /**
      * SQLiteHandler Constructor.
@@ -220,5 +235,171 @@ public class SQLiteUtil {
         }
     
         return actionsDeleted;
+    }
+
+    /**
+     * Reloads the user and natural actions based on the new configuration.
+     * @param oldConfig The old configuration section containing the previous action points.
+     */
+    public void reload(ConfigurationSection oldConfig) {
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM user_actions")) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                ActionType actionType = parseActionType(resultSet.getString("action_type"));
+                String type = resultSet.getString("type");
+                double points = resultSet.getDouble("points");
+                BigDecimal bd = new BigDecimal(getNewActionPoints(oldConfig, actionType, type, points));
+                bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+                double newPoints = bd.doubleValue();
+                try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE user_actions SET points = ? WHERE id = ?")) {
+                    updateStatement.setDouble(1, newPoints);
+                    updateStatement.setInt(2, id);
+                    updateStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error reloading user actions", e);
+        }
+
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM natural_actions")) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                ActionType actionType = parseActionType(resultSet.getString("action_type"));
+                String type = resultSet.getString("type");
+                double points = resultSet.getDouble("points");
+                BigDecimal bd = new BigDecimal(getNewActionPoints(oldConfig, actionType, type, points));
+                bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+                double newPoints = bd.doubleValue();
+                try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE natural_actions SET points = ? WHERE id = ?")) {
+                    updateStatement.setDouble(1, newPoints);
+                    updateStatement.setInt(2, id);
+                    updateStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error reloading natural actions", e);
+        }
+    }
+
+    /**
+     * Calculates and returns the new action points based on the provided parameters.
+     * @param oldConfig   The old configuration section containing the previous action points.
+     * @param actionType  The type of action performed.
+     * @param type        The type of object or entity involved in the action.
+     * @param points      The previous action points.
+     * @return The new action points calculated based on the provided parameters.
+     */
+    private double getNewActionPoints(ConfigurationSection oldConfig, ActionType actionType, String type, double points) {
+        ConfigurationSection newConfig = plugin.getConfig().getConfigurationSection("flux_points");
+        if (newConfig == null) return points;
+
+        switch (actionType) {
+            case BURNED:
+                if (type.contains("block")) {
+                    return newConfig.getDouble("block_burn", points);
+                } 
+                else if (type.contains("fuel")) {
+                    return (points / oldConfig.getDouble("fuel_burn", points)) * newConfig.getDouble("fuel_burn", points);
+                }
+            case REMOVED:
+                if (type.contains("campfire")) {
+                    return newConfig.getDouble("campfire_break", points);
+                }
+                else if (type.contains("soul campfire")) {
+                    return newConfig.getDouble("campfire_break", points);
+                } 
+                else if (type.contains("composter")) {
+                    return newConfig.getDouble("compost_break", points);
+                }
+                else if (type.contains("coal block")) {
+                    return newConfig.getDouble("coal_break", points) * 9;
+                } 
+                else if (type.contains("coal ore")) {
+                    return newConfig.getDouble("coal_break", points);
+                }
+                else if (type.contains("torch")) {
+                    return newConfig.getDouble("torch_break", points);
+                }
+            case PLACED:
+                if (type.contains("campfire")) {
+                    return newConfig.getDouble("campfire_place", points);
+                }
+                else if (type.contains("soul campfire")) {
+                    return newConfig.getDouble("campfire_place", points);
+                } 
+                else if (type.contains("coal block")) {
+                    return newConfig.getDouble("coal_place", points) * 9;
+                } 
+                else if (type.contains("coal ore")) {
+                    return newConfig.getDouble("coal_place", points);
+                }
+                else if (type.contains("torch")) {
+                    return newConfig.getDouble("torch_place", points);
+                }
+            case FILLED:
+                if (type.contains("composter")) {
+                    return newConfig.getDouble("compost_complete", points);
+                }
+            case OVERPOPULATED:
+                return newConfig.getDouble("entity_overpopulate", points);
+            case PRESERVED:
+                return newConfig.getDouble("entity_preserve", points);
+            case USED:
+                if (type.contains("flint and steel")) {
+                    return newConfig.getDouble("flint_and_steel_use", points);
+                }
+            case OVER:
+                if (type.contains("fishing")) {
+                    return newConfig.getDouble("over_fish", points);
+                }
+            case CUT:
+                if (type.contains("tree")) {
+                    plugin.sendDebugMessage("points: " + points + " old: " + oldConfig.getDouble("tree_cut", points) + " new: " + newConfig.getDouble("tree_cut", points));
+                    return (points / oldConfig.getDouble("tree_cut", points)) * newConfig.getDouble("tree_cut", points);
+                }
+            case GROWN:
+                if (type.contains("tree")) {
+                    plugin.sendDebugMessage("points: " + points + " old: " + oldConfig.getDouble("tree_cut", points) + " new: " + newConfig.getDouble("tree_cut", points));
+                    return (points / oldConfig.getDouble("tree_growth", points)) * newConfig.getDouble("tree_growth", points);
+                }
+            default:
+                return points;
+        }
+    }
+
+    /**
+     * Represents the different types of actions that can be performed.
+     * Each action type corresponds to a specific action performed in the game.
+     * @param actionTypeStr The action type string to parse.
+     * @return The ActionType enum value corresponding to the provided action type string.
+     */
+    private ActionType parseActionType(String actionTypeStr) {
+        switch (actionTypeStr.toLowerCase()) {
+            case "burned":
+                return ActionType.BURNED;
+            case "removed":
+                return ActionType.REMOVED;
+            case "placed":
+                return ActionType.PLACED;
+            case "filled":
+                return ActionType.FILLED;
+            case "overpopulated":
+                return ActionType.OVERPOPULATED;
+            case "preserved":
+                return ActionType.PRESERVED;
+            case "used":
+                return ActionType.USED;
+            case "over":
+                return ActionType.OVER;
+            case "cut":
+                return ActionType.CUT;
+            case "grown":
+                return ActionType.GROWN;
+            default:
+                plugin.getLogger().log(Level.SEVERE, "Invalid action type: " + actionTypeStr);
+                return null;
+        }
     }
 }

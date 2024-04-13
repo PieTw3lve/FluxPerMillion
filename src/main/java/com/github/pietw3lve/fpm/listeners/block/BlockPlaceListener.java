@@ -39,15 +39,15 @@ public class BlockPlaceListener implements Listener{
 
         switch (block.getType()) {
             case COAL_BLOCK:
-                points = plugin.getConfig().getDouble("flux_points.coal_place", 0.5) * 9;
+                points = plugin.getConfig().getDouble("flux_points.coal_place", 0.25) * 9;
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "placed", "coal block", points);
                 break;
             case COAL_ORE:
-                points = plugin.getConfig().getDouble("flux_points.coal_place", 0.5);
+                points = plugin.getConfig().getDouble("flux_points.coal_place", 0.25);
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "placed", "coal ore", points);
                 break;
             case DEEPSLATE_COAL_ORE:
-                points = plugin.getConfig().getDouble("flux_points.coal_place", 0.5);
+                points = plugin.getConfig().getDouble("flux_points.coal_place", 0.25);
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "placed", "deepslate coal ore", points);
                 break;
             case CAMPFIRE:
@@ -67,7 +67,7 @@ public class BlockPlaceListener implements Listener{
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "placed", "soul torch", points);
                 break;
             case FIRE:
-                points = plugin.getConfig().getDouble("flux_points.flint_and_steel_use", 1.0);
+                points = plugin.getConfig().getDouble("flux_points.flint_and_steel_use", 0.25);
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "used", "flint and steel", points);
                 break;
             default:

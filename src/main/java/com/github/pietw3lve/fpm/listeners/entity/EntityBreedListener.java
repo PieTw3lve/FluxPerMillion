@@ -48,7 +48,7 @@ public class EntityBreedListener implements Listener {
                 double points = plugin.getConfig().getDouble("flux_points.entity_overpopulate", 0.25);
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "overpopulated", entityType.toString(), points);
             } else if (nearbyEntitiesCount <= entityPreserveLimit) {
-                double points = plugin.getConfig().getDouble("flux_points.entity_preserved", -1.0);
+                double points = plugin.getConfig().getDouble("flux_points.entity_preserve", -1.0);
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "preserved", entityType.toString(), points);
             }
             plugin.getServer().getPluginManager().callEvent(fluxEvent);

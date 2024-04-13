@@ -41,23 +41,23 @@ public class BlockBreakListener implements Listener{
 
         switch (block.getType()) {
             case COAL_BLOCK:
-                points = plugin.getConfig().getDouble("flux_points.coal_break", -0.5) * 9;
+                points = plugin.getConfig().getDouble("flux_points.coal_break", -0.25) * 9;
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "removed", "coal block", points);
                 break;
             case COAL_ORE:
-                points = plugin.getConfig().getDouble("flux_points.coal_break", -0.5);
+                points = plugin.getConfig().getDouble("flux_points.coal_break", -0.25);
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "removed", "coal ore", points);
                 break;
             case DEEPSLATE_COAL_ORE:
-                points = plugin.getConfig().getDouble("flux_points.coal_break", -0.5);
+                points = plugin.getConfig().getDouble("flux_points.coal_break", -0.25);
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "removed", "deepslate coal ore", points);
                 break;
             case CAMPFIRE:
-                points = plugin.getConfig().getDouble("flux_points.campfire_break", -1.0);
+                points = plugin.getConfig().getDouble("flux_points.campfire_break", -0.5);
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "removed", "campfire", points);
                 break;
             case SOUL_CAMPFIRE:
-                points = plugin.getConfig().getDouble("flux_points.campfire_break", -1.0);
+                points = plugin.getConfig().getDouble("flux_points.campfire_break", -0.5);
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "removed", "soul campfire", points);
                 break;
             case TORCH:

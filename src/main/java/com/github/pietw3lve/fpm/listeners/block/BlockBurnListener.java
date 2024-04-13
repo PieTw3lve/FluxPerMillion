@@ -27,7 +27,7 @@ public class BlockBurnListener implements Listener {
     public void onBlockBurn(BlockBurnEvent event) {
         if (event.isCancelled()) return;
 
-        double points = plugin.getConfig().getDouble("flux_points.block_burn", 5.0);
+        double points = plugin.getConfig().getDouble("flux_points.block_burn", 2.0);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), null, "burned", "block", points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
