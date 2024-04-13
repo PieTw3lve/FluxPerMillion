@@ -118,7 +118,7 @@ public class SQLiteUtil {
                     String playerName = String.format(ChatColor.GOLD + "%s", player.getName());
                     String actionType = String.format(ChatColor.WHITE + "%s", resultSet.getString("action_type"));
                     String type = String.format(ChatColor.GOLD + "%s", resultSet.getString("type"));
-                    String points = String.format((resultSet.getDouble("points") >= 0 ? ChatColor.RED : ChatColor.GREEN) + "%.2f Flux", Math.abs(resultSet.getDouble("points")));
+                    String points = String.format((resultSet.getDouble("points") >= 0 ? ChatColor.RED : ChatColor.GREEN) + "%.2f", resultSet.getDouble("points"));
                     String divider = ChatColor.RESET + "-";
 
                     Duration duration = Duration.between(actionTime, LocalDateTime.now(ZoneId.of("UTC")));
@@ -138,7 +138,7 @@ public class SQLiteUtil {
                         timeAgo = String.format(ChatColor.GRAY + "%d/s ago", secondsAgo);
                     }
 
-                    String actionInfo = String.format("%s %s %s %s %s %s %s", timeAgo, divider, playerName, actionType, type, divider, points);
+                    String actionInfo = String.format("%s %s %s %s %s %s %s §rFlux", timeAgo, divider, playerName, actionType, type, divider, points);
 
                     playerActions.add(actionInfo);
                 }
