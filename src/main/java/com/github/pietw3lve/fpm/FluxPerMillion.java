@@ -10,6 +10,7 @@ import com.github.pietw3lve.fpm.handlers.DeadlyDisastersHandler;
 import com.github.pietw3lve.fpm.handlers.EffectsHandler;
 import com.github.pietw3lve.fpm.handlers.FishTrackerHandler;
 import com.github.pietw3lve.fpm.handlers.FluxMeterHandler;
+import com.github.pietw3lve.fpm.handlers.MessageHandler;
 import com.github.pietw3lve.fpm.handlers.PlaceholderHandler;
 import com.github.pietw3lve.fpm.handlers.TreeHandler;
 import com.github.pietw3lve.fpm.listeners.block.BlockBreakListener;
@@ -25,9 +26,11 @@ import com.github.pietw3lve.fpm.listeners.player.PlayerInteractListener;
 import com.github.pietw3lve.fpm.listeners.player.PlayerJoinListener;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil;
 
+
 public class FluxPerMillion extends JavaPlugin {
 
 	private SQLiteUtil dbHandler;
+	private MessageHandler messageHandler;
 	private FluxMeterHandler fluxMeter;
 	private DeadlyDisastersHandler deadlyDisasters;
 	private EffectsHandler effectsHandler;
@@ -36,8 +39,8 @@ public class FluxPerMillion extends JavaPlugin {
 	private TreeHandler treeUtils;
 
 	public void onEnable() {
-		initializeHandlers();
 		loadPersonalData();
+		initializeHandlers();
 		loadDependencies();
 		registerCommands();
 		registerEventListeners();
@@ -47,7 +50,7 @@ public class FluxPerMillion extends JavaPlugin {
 	 * Initialize all handlers.
 	 */
 	private void initializeHandlers() {
-		this.dbHandler = new SQLiteUtil(this);
+		this.messageHandler = new MessageHandler(this);
 		this.fluxMeter = new FluxMeterHandler(this);
 		this.deadlyDisasters = new DeadlyDisastersHandler(this);
 		this.effectsHandler = new EffectsHandler(this);
@@ -72,6 +75,7 @@ public class FluxPerMillion extends JavaPlugin {
 	 * Save the default configuration file.
 	 */
 	private void loadPersonalData() {
+		this.dbHandler = new SQLiteUtil(this);
 		dbHandler.initializeDatabase();
 		saveDefaultConfig();
 	}
@@ -135,6 +139,14 @@ public class FluxPerMillion extends JavaPlugin {
 	 */
 	public SQLiteUtil getDbUtil() {
 		return this.dbHandler;
+	}
+
+	/**
+	 * Returns the MessageHandler instance.
+	 * @return MessageHandler
+	 */
+	public MessageHandler getMessageHandler() {
+		return this.messageHandler;
 	}
 
 	/**

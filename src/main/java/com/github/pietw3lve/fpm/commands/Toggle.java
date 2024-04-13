@@ -1,5 +1,7 @@
 package com.github.pietw3lve.fpm.commands;
 
+import java.util.List;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,17 +27,28 @@ public class Toggle implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Only players can use this command.");
+            String playerOnlyCommandMessage = plugin.getMessageHandler().getPlayerOnlyCommandMessage();
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', playerOnlyCommandMessage));
             return true;
         }
 
         Player player = (Player) sender;
+        List<String> defaultToggleMessages = plugin.getMessageHandler().getDefaultToggleMessages();
+        List<String> toggleMessages = plugin.getMessageHandler().getToggleMessages();
         FluxMeterHandler fluxMeter = plugin.getFluxMeter();
 
         if (fluxMeter.toggle(player)) {
-            player.sendMessage(ChatColor.GREEN + "Flux meter is now visible.");
+            try {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', toggleMessages.get(0)));
+            } catch (IndexOutOfBoundsException e) {
+                player.sendMessage(defaultToggleMessages.get(0));
+            }
         } else {
-            player.sendMessage(ChatColor.RED + "Flux meter is now hidden.");
+            try {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', toggleMessages.get(1)));
+            } catch (IndexOutOfBoundsException e) {
+                player.sendMessage(defaultToggleMessages.get(1));
+            }
         }
 
         return true;

@@ -35,7 +35,7 @@ public class FluxMeterHandler {
         this.plugin = plugin;
         fluxMeterTask = null;
         fluxMeter = plugin.getServer().createBossBar("Flux Meter", BarColor.RED, BarStyle.SEGMENTED_12);
-        reload();
+        this.reload();
     }
 
     /**
@@ -102,7 +102,7 @@ public class FluxMeterHandler {
             plugin.getServer().getScheduler().cancelTask(fluxMeterTask.getTaskId());
         }
 
-        fluxMeterTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> update(), 0, plugin.getConfig().getInt("flux_meter.refresh_rate", 20));
+        fluxMeterTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> update(), 0, plugin.getConfig().getInt("flux_meter.refresh_rate", 72000));
     }
 
     

@@ -26,13 +26,15 @@ public class Inspect implements CommandExecutor {
         OfflinePlayer player = plugin.getPlayer(args[1]);
 
         if (player == null) {
-            sender.sendMessage(ChatColor.RED + "Player not found.");
+            String playerNotFoundMessage = plugin.getMessageHandler().getPlayerNotFoundMessage();
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', playerNotFoundMessage));
             return true;
         }
-
+        
+        String inspectMessage = plugin.getMessageHandler().getInspectMessage();
         double playerFlux = plugin.getDbUtil().getPlayerFlux(player);
         String points = String.format((playerFlux >= 0 ? ChatColor.RED : ChatColor.GREEN) + "%.2f", Math.abs(playerFlux));
-        sender.sendMessage(ChatColor.GRAY + "Player " + ChatColor.GOLD + player.getName() + ChatColor.GRAY + " accumulated " + points + ChatColor.GOLD + " Flux.");
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', inspectMessage.replace("%player%", player.getName()).replace("%points%", points)));
 
         return true;
     }

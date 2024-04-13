@@ -24,8 +24,7 @@ public class FishTrackerHandler {
      */
     public FishTrackerHandler(FluxPerMillion plugin) {
         this.plugin = plugin;
-        this.overFishThreshold = plugin.getConfig().getInt("fishing.threshold", 50);
-        this.resetIntervalTicks = plugin.getConfig().getLong("fishing.timer", 36000);
+        this.reload();
     }
 
     /**
@@ -79,23 +78,7 @@ public class FishTrackerHandler {
      * Reloads the fish tracker configuration.
      */
     public void reload() {
-        setOverFishThreshold(plugin.getConfig().getInt("fishing.threshold", this.overFishThreshold));
-        setResetIntervalTicks(plugin.getConfig().getLong("fishing.timer", this.resetIntervalTicks));
-    }
-
-    /**
-     * Sets the over fish threshold.
-     * @param threshold The threshold to set.
-     */
-    public void setOverFishThreshold(int threshold) {
-        this.overFishThreshold = threshold;
-    }
-
-    /**
-     * Sets the reset interval ticks.
-     * @param ticks The ticks to set.
-     */
-    public void setResetIntervalTicks(long ticks) {
-        this.resetIntervalTicks = ticks;
+        overFishThreshold = plugin.getConfig().getInt("fishing.threshold", 50);
+        resetIntervalTicks = plugin.getConfig().getLong("fishing.timer", 36000);
     }
 }

@@ -1,5 +1,7 @@
 package com.github.pietw3lve.fpm.commands;
 
+import java.util.List;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,20 +24,16 @@ public class Status implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        String[] statusLabels = {
-            ChatColor.GREEN + ChatColor.BOLD.toString() + ChatColor.UNDERLINE + "STABLE" + ChatColor.GREEN + ChatColor.BOLD.toString() + ":" ,
-            ChatColor.GOLD + ChatColor.BOLD.toString() + ChatColor.UNDERLINE + "WARNING" + ChatColor.GOLD + ChatColor.BOLD.toString() + ":",
-            ChatColor.GOLD + ChatColor.BOLD.toString() + ChatColor.UNDERLINE + "WARNING" + ChatColor.GOLD + ChatColor.BOLD.toString() + ":" ,
-            ChatColor.DARK_RED + ChatColor.BOLD.toString() + ChatColor.UNDERLINE + "CRITICAL" + ChatColor.DARK_RED + ChatColor.BOLD.toString() + ":"
-        };
-        String[] statusMessages = {
-            ChatColor.GREEN + "Flux capacity is stable.",
-            ChatColor.YELLOW + "Flux capacity is becoming a concern.",
-            ChatColor.RED + "Flux capacity is increasing rapidly.",
-            ChatColor.DARK_RED + "Flux capacity is at a critical level!"
-        };
+        List<String> defaultStatusMessages = plugin.getMessageHandler().getDefaultStatusMessages();
+        List<String> statusMessages = plugin.getMessageHandler().getStatusMessages();
         int statusLevel = plugin.getFluxMeter().getStatusLevel();
-        sender.sendMessage(statusLabels[statusLevel] + " " + statusMessages[statusLevel]);
+
+        try {
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', statusMessages.get(statusLevel)));
+        } catch (IndexOutOfBoundsException e) {
+            sender.sendMessage(defaultStatusMessages.get(statusLevel));
+        }
+        
         return true;
     }
 }

@@ -23,12 +23,14 @@ public class Reload implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         plugin.reloadConfig();
+        plugin.getMessageHandler().reload();
         plugin.getFluxMeter().reload();
         plugin.getDeadlyDisasters().reload();
         plugin.getEffectsHandler().reload();
         plugin.getPlaceholderHandler().reload();
         plugin.getFishTracker().reload();
-        sender.sendMessage(ChatColor.GREEN + "Configuration reloaded!");
+        String reloadMessage = plugin.getMessageHandler().getReloadMessage();
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', reloadMessage));
         return true;
     }
 }

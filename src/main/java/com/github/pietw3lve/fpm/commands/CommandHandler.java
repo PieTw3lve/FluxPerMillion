@@ -35,47 +35,53 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        String noPermissionMessage = plugin.getMessageHandler().getNoPermissionMessage();
+        String playerOnlyCommandMessage = plugin.getMessageHandler().getPlayerOnlyCommandMessage();
+        String invalidArgsMessage = plugin.getMessageHandler().getInvalidArgsMessage();
+        String usage = "/fpm <subcommand>";
         String subCommand = args[0].toLowerCase();
         switch (subCommand) {
             case "inspect":
                 if (args.length == 2) {
                     return new Inspect(plugin).onCommand(sender, command, label, args);
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Invalid argument! Usage: /fpm inspect <player>");
+                    usage = "/fpm inspect <player>";
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', invalidArgsMessage).replace("%usage%", usage));
                     return true;
                 }
             case "toggle":
                 if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players can use this command.");
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', playerOnlyCommandMessage));
                     return true;
                 } else {
                     return new Toggle(plugin).onCommand(sender, command, label, args);
                 }
             case "status":
                 if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players can use this command.");
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', playerOnlyCommandMessage));
                     return true;
                 } else {
                     return new Status(plugin).onCommand(sender, command, label, args);
                 }
             case "lookup":
                 if (!sender.hasPermission("fpm.lookup")) {
-                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', noPermissionMessage));
                     return true;
                 } else if (args.length == 3 || args.length == 4) {
                     return new Lookup(plugin).onCommand(sender, command, label, args);
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Invalid arguments! Usage: /fpm lookup <player> <duration> <page>");
+                    usage = "/fpm lookup <player> <duration> <page>";
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', invalidArgsMessage).replace("%usage%", usage));
                     return true;
                 }
             case "reload":
                 if (!sender.hasPermission("fpm.reload")) {
-                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', noPermissionMessage));
                     return true;
                 }
                 return new Reload(plugin).onCommand(sender, command, label, args);
         }
-        sender.sendMessage(ChatColor.RED + "Invalid argument! Usage: /fpm <subcommand>");
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', invalidArgsMessage).replace("%usage%", usage));
         return true;
     }
 

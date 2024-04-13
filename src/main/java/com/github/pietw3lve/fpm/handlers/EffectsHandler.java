@@ -28,7 +28,7 @@ public class EffectsHandler {
     public EffectsHandler(FluxPerMillion plugin) {
         this.plugin = plugin;
         this.effectTask = null;
-        reload();
+        this.reload();
     }
 
     /**
