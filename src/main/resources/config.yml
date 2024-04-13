@@ -29,15 +29,15 @@ flux_meter:
   # Set to -1 to disable this feature.
   decay: -1
 flux_points:
-  block_burn: 5.0
-  campfire_break: -1.0
-  campfire_place: 1.0
-  coal_break: -0.5
-  coal_place: 0.5
-  compost_complete: -5.0
+  block_burn: 2.0
+  campfire_break: -0.5
+  campfire_place: 0.5
+  coal_break: -0.25
+  coal_place: 0.25
+  compost_complete: -2.0
   entity_overpopulate: 0.25
-  entity_preserved: -1.0
-  flint_and_steel_use: 1.0
+  entity_preserved: -2.0
+  flint_and_steel_use: 0.25
   # Value for fuel_burn is multiplied by burn time.
   fuel_burn: 0.25
   over_fish: 0.25
