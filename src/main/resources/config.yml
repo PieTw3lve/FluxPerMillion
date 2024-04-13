@@ -1,5 +1,5 @@
 # FluxPerMillion Configuration File
-# Version 1.0.1
+# Version 1.0.2
 
 debug:
   # Enable debug messages in the console.
@@ -16,8 +16,8 @@ fishing:
   timer: 36000
   threshold: 50
 flux_meter:
-  # Refresh rate is in ticks (20 ticks = 1 second).
-  refresh_rate: 72000
+  # Refresh interval is in ticks (20 ticks = 1 second).
+  refresh_interval: 72000
   # Total Flux can exceed the minimum and maximum values, but the meter will not display it.
   maximum_flux_capacity: 1000000.0
   minimum_flux_capacity: 0.0
@@ -49,7 +49,7 @@ flux_points:
 effects:
   # Effects are applied to players when the flux meter reaches a specific tier.
   # Interval is in ticks (20 ticks = 1 second).
-  interval: 1200
+  refresh_interval: 1200
   enabled: true
   tier_0:
     player:

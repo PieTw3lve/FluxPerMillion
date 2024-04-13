@@ -17,6 +17,7 @@ public class FluxMeterHandler {
     private final Set<String> playersWithBossBar = new HashSet<>();
     private BukkitTask fluxMeterTask;
     private BossBar fluxMeter;
+    private int refreshInterval;
     private double totalPoints;
     private int statusLevel;
     private double tier1Threshold;
@@ -33,8 +34,8 @@ public class FluxMeterHandler {
      */
     public FluxMeterHandler(FluxPerMillion plugin) {
         this.plugin = plugin;
-        fluxMeterTask = null;
-        fluxMeter = plugin.getServer().createBossBar("Flux Meter", BarColor.RED, BarStyle.SEGMENTED_12);
+        this.fluxMeterTask = null;
+        this.fluxMeter = plugin.getServer().createBossBar("Flux Meter", BarColor.RED, BarStyle.SEGMENTED_12);
         this.reload();
     }
 
@@ -91,6 +92,7 @@ public class FluxMeterHandler {
      * Reloads the flux meter.
      */
     public void reload() {
+        refreshInterval = plugin.getConfig().getInt("flux_meter.refresh_interval", 72000);
         tier1Threshold = plugin.getConfig().getDouble("flux_meter.tier_1_threshold", 0.25);
         tier2Threshold = plugin.getConfig().getDouble("flux_meter.tier_2_threshold", 0.50);
         tier3Threshold = plugin.getConfig().getDouble("flux_meter.tier_3_threshold", 0.75);
@@ -102,7 +104,7 @@ public class FluxMeterHandler {
             plugin.getServer().getScheduler().cancelTask(fluxMeterTask.getTaskId());
         }
 
-        fluxMeterTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> update(), 0, plugin.getConfig().getInt("flux_meter.refresh_rate", 72000));
+        fluxMeterTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> update(), 0, refreshInterval);
     }
 
     

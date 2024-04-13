@@ -35,7 +35,7 @@ public class EffectsHandler {
      * Reload the effects.
      */
     public void reload() {
-        this.interval = plugin.getConfig().getInt("effects.interval", 1200);
+        this.interval = plugin.getConfig().getInt("effects.refresh_interval", 1200);
         this.enabled = plugin.getConfig().getBoolean("effects.enabled", true);
         this.attributes = configToAttributes();
         this.potions = configToPotions();
