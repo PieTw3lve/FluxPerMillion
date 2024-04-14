@@ -15,15 +15,19 @@ import com.github.pietw3lve.fpm.handlers.PlaceholderHandler;
 import com.github.pietw3lve.fpm.handlers.TreeHandler;
 import com.github.pietw3lve.fpm.listeners.block.BlockBreakListener;
 import com.github.pietw3lve.fpm.listeners.block.BlockBurnListener;
-import com.github.pietw3lve.fpm.listeners.block.BlockGrowthListener;
+import com.github.pietw3lve.fpm.listeners.block.BlockFertilizeListener;
+import com.github.pietw3lve.fpm.listeners.block.BlockGrowListener;
 import com.github.pietw3lve.fpm.listeners.block.BlockPlaceListener;
-import com.github.pietw3lve.fpm.listeners.container.FurnaceBurnListener;
+import com.github.pietw3lve.fpm.listeners.block.BlockSpreadListener;
 import com.github.pietw3lve.fpm.listeners.entity.EntityBreedListener;
+import com.github.pietw3lve.fpm.listeners.entity.ItemDespawnListener;
 import com.github.pietw3lve.fpm.listeners.fpm.FluxLevelChangeListener;
 import com.github.pietw3lve.fpm.listeners.fpm.StatusLevelChangeListener;
+import com.github.pietw3lve.fpm.listeners.inventory.FurnaceBurnListener;
 import com.github.pietw3lve.fpm.listeners.player.PlayerFishListener;
 import com.github.pietw3lve.fpm.listeners.player.PlayerInteractListener;
 import com.github.pietw3lve.fpm.listeners.player.PlayerJoinListener;
+import com.github.pietw3lve.fpm.listeners.world.StructureGrowListener;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil;
 
 
@@ -91,17 +95,26 @@ public class FluxPerMillion extends JavaPlugin {
 	 * Register event listeners.
 	 */
 	private void registerEventListeners() {
-		getServer().getPluginManager().registerEvents(new PlayerInteractListener(this), this);
-		getServer().getPluginManager().registerEvents(new PlayerFishListener(this), this);
-		getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
-		getServer().getPluginManager().registerEvents(new EntityBreedListener(this), this);
-		getServer().getPluginManager().registerEvents(new FurnaceBurnListener(this), this);
-        getServer().getPluginManager().registerEvents(new BlockBreakListener(this), this);
-		getServer().getPluginManager().registerEvents(new BlockPlaceListener(this), this);
-		getServer().getPluginManager().registerEvents(new BlockGrowthListener(this), this);
+		// Block Listeners
+		getServer().getPluginManager().registerEvents(new BlockBreakListener(this), this);
 		getServer().getPluginManager().registerEvents(new BlockBurnListener(this), this);
-		getServer().getPluginManager().registerEvents(new StatusLevelChangeListener(this), this);
+		getServer().getPluginManager().registerEvents(new BlockGrowListener(this), this);
+		getServer().getPluginManager().registerEvents(new BlockFertilizeListener(this), this);
+		getServer().getPluginManager().registerEvents(new BlockPlaceListener(this), this);
+		getServer().getPluginManager().registerEvents(new BlockSpreadListener(this), this);
+		// Entity Listeners
+		getServer().getPluginManager().registerEvents(new EntityBreedListener(this), this);
+		getServer().getPluginManager().registerEvents(new ItemDespawnListener(this), this);
+		// FPM Listeners
 		getServer().getPluginManager().registerEvents(new FluxLevelChangeListener(this), this);
+		getServer().getPluginManager().registerEvents(new StatusLevelChangeListener(this), this);
+		// Player Listeners
+		getServer().getPluginManager().registerEvents(new PlayerFishListener(this), this);
+		getServer().getPluginManager().registerEvents(new PlayerInteractListener(this), this);
+		getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+		getServer().getPluginManager().registerEvents(new FurnaceBurnListener(this), this);
+		// World Listeners
+		getServer().getPluginManager().registerEvents(new StructureGrowListener(this), this);
 	}
 
 	/**

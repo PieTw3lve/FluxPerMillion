@@ -1,4 +1,4 @@
-package com.github.pietw3lve.fpm.listeners.block;
+package com.github.pietw3lve.fpm.listeners.world;
 
 import org.bukkit.TreeType;
 import org.bukkit.entity.Player;
@@ -10,7 +10,7 @@ import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.handlers.TreeHandler;
 
-public class BlockGrowthListener implements Listener {
+public class StructureGrowListener implements Listener {
     
     private final FluxPerMillion plugin;
     private final TreeHandler treeUtils;
@@ -19,7 +19,7 @@ public class BlockGrowthListener implements Listener {
      * BlockGrowthListener Constructor.
      * @param plugin
      */
-    public BlockGrowthListener(FluxPerMillion plugin) {
+    public StructureGrowListener(FluxPerMillion plugin) {
         this.plugin = plugin;
         this.treeUtils = plugin.getTreeUtils();
     }
@@ -29,7 +29,7 @@ public class BlockGrowthListener implements Listener {
      * @param event StructureGrowEvent
      */
     @EventHandler
-    public void onTreeGrow(StructureGrowEvent event) {
+    public void onStructureGrow(StructureGrowEvent event) {
         if (event.isCancelled()) return;
 
         event.getBlocks().get(0).removeMetadata("fpm:placed", plugin);

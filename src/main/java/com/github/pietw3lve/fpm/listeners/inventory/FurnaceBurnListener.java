@@ -1,4 +1,4 @@
-package com.github.pietw3lve.fpm.listeners.container;
+package com.github.pietw3lve.fpm.listeners.inventory;
 
 import java.util.Collection;
 
@@ -49,11 +49,7 @@ public class FurnaceBurnListener implements Listener {
         }
 
         double points = plugin.getConfig().getDouble("flux_points.fuel_burn", 0.25) * (event.getBurnTime() / 200.0);
-        if (closestPlayer != null) {
-            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), closestPlayer, "burned", "fuel", points);
-        } else {
-            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), null, "burned", "fuel", points);
-        }
+        fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), closestPlayer, "burned", "fuel", points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 }

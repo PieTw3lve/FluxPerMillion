@@ -37,6 +37,7 @@ public class SQLiteUtil {
         FILLED,
         OVERPOPULATED,
         PRESERVED,
+        DESPAWNED,
         USED,
         OVER,
         CUT,
@@ -249,8 +250,7 @@ public class SQLiteUtil {
                 ActionType actionType = parseActionType(resultSet.getString("action_type"));
                 String type = resultSet.getString("type");
                 double points = resultSet.getDouble("points");
-                BigDecimal bd = new BigDecimal(getNewActionPoints(oldConfig, actionType, type, points));
-                bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+                BigDecimal bd = new BigDecimal(getNewActionPoints(oldConfig, actionType, type, points)).setScale(5, BigDecimal.ROUND_HALF_UP);
                 double newPoints = bd.doubleValue();
                 try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE user_actions SET points = ? WHERE id = ?")) {
                     updateStatement.setDouble(1, newPoints);
@@ -269,8 +269,7 @@ public class SQLiteUtil {
                 ActionType actionType = parseActionType(resultSet.getString("action_type"));
                 String type = resultSet.getString("type");
                 double points = resultSet.getDouble("points");
-                BigDecimal bd = new BigDecimal(getNewActionPoints(oldConfig, actionType, type, points));
-                bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+                BigDecimal bd = new BigDecimal(getNewActionPoints(oldConfig, actionType, type, points)).setScale(5, BigDecimal.ROUND_HALF_UP);
                 double newPoints = bd.doubleValue();
                 try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE natural_actions SET points = ? WHERE id = ?")) {
                     updateStatement.setDouble(1, newPoints);
@@ -346,6 +345,8 @@ public class SQLiteUtil {
                 return newConfig.getDouble("entity_overpopulate", points);
             case PRESERVED:
                 return newConfig.getDouble("entity_preserve", points);
+            case DESPAWNED:
+                return newConfig.getDouble("pollution", points);
             case USED:
                 if (type.contains("flint and steel")) {
                     return newConfig.getDouble("flint_and_steel_use", points);
@@ -359,7 +360,13 @@ public class SQLiteUtil {
                     return (points / oldConfig.getDouble("tree_cut", points)) * newConfig.getDouble("tree_cut", points);
                 }
             case GROWN:
-                if (type.contains("tree")) {
+                if (type.contains("crop")) {
+                    return newConfig.getDouble("crop_growth", points);
+                } 
+                else if (type.contains("grass")) {
+                    return newConfig.getDouble("grass_growth", points);
+                }
+                else if (type.contains("tree")) {
                     return (points / oldConfig.getDouble("tree_growth", points)) * newConfig.getDouble("tree_growth", points);
                 }
             default:
@@ -387,6 +394,8 @@ public class SQLiteUtil {
                 return ActionType.OVERPOPULATED;
             case "preserved":
                 return ActionType.PRESERVED;
+            case "despawned":
+                return ActionType.DESPAWNED;
             case "used":
                 return ActionType.USED;
             case "over":
