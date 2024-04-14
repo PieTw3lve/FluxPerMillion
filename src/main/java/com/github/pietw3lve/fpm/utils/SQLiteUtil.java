@@ -356,12 +356,10 @@ public class SQLiteUtil {
                 }
             case CUT:
                 if (type.contains("tree")) {
-                    plugin.sendDebugMessage("points: " + points + " old: " + oldConfig.getDouble("tree_cut", points) + " new: " + newConfig.getDouble("tree_cut", points));
                     return (points / oldConfig.getDouble("tree_cut", points)) * newConfig.getDouble("tree_cut", points);
                 }
             case GROWN:
                 if (type.contains("tree")) {
-                    plugin.sendDebugMessage("points: " + points + " old: " + oldConfig.getDouble("tree_cut", points) + " new: " + newConfig.getDouble("tree_cut", points));
                     return (points / oldConfig.getDouble("tree_growth", points)) * newConfig.getDouble("tree_growth", points);
                 }
             default:

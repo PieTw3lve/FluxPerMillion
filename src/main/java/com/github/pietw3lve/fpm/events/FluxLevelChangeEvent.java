@@ -29,7 +29,7 @@ public class FluxLevelChangeEvent extends Event implements Cancellable {
         this.actionType = actionType;
         this.type = type;
         this.points = points;
-        this.isCancelled = false;
+        this.isCancelled = points != 0 ? false : true;
     }
 
     /**

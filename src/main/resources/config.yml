@@ -29,6 +29,7 @@ flux_meter:
   # Set to -1 to disable this feature.
   decay: -1
 flux_points:
+  # Set action value to 0 to disable them.
   block_burn: 2.0
   campfire_break: -0.5
   campfire_place: 0.5
