@@ -362,13 +362,13 @@ public class DeadlyDisastersHandler {
         
         minInterval = plugin.getConfig().getLong("deadly_disasters.min_interval", 54000);
         maxInterval = plugin.getConfig().getLong("deadly_disasters.max_interval", 216000);
-        tier0Chance = plugin.getConfig().getDouble("deadly_disasters.tier_0.chance", 0.05);
+        tier0Chance = plugin.getConfig().getDouble("deadly_disasters.tier_0.chance", 0.1);
         tier0Disaster = configToDisasterList(plugin.getConfig().getConfigurationSection("deadly_disasters.tier_0.disasters"));
-        tier1Chance = plugin.getConfig().getDouble("deadly_disasters.tier_1.chance", 0.10);
+        tier1Chance = plugin.getConfig().getDouble("deadly_disasters.tier_1.chance", 0.2);
         tier1Disaster = configToDisasterList(plugin.getConfig().getConfigurationSection("deadly_disasters.tier_1.disasters"));
-        tier2Chance = plugin.getConfig().getDouble("deadly_disasters.tier_2.chance", 0.15);
+        tier2Chance = plugin.getConfig().getDouble("deadly_disasters.tier_2.chance", 0.3);
         tier2Disaster = configToDisasterList(plugin.getConfig().getConfigurationSection("deadly_disasters.tier_2.disasters"));
-        tier3Chance = plugin.getConfig().getDouble("deadly_disasters.tier_3.chance", 0.15);
+        tier3Chance = plugin.getConfig().getDouble("deadly_disasters.tier_3.chance", 0.3);
         tier3Disaster = configToDisasterList(plugin.getConfig().getConfigurationSection("deadly_disasters.tier_3.disasters"));
         preventDisastersWhenIdle = plugin.getConfig().getBoolean("deadly_disasters.prevent_disasters_when_idle", true);
 
