@@ -1,6 +1,6 @@
 name: FluxPerMillion
 main: com.github.pietw3lve.fpm.FluxPerMillion
-version: 1.0.2
+version: 1.0.3
 api-version: 1.15
 authors: ['PieTw3lve']
 website: https://github.com/PieTw3lve/FluxPerMillion

@@ -1,5 +1,6 @@
 package com.github.pietw3lve.fpm.handlers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,17 +40,13 @@ public class DeadlyDisastersHandler {
     
     private final FluxPerMillion plugin;
     private final FluxMeterHandler fluxMeter;
+    private final List<Double> DEFAULT_PROBABILITIES;
     private BukkitTask disastersTask;
     private long minInterval;
     private long maxInterval;
-    private double tier0Chance;
-    private Map<String, Double> tier0Disaster;
-    private double tier1Chance;
-    private Map<String, Double> tier1Disaster;
-    private double tier2Chance;
-    private Map<String, Double> tier2Disaster;
-    private double tier3Chance;
-    private Map<String, Double> tier3Disaster;
+    private List<Double> probabilities;
+    private List<Map<String, Double>> disasters;
+    private List<Map<String, Double>> difficulties;
     private boolean enabled;
     private boolean preventDisastersWhenIdle;
     
@@ -60,6 +57,7 @@ public class DeadlyDisastersHandler {
     public DeadlyDisastersHandler(FluxPerMillion plugin) {
         this.plugin = plugin;
         this.fluxMeter = plugin.getFluxMeter();
+        this.DEFAULT_PROBABILITIES = Arrays.asList(0.1, 0.2, 0.3, 0.3);
         this.disastersTask = null;
         this.enabled = false;
         this.preventDisastersWhenIdle = false;
@@ -72,16 +70,16 @@ public class DeadlyDisastersHandler {
         Random rand = new Random();
         int statusLevel = fluxMeter.getStatusLevel();
         double value = rand.nextDouble();
-        if (value <= tier0Chance && statusLevel == 0) {
+        if (value <= probabilities.get(0) && statusLevel == 0) {
             String disaster = getDisaster(statusLevel);
             startDisaster(disaster, statusLevel, 0);
-        } else if (value <= tier1Chance && statusLevel == 1) {
+        } else if (value <= probabilities.get(1) && statusLevel == 1) {
             String disaster = getDisaster(statusLevel);
             startDisaster(disaster, statusLevel, 0);
-        } else if (value <= tier2Chance && statusLevel == 2) {
+        } else if (value <= probabilities.get(2) && statusLevel == 2) {
             String disaster = getDisaster(statusLevel);
             startDisaster(disaster, statusLevel, 0);
-        } else if (value <= tier3Chance && statusLevel == 3) {
+        } else if (value <= probabilities.get(3) && statusLevel == 3) {
             String disaster = getDisaster(statusLevel);
             startDisaster(disaster, statusLevel, 0);
         }
@@ -94,8 +92,7 @@ public class DeadlyDisastersHandler {
      * @return The disaster to start.
      */
     private String getDisaster(int statusLevel) {
-        List<Map<String, Double>> disasterList = Arrays.asList(tier0Disaster, tier1Disaster, tier2Disaster, tier3Disaster);
-        Map<String, Double> disasters = disasterList.get(statusLevel);
+        Map<String, Double> disasters = this.disasters.get(statusLevel);
 
         if (disasters.isEmpty()) {
             return null;
@@ -302,22 +299,22 @@ public class DeadlyDisastersHandler {
 
     /**
      * Converts a configuration section to a map of disasters.
-     * @param disasterList The configuration section to convert.
+     * @param config The configuration section to convert.
      * @return A map of disasters.
      */
-    private Map<String, Double> configToDisasterList(ConfigurationSection disasterList) {
-        Map<String, Double> disasters = new HashMap<>();
+    private Map<String, Double> configToList(ConfigurationSection config) {
+        Map<String, Double> map = new HashMap<>();
 
-        if (disasterList == null) {
-            return disasters;
+        if (config == null) {
+            return map;
         }
 
-        for (String disaster : disasterList.getKeys(false)) {
-            double weight = disasterList.getDouble(disaster + ".weight");
-            disasters.put(disaster, weight);
+        for (String key : config.getKeys(false)) {
+            double weight = config.getDouble(key + ".weight");
+            map.put(key, weight);
         }
 
-        return disasters;
+        return map;
     }
 
     /**
@@ -328,12 +325,21 @@ public class DeadlyDisastersHandler {
      * @return A random disaster level.
      */
     private int getDisasterLevel(int statusLevel, int minDisasterLevel, int maxDisasterLevel) {
-        if (statusLevel == 3) {
-            return (int) (Math.random() * (maxDisasterLevel - minDisasterLevel + 1)) + minDisasterLevel;
-        } else {
-            int adjustedMax = minDisasterLevel + (statusLevel * (maxDisasterLevel - minDisasterLevel)) / 3;
-            return (int) (Math.random() * (adjustedMax - minDisasterLevel + 1)) + minDisasterLevel;
+        Map<String, Double> difficulties = this.difficulties.get(statusLevel);
+
+        if (difficulties.isEmpty()) {
+            return 1;
         }
+
+        RandomCollectionUtil<Integer> randomCollection = new RandomCollectionUtil<>();
+        for (Map.Entry<String, Double> entry : difficulties.entrySet()) {
+            int difficulty = Integer.parseInt(entry.getKey().split("_")[1]);
+            double weight = entry.getValue();
+            randomCollection.add(weight, difficulty);
+        }
+
+        int selectedDifficulty = randomCollection.next();
+        return Math.min(Math.max(selectedDifficulty, minDisasterLevel), maxDisasterLevel);
     }
 
     /**
@@ -341,7 +347,8 @@ public class DeadlyDisastersHandler {
      * @return The scheduled disasters task.
      */
     private BukkitTask startScheduledDisasters(long minInterval, long maxInterval) {
-        long randomDelay = minInterval + (long) (Math.random() * (maxInterval - minInterval));
+        Random rand = new Random();
+        long randomDelay = (long) (rand.nextDouble() * (maxInterval - minInterval + 1)) + minInterval;
         BukkitTask disastersTask = plugin.getServer().getScheduler().runTaskLater(plugin, () -> checkDisaster(), randomDelay);
         plugin.sendDebugMessage("Next disaster check in " + randomDelay + " ticks.");
         return disastersTask;
@@ -362,16 +369,17 @@ public class DeadlyDisastersHandler {
         
         minInterval = plugin.getConfig().getLong("deadly_disasters.min_interval", 54000);
         maxInterval = plugin.getConfig().getLong("deadly_disasters.max_interval", 216000);
-        tier0Chance = plugin.getConfig().getDouble("deadly_disasters.tier_0.chance", 0.1);
-        tier0Disaster = configToDisasterList(plugin.getConfig().getConfigurationSection("deadly_disasters.tier_0.disasters"));
-        tier1Chance = plugin.getConfig().getDouble("deadly_disasters.tier_1.chance", 0.2);
-        tier1Disaster = configToDisasterList(plugin.getConfig().getConfigurationSection("deadly_disasters.tier_1.disasters"));
-        tier2Chance = plugin.getConfig().getDouble("deadly_disasters.tier_2.chance", 0.3);
-        tier2Disaster = configToDisasterList(plugin.getConfig().getConfigurationSection("deadly_disasters.tier_2.disasters"));
-        tier3Chance = plugin.getConfig().getDouble("deadly_disasters.tier_3.chance", 0.3);
-        tier3Disaster = configToDisasterList(plugin.getConfig().getConfigurationSection("deadly_disasters.tier_3.disasters"));
-        preventDisastersWhenIdle = plugin.getConfig().getBoolean("deadly_disasters.prevent_disasters_when_idle", true);
+        probabilities = new ArrayList<>();
+        disasters = new ArrayList<>();
+        difficulties = new ArrayList<>();
+        
+        for (int i = 0; i <= 3; i++) {
+            probabilities.add(plugin.getConfig().getDouble("deadly_disasters.tier_" + i + ".chance", DEFAULT_PROBABILITIES.get(i)));
+            disasters.add(configToList(plugin.getConfig().getConfigurationSection("deadly_disasters.tier_" + i + ".disasters")));
+            difficulties.add(configToList(plugin.getConfig().getConfigurationSection("deadly_disasters.tier_" + i + ".difficulties")));
+        }
 
+        preventDisastersWhenIdle = plugin.getConfig().getBoolean("deadly_disasters.prevent_disasters_when_idle", true);
         disastersTask = startScheduledDisasters(minInterval, maxInterval);
     }
 
@@ -384,18 +392,4 @@ public class DeadlyDisastersHandler {
         this.reload();
 		plugin.getLogger().info("DeadlyDisasters has been found, enabling features...");
 	}
-
-    @Override
-    public String toString() {
-        String tier0String = "\n" + "Chance: " + tier0Chance + "\n" + "Disasters: " + tier0Disaster.toString();
-        String tier1String = "\n" + "Chance: " + tier1Chance + "\n" + "Disasters: " + tier1Disaster.toString();
-        String tier2String = "\n" + "Chance: " + tier2Chance + "\n" + "Disasters: " + tier2Disaster.toString();
-        String tier3String = "\n" + "Chance: " + tier3Chance + "\n" + "Disasters: " + tier3Disaster.toString();
-        return "min: " + minInterval + "\n" +
-               "max: " + maxInterval + "\n" +
-               "-----tier 0-----" + tier0String + "\n" +
-               "-----tier 1-----" + tier1String + "\n" +
-               "-----tier 2-----" + tier2String + "\n" +
-               "-----tier 3-----" + tier3String;
-    }
 }
