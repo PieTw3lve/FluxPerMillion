@@ -130,8 +130,8 @@ deadly_disasters:
   min_interval: 54000
   max_interval: 216000
   tier_0:
-    # The chance represents the probability of a disaster occurring.
-    chance: 0.1
+    # The frequency represents the probability of a disaster occurring.
+    frequency: 0.1
     # You can add or remove disasters from the list.
     # The weight represents the probability of a specific disaster occurring.
     # The total weight does not have to equal 100.
@@ -153,7 +153,7 @@ deadly_disasters:
       level_2:
         weight: 15
   tier_1:
-    chance: 0.2
+    frequency: 0.2
     disasters:
       blizzard:
         weight: 30
@@ -175,7 +175,7 @@ deadly_disasters:
       level_3:
         weight: 5
   tier_2:
-    chance: 0.3
+    frequency: 0.3
     disasters:
       blizzard:
         weight: 30
@@ -209,7 +209,7 @@ deadly_disasters:
       level_5:
         weight: 5
   tier_3:
-    chance: 0.3
+    frequency: 0.3
     disasters:
       acidstorm:
         weight: 20
