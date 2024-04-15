@@ -137,13 +137,13 @@ deadly_disasters:
     # The total weight does not have to equal 100.
     disasters:
       blizzard:
-        weight: 25
+        weight: 30
       extremewinds:
-        weight: 25
+        weight: 30
       geyser:
-        weight: 25
+        weight: 10
       sandstorm:
-        weight: 25
+        weight: 30
     # When a disaster occurs, the difficulty level is randomly selected.
     # You can add or remove difficulty levels from the list.
     # The total weight does not have to equal 100.
@@ -156,17 +156,17 @@ deadly_disasters:
     frequency: 0.2
     disasters:
       blizzard:
-        weight: 30
+        weight: 25
       cavein:
-        weight: 10
+        weight: 5
       extremewinds:
-        weight: 30
+        weight: 25
       geyser:
-        weight: 20
+        weight: 10
       sandstorm:
-        weight: 30
+        weight: 25
       soulstorm:
-        weight: 20
+        weight: 10
     difficulties:
       level_1:
         weight: 40
@@ -178,27 +178,27 @@ deadly_disasters:
     frequency: 0.3
     disasters:
       blizzard:
-        weight: 30
+        weight: 15
       cavein:
-        weight: 10
+        weight: 3
       endstorm:
-        weight: 20
+        weight: 10
       extremewinds:
-        weight: 30
+        weight: 15
       hurricane:
-        weight: 30
+        weight: 15
       geyser:
-        weight: 10
+        weight: 3
       meteorshowers:
-        weight: 5
+        weight: 2
       purge:
-        weight: 20
-      sandstorm:
-        weight: 30
-      soulstorm:
-        weight: 20
-      tsunami:
         weight: 10
+      sandstorm:
+        weight: 15
+      soulstorm:
+        weight: 10
+      tsunami:
+        weight: 2
     difficulties:
       level_2:
         weight: 25
@@ -212,39 +212,39 @@ deadly_disasters:
     frequency: 0.3
     disasters:
       acidstorm:
-        weight: 20
+        weight: 8
       blizzard:
-        weight: 30
+        weight: 8
       cavein:
-        weight: 10
+        weight: 5
       earthquake:
-        weight: 10
+        weight: 2
       endstorm:
-        weight: 30
+        weight: 8
       extremewinds:
-        weight: 30
+        weight: 8
       hurricane:
-        weight: 30
+        weight: 8
       geyser:
         weight: 5
       meteorshowers:
-        weight: 20
-      plague:
         weight: 5
+      plague:
+        weight: 6
       purge:
-        weight: 20
+        weight: 6
       sandstorm:
-        weight: 30
+        weight: 8
       sinkhole:
-        weight: 10
+        weight: 2
       soulstorm:
-        weight: 30
+        weight: 8
       supernova:
         weight: 1
       tsunami:
-        weight: 20
+        weight: 6
       tornado:
-        weight: 10
+        weight: 6
     difficulties:
       level_4:
         weight: 30

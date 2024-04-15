@@ -261,6 +261,10 @@ public class DeadlyDisastersHandler {
                 disasterLevel = getDisasterLevel(statusLevel, 1, 6);
                 Tsunami tsunami = new Tsunami(disasterLevel);
                 Location pool = tsunami.findAvailabePool(player.getLocation());
+                if (pool == null) {
+                    retryDisasterStartEvent(statusLevel, attempts); 
+                    return;
+                }
                 tsunami.start(pool, player);
                 break;
             case "tornado":
