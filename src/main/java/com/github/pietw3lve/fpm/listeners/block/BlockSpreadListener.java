@@ -32,7 +32,7 @@ public class BlockSpreadListener implements Listener {
         switch (source.getType()) {
             case GRASS_BLOCK:
                 double points = plugin.getConfig().getDouble("flux_points.grass_growth", -0.05);
-                FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), null, "grown", "grass", points);
+                FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), source.getLocation(), null, "grown", "grass", points);
                 plugin.getServer().getPluginManager().callEvent(fluxEvent);
                 break;
             default:

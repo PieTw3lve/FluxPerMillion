@@ -45,7 +45,7 @@ public class PlayerFishListener implements Listener {
                         player.sendMessage(overFishingLines.get(rand.nextInt(overFishingLines.size())));
                     }
 
-                    fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "over", "fishing", points);
+                    fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "over", "fishing", points);
                 }
                 fishTracker.addFish(event.getPlayer());
                 fishTracker.startFishCountResetTask(event.getPlayer());

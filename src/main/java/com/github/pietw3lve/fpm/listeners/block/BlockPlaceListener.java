@@ -40,35 +40,35 @@ public class BlockPlaceListener implements Listener{
         switch (block.getType()) {
             case COAL_BLOCK:
                 points = plugin.getConfig().getDouble("flux_points.coal_place", 0.25) * 9;
-                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "placed", "coal block", points);
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "placed", "coal block", points);
                 break;
             case COAL_ORE:
                 points = plugin.getConfig().getDouble("flux_points.coal_place", 0.25);
-                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "placed", "coal ore", points);
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "placed", "coal ore", points);
                 break;
             case DEEPSLATE_COAL_ORE:
                 points = plugin.getConfig().getDouble("flux_points.coal_place", 0.25);
-                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "placed", "deepslate coal ore", points);
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "placed", "deepslate coal ore", points);
                 break;
             case CAMPFIRE:
                 points = plugin.getConfig().getDouble("flux_points.campfire_place", 0.5);
-                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "placed", "campfire", points);
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "placed", "campfire", points);
                 break;
             case SOUL_CAMPFIRE:
                 points = plugin.getConfig().getDouble("flux_points.campfire_place", 0.5);
-                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "placed", "soul campfire", points);
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "placed", "soul campfire", points);
                 break;
             case TORCH:
                 points = plugin.getConfig().getDouble("flux_points.torch_place", 0.25);
-                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "placed", "torch", points);
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "placed", "torch", points);
                 break;
             case SOUL_TORCH:
                 points = plugin.getConfig().getDouble("flux_points.torch_place", 0.25);
-                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "placed", "soul torch", points);
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "placed", "soul torch", points);
                 break;
             case FIRE:
                 points = plugin.getConfig().getDouble("flux_points.flint_and_steel_use", 0.25);
-                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "used", "flint and steel", points);
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "used", "flint and steel", points);
                 break;
             default:
                 break;

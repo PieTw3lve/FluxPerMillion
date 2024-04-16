@@ -31,7 +31,7 @@ public class StructureGrowListener implements Listener {
     @EventHandler
     public void onStructureGrow(StructureGrowEvent event) {
         if (event.isCancelled()) return;
-
+        
         event.getBlocks().get(0).removeMetadata("fpm:placed", plugin);
         // Check if the grown structure is a tree
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent();
@@ -42,10 +42,10 @@ public class StructureGrowListener implements Listener {
 
             if (event.getPlayer() != null) {
                 Player player = event.getPlayer();
-                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "grown", "tree", points);
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getLocation(), player, "grown", "tree", points);
                 plugin.getServer().getPluginManager().callEvent(fluxEvent);
             } else {
-                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), null, "grown", "tree", points);
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getLocation(), null, "grown", "tree", points);
                 plugin.getServer().getPluginManager().callEvent(fluxEvent);
             }
         }

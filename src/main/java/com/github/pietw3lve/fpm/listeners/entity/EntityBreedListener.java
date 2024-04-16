@@ -35,7 +35,8 @@ public class EntityBreedListener implements Listener {
             int entityPreserveLimit = plugin.getConfig().getInt("farming.preserved_threshold");
             int entityRadius = plugin.getConfig().getInt("farming.check_radius");
             
-            EntityType entityType = event.getEntity().getType();
+            Entity entity = event.getEntity();
+            EntityType entityType = entity.getType();
             int nearbyEntitiesCount = 0;
             
             for (Entity nearbyEntity : event.getEntity().getNearbyEntities(entityRadius, entityRadius, entityRadius)) {
@@ -46,10 +47,10 @@ public class EntityBreedListener implements Listener {
             
             if (nearbyEntitiesCount > entityOverpopulateLimit) {
                 double points = plugin.getConfig().getDouble("flux_points.entity_overpopulate", 0.25);
-                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "overpopulated", entityType.toString().toLowerCase(), points);
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), entity.getLocation(), player, "overpopulated", entityType.toString().toLowerCase(), points);
             } else if (nearbyEntitiesCount <= entityPreserveLimit) {
                 double points = plugin.getConfig().getDouble("flux_points.entity_preserve", -1.0);
-                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "preserved", entityType.toString().toLowerCase(), points);
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), entity.getLocation(), player, "preserved", entityType.toString().toLowerCase(), points);
             }
             plugin.getServer().getPluginManager().callEvent(fluxEvent);
         }

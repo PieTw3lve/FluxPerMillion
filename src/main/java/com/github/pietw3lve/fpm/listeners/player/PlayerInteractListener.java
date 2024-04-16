@@ -40,7 +40,7 @@ public class PlayerInteractListener implements Listener {
             Levelled composter = (Levelled) block.getBlockData();
             if (composter.getLevel() == composter.getMaximumLevel()) {
                 double points = plugin.getConfig().getDouble("flux_points.compost_complete", -2.0);
-                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "filled", "composter", points);
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "filled", "composter", points);
             }
         }
         if (action == Action.RIGHT_CLICK_BLOCK && block != null && !block.hasMetadata("fpm:placed") && plugin.getTreeUtils().isTreeLog(block) && player.getInventory().getItemInMainHand().getType().toString().contains("_AXE")) {

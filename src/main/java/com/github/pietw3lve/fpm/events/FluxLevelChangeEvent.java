@@ -2,6 +2,7 @@ package com.github.pietw3lve.fpm.events;
 
 import javax.annotation.Nullable;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -13,6 +14,7 @@ public class FluxLevelChangeEvent extends Event implements Cancellable {
     
     private static final HandlerList handlers = new HandlerList();
     private FluxMeterHandler fluxMeter;
+    private Location location;
     private Player player;
     private String actionType;
     private String type;
@@ -23,8 +25,9 @@ public class FluxLevelChangeEvent extends Event implements Cancellable {
      * FluxLevelChangeEvent Constructor.
      * @param plugin The FluxPerMillion plugin.
      */
-    public FluxLevelChangeEvent(FluxMeterHandler fluxMeter, @Nullable Player player, String actionType, String type, double points) {
+    public FluxLevelChangeEvent(FluxMeterHandler fluxMeter, Location location, @Nullable Player player, String actionType, String type, double points) {
         this.fluxMeter = fluxMeter;
+        this.location = location;
         this.player = player;
         this.actionType = actionType;
         this.type = type;
@@ -77,6 +80,14 @@ public class FluxLevelChangeEvent extends Event implements Cancellable {
      */
     public FluxMeterHandler getFluxMeter() {
         return fluxMeter;
+    }
+
+    /**
+     * Returns the location.
+     * @return The location.
+     */
+    public Location getLocation() {
+        return location;
     }
 
     /**

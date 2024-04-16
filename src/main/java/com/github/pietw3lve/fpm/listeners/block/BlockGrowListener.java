@@ -39,12 +39,12 @@ public class BlockGrowListener implements Listener {
                 if (block.hasMetadata("fpm:fertilized")) {
                     Player player = (Player) block.getMetadata("fpm:fertilized").get(0).value();
                     double points = plugin.getConfig().getDouble("flux_points.crop_growth", -0.25);
-                    FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player, "grown", "crop", points);
+                    FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "grown", "crop", points);
                     plugin.getServer().getPluginManager().callEvent(fluxEvent);
                     return;
                 }
                 double points = plugin.getConfig().getDouble("flux_points.crop_growth", -0.25);
-                FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), null, "grown", "crop", points);
+                FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), null, "grown", "crop", points);
                 plugin.getServer().getPluginManager().callEvent(fluxEvent);
             }
         }
