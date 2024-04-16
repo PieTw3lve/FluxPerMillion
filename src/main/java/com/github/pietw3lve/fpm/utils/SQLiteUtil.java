@@ -16,7 +16,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -66,14 +68,35 @@ public class SQLiteUtil {
         }
     
         try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement()) {
-            // Create tables for user and natural actions
-            statement.execute("CREATE TABLE IF NOT EXISTS user_actions (id INTEGER PRIMARY KEY, uuid TEXT, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL)");
-            statement.execute("CREATE TABLE IF NOT EXISTS natural_actions (id INTEGER PRIMARY KEY, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL)");
-    
-            // Create indexes for the points columns
+            Map<String, String> playerColumns = new HashMap<>();
+            playerColumns.put("id", "INTEGER PRIMARY KEY");
+            playerColumns.put("uuid", "TEXT");
+            playerColumns.put("action_type", "TEXT");
+            playerColumns.put("type", "TEXT");
+            playerColumns.put("timestamp", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
+            playerColumns.put("points", "REAL");
+            playerColumns.put("ignore", "BOOLEAN DEFAULT FALSE");
+            Map<String, String> naturalColumns = new HashMap<>();
+            naturalColumns.put("id", "INTEGER PRIMARY KEY");
+            naturalColumns.put("action_type", "TEXT");
+            naturalColumns.put("type", "TEXT");
+            naturalColumns.put("timestamp", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
+            naturalColumns.put("points", "REAL");
+            naturalColumns.put("ignore", "BOOLEAN DEFAULT FALSE");
+
+            statement.execute("CREATE TABLE IF NOT EXISTS user_actions (id INTEGER PRIMARY KEY, uuid TEXT, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, ignore BOOLEAN DEFAULT FALSE)");
+            statement.execute("CREATE TABLE IF NOT EXISTS natural_actions (id INTEGER PRIMARY KEY, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, ignore BOOLEAN DEFAULT FALSE)");
+            
+            for (Map.Entry<String, String> entry : playerColumns.entrySet()) {
+                addMissingColumn(statement, "user_actions", entry.getKey(), entry.getValue());
+            }
+
+            for (Map.Entry<String, String> entry : naturalColumns.entrySet()) {
+                addMissingColumn(statement, "natural_actions", entry.getKey(), entry.getValue());
+            }
+
             statement.execute("CREATE INDEX IF NOT EXISTS idx_points_user_actions ON user_actions (points)");
             statement.execute("CREATE INDEX IF NOT EXISTS idx_points_natural_actions ON natural_actions (points)");
-    
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error initializing database", e);
         }
@@ -120,7 +143,10 @@ public class SQLiteUtil {
                     String actionType = String.format(ChatColor.WHITE + "%s", resultSet.getString("action_type"));
                     String type = String.format(ChatColor.GOLD + "%s", resultSet.getString("type"));
                     String points = String.format((resultSet.getDouble("points") >= 0 ? ChatColor.RED : ChatColor.GREEN) + "%.2f", resultSet.getDouble("points"));
+                    boolean ignore = resultSet.getBoolean("ignore");
                     String divider = ChatColor.RESET + "-";
+
+                    if (ignore) continue;
 
                     Duration duration = Duration.between(actionTime, LocalDateTime.now(ZoneId.of("UTC")));
                     long daysAgo = duration.toDays();
@@ -161,7 +187,7 @@ public class SQLiteUtil {
 
         double playerFlux = 0;
     
-        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT COALESCE(SUM(points), 0) as total FROM user_actions WHERE uuid = ?")) {
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT COALESCE(SUM(points), 0) as total FROM user_actions WHERE uuid = ? AND ignore = FALSE")) {
             statement.setString(1, player.getUniqueId().toString());
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -250,11 +276,18 @@ public class SQLiteUtil {
                 ActionType actionType = parseActionType(resultSet.getString("action_type"));
                 String type = resultSet.getString("type");
                 double points = resultSet.getDouble("points");
-                BigDecimal bd = new BigDecimal(getNewActionPoints(oldConfig, actionType, type, points)).setScale(5, BigDecimal.ROUND_HALF_UP);
-                double newPoints = bd.doubleValue();
-                try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE user_actions SET points = ? WHERE id = ?")) {
-                    updateStatement.setDouble(1, newPoints);
-                    updateStatement.setInt(2, id);
+                boolean[] ignore = new boolean[1];
+                double[] newPoints = new double[1];
+                
+                updateValues(oldConfig, actionType, type, points, newPoints, ignore);
+
+                BigDecimal bd = new BigDecimal(newPoints[0]).setScale(5, BigDecimal.ROUND_HALF_UP);
+                newPoints[0] = bd.doubleValue();
+                
+                try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE user_actions SET points = ?, ignore = ? WHERE id = ?")) {
+                    updateStatement.setDouble(1, newPoints[0]);
+                    updateStatement.setBoolean(2, ignore[0]);
+                    updateStatement.setInt(3, id);
                     updateStatement.executeUpdate();
                 }
             }
@@ -269,11 +302,18 @@ public class SQLiteUtil {
                 ActionType actionType = parseActionType(resultSet.getString("action_type"));
                 String type = resultSet.getString("type");
                 double points = resultSet.getDouble("points");
-                BigDecimal bd = new BigDecimal(getNewActionPoints(oldConfig, actionType, type, points)).setScale(5, BigDecimal.ROUND_HALF_UP);
-                double newPoints = bd.doubleValue();
-                try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE natural_actions SET points = ? WHERE id = ?")) {
-                    updateStatement.setDouble(1, newPoints);
-                    updateStatement.setInt(2, id);
+                boolean[] ignore = new boolean[1];
+                double[] newPoints = new double[1];
+                
+                updateValues(oldConfig, actionType, type, points, newPoints, ignore);
+
+                BigDecimal bd = new BigDecimal(newPoints[0]).setScale(5, BigDecimal.ROUND_HALF_UP);
+                newPoints[0] = bd.doubleValue();
+                
+                try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE natural_actions SET points = ?, ignore = ? WHERE id = ?")) {
+                    updateStatement.setDouble(1, newPoints[0]);
+                    updateStatement.setBoolean(2, ignore[0]);
+                    updateStatement.setInt(3, id);
                     updateStatement.executeUpdate();
                 }
             }
@@ -283,94 +323,162 @@ public class SQLiteUtil {
     }
 
     /**
-     * Calculates and returns the new action points based on the provided parameters.
-     * @param oldConfig   The old configuration section containing the previous action points.
-     * @param actionType  The type of action performed.
-     * @param type        The type of object or entity involved in the action.
-     * @param points      The previous action points.
-     * @return The new action points calculated based on the provided parameters.
+     * Adds a missing column to the specified table.
+     * @param statement The statement to execute the query on.
+     * @param tableName The name of the table to add the column to.
+     * @param columnName The name of the column to add.
+     * @param columnDefinition The definition of the column to add.
+     * @throws SQLException If an error occurs while adding the column.
      */
-    private double getNewActionPoints(ConfigurationSection oldConfig, ActionType actionType, String type, double points) {
+    private void addMissingColumn(Statement statement, String tableName, String columnName, String columnDefinition) throws SQLException {
+        ResultSet rs = statement.executeQuery("PRAGMA table_info(" + tableName + ")");
+        boolean columnExists = false;
+        while (rs.next()) {
+            if (rs.getString("name").equalsIgnoreCase(columnName)) {
+                columnExists = true;
+                break;
+            }
+        }
+        if (!columnExists) {
+            statement.execute("ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + columnDefinition);
+        }
+    }
+
+    /**
+     * Updates the values of the action points based on the new configuration.
+     * @param oldConfig The old configuration section containing the previous action points.
+     * @param actionType The type of action to update.
+     * @param type The type of action to update.
+     * @param points The amount of points to update.
+     * @param newPoints The new amount of points to update.
+     * @param ignore Whether to ignore the action or not.
+     */
+    private void updateValues(ConfigurationSection oldConfig, ActionType actionType, String type, double points, double[] newPoints, boolean[] ignore) {
         ConfigurationSection newConfig = plugin.getConfig().getConfigurationSection("flux_points");
-        if (newConfig == null) return points;
+        if (newConfig == null) newPoints[0] = points;
 
         switch (actionType) {
             case BURNED:
                 if (type.contains("block")) {
-                    return newConfig.getDouble("block_burn", points);
+                    newPoints[0] = newConfig.getDouble("block_burn", points);
                 } 
                 else if (type.contains("fuel")) {
-                    return (points / oldConfig.getDouble("fuel_burn", points)) * newConfig.getDouble("fuel_burn", points);
+                    if (newConfig.getDouble("fuel_burn", points) == 0) {
+                        ignore[0] = true;
+                        newPoints[0] = points / oldConfig.getDouble("fuel_burn", points);
+                        break;
+                    } else {
+                        if (oldConfig.getDouble("fuel_burn", points) != 0) {
+                            newPoints[0] = (points / oldConfig.getDouble("fuel_burn", points)) * newConfig.getDouble("fuel_burn", points);
+                        } else {
+                            plugin.sendDebugMessage("Last config reload had set the value to 0.");
+                            newPoints[0] = points * newConfig.getDouble("fuel_burn", points);
+                        }
+                    }
                 }
+                break;
             case REMOVED:
                 if (type.contains("campfire")) {
-                    return newConfig.getDouble("campfire_break", points);
+                    newPoints[0] = newConfig.getDouble("campfire_break", points);
                 }
                 else if (type.contains("soul campfire")) {
-                    return newConfig.getDouble("campfire_break", points);
+                    newPoints[0] = newConfig.getDouble("campfire_break", points);
                 } 
                 else if (type.contains("composter")) {
-                    return newConfig.getDouble("compost_break", points);
+                    newPoints[0] = newConfig.getDouble("compost_break", points);
                 }
                 else if (type.contains("coal block")) {
-                    return newConfig.getDouble("coal_break", points) * 9;
+                    newPoints[0] = newConfig.getDouble("coal_break", points) * 9;
                 } 
                 else if (type.contains("coal ore")) {
-                    return newConfig.getDouble("coal_break", points);
+                    newPoints[0] = newConfig.getDouble("coal_break", points);
                 }
                 else if (type.contains("torch")) {
-                    return newConfig.getDouble("torch_break", points);
+                    newPoints[0] = newConfig.getDouble("torch_break", points);
                 }
+                break;
             case PLACED:
                 if (type.contains("campfire")) {
-                    return newConfig.getDouble("campfire_place", points);
+                    newPoints[0] = newConfig.getDouble("campfire_place", points);
                 }
                 else if (type.contains("soul campfire")) {
-                    return newConfig.getDouble("campfire_place", points);
+                    newPoints[0] = newConfig.getDouble("campfire_place", points);
                 } 
                 else if (type.contains("coal block")) {
-                    return newConfig.getDouble("coal_place", points) * 9;
+                    newPoints[0] = newConfig.getDouble("coal_place", points) * 9;
                 } 
                 else if (type.contains("coal ore")) {
-                    return newConfig.getDouble("coal_place", points);
+                    newPoints[0] = newConfig.getDouble("coal_place", points);
                 }
                 else if (type.contains("torch")) {
-                    return newConfig.getDouble("torch_place", points);
+                    newPoints[0] = newConfig.getDouble("torch_place", points);
                 }
+                break;
             case FILLED:
                 if (type.contains("composter")) {
-                    return newConfig.getDouble("compost_complete", points);
+                    newPoints[0] = newConfig.getDouble("compost_complete", points);
                 }
+                break;
             case OVERPOPULATED:
-                return newConfig.getDouble("entity_overpopulate", points);
+                newPoints[0] = newConfig.getDouble("entity_overpopulate", points);
+                break;
             case PRESERVED:
-                return newConfig.getDouble("entity_preserve", points);
+                newPoints[0] = newConfig.getDouble("entity_preserve", points);
+                break;
             case DESPAWNED:
-                return newConfig.getDouble("pollution", points);
+                newPoints[0] = newConfig.getDouble("pollution", points);
+                break;
             case USED:
                 if (type.contains("flint and steel")) {
-                    return newConfig.getDouble("flint_and_steel_use", points);
+                    newPoints[0] = newConfig.getDouble("flint_and_steel_use", points);
                 }
+                break;
             case OVER:
                 if (type.contains("fishing")) {
-                    return newConfig.getDouble("over_fish", points);
+                    newPoints[0] = newConfig.getDouble("over_fish", points);
                 }
+                break;
             case CUT:
                 if (type.contains("tree")) {
-                    return (points / oldConfig.getDouble("tree_cut", points)) * newConfig.getDouble("tree_cut", points);
+                    if (newConfig.getDouble("tree_cut", points) == 0) {
+                        ignore[0] = true;
+                        newPoints[0] = points / oldConfig.getDouble("tree_cut", points);
+                        break;
+                    } else {
+                        if (oldConfig.getDouble("tree_cut", points) != 0) {
+                            newPoints[0] = (points / oldConfig.getDouble("tree_cut", points)) * newConfig.getDouble("tree_cut", points);
+                        } else {
+                            plugin.sendDebugMessage("Last config reload had set the value to 0.");
+                            newPoints[0] = points * newConfig.getDouble("tree_cut", points);
+                        }
+                    }
                 }
+                break;
             case GROWN:
                 if (type.contains("crop")) {
-                    return newConfig.getDouble("crop_growth", points);
+                    newPoints[0] = newConfig.getDouble("crop_growth", points);
                 } 
                 else if (type.contains("grass")) {
-                    return newConfig.getDouble("grass_growth", points);
+                    newPoints[0] = newConfig.getDouble("grass_growth", points);
                 }
                 else if (type.contains("tree")) {
-                    return (points / oldConfig.getDouble("tree_growth", points)) * newConfig.getDouble("tree_growth", points);
+                    if (newConfig.getDouble("tree_growth", points) == 0) {
+                        ignore[0] = true;
+                        newPoints[0] = points / oldConfig.getDouble("tree_growth", points);
+                        break;
+                    } else {
+                        if (oldConfig.getDouble("tree_growth", points) != 0) {
+                            newPoints[0] = (points / oldConfig.getDouble("tree_growth", points)) * newConfig.getDouble("tree_growth", points);
+                        } else {
+                            plugin.sendDebugMessage("Last config reload had set the value to 0.");
+                            newPoints[0] = points * newConfig.getDouble("tree_growth", points);
+                        }
+                    }
                 }
+                break;
             default:
-                return points;
+                newPoints[0] = points;
+                break;
         }
     }
 
