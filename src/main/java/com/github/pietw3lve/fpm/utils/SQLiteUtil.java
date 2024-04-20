@@ -311,7 +311,7 @@ public class SQLiteUtil {
                     double points = resultSet.getDouble("points");
                     boolean[] ignore = new boolean[1];
                     double[] newPoints = new double[1];
-                    
+
                     updateValues(oldConfig, actionType, type, points, newPoints, ignore);
                     
                     BigDecimal bd = new BigDecimal(newPoints[0]).setScale(5, BigDecimal.ROUND_HALF_UP);
@@ -437,7 +437,10 @@ public class SQLiteUtil {
                 newPoints[0] = newConfig.getDouble("pollution", points);
                 break;
             case USED:
-                if (type.contains("flint and steel")) {
+                if (type.contains("command")) {
+                    newPoints[0] = points;
+                }
+                else if (type.contains("flint and steel")) {
                     newPoints[0] = newConfig.getDouble("flint_and_steel_use", points);
                 }
                 break;
@@ -482,7 +485,7 @@ public class SQLiteUtil {
                     }
                 }
                 break;
-            default:
+            case OTHER:
                 newPoints[0] = points;
                 break;
         }
