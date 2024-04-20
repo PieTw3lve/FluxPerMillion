@@ -380,7 +380,6 @@ public class SQLiteUtil {
                         if (oldConfig.getDouble("fuel_burn", points) != 0) {
                             newPoints[0] = (points / oldConfig.getDouble("fuel_burn", points)) * newConfig.getDouble("fuel_burn", points);
                         } else {
-                            plugin.sendDebugMessage("Last config reload had set the value to 0.");
                             newPoints[0] = points * newConfig.getDouble("fuel_burn", points);
                         }
                     }
@@ -457,7 +456,6 @@ public class SQLiteUtil {
                         if (oldConfig.getDouble("tree_cut", points) != 0) {
                             newPoints[0] = (points / oldConfig.getDouble("tree_cut", points)) * newConfig.getDouble("tree_cut", points);
                         } else {
-                            plugin.sendDebugMessage("Last config reload had set the value to 0.");
                             newPoints[0] = points * newConfig.getDouble("tree_cut", points);
                         }
                     }
@@ -479,7 +477,6 @@ public class SQLiteUtil {
                         if (oldConfig.getDouble("tree_growth", points) != 0) {
                             newPoints[0] = (points / oldConfig.getDouble("tree_growth", points)) * newConfig.getDouble("tree_growth", points);
                         } else {
-                            plugin.sendDebugMessage("Last config reload had set the value to 0.");
                             newPoints[0] = points * newConfig.getDouble("tree_growth", points);
                         }
                     }
