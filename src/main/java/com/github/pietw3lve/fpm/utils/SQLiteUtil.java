@@ -31,6 +31,7 @@ public class SQLiteUtil {
     private static final String INSERT_USER_ACTION_SQL = "INSERT INTO user_actions (uuid, action_type, type, points) VALUES (?, ?, ?, ?)";
     private static final String INSERT_NATURAL_ACTION_SQL = "INSERT INTO natural_actions (action_type, type, points) VALUES (?, ?, ?)";
     private static final String CALCULATE_TOTAL_POINTS_SQL = "SELECT COALESCE(SUM(points), 0) as total FROM (SELECT points FROM user_actions UNION ALL SELECT points FROM natural_actions)";
+    private static final int BATCH_SIZE = 100; // Adjust batch size as needed
 
     private enum ActionType {
         BURNED,
@@ -43,7 +44,8 @@ public class SQLiteUtil {
         USED,
         OVER,
         CUT,
-        GROWN
+        GROWN,
+        OTHER
     }
 
     /**
@@ -100,6 +102,8 @@ public class SQLiteUtil {
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error initializing database", e);
         }
+
+        this.reload(plugin.getConfig().getConfigurationSection("flux_points"));
     }
 
     /**
@@ -265,60 +269,65 @@ public class SQLiteUtil {
     }
 
     /**
-     * Reloads the user and natural actions based on the new configuration.
+     * Reloads the actions in the database based on the new configuration.
      * @param oldConfig The old configuration section containing the previous action points.
      */
     public void reload(ConfigurationSection oldConfig) {
-        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM user_actions")) {
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                ActionType actionType = parseActionType(resultSet.getString("action_type"));
-                String type = resultSet.getString("type");
-                double points = resultSet.getDouble("points");
-                boolean[] ignore = new boolean[1];
-                double[] newPoints = new double[1];
-                
-                updateValues(oldConfig, actionType, type, points, newPoints, ignore);
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            plugin.sendDebugMessage("Updating database...");
+            long startTime = System.currentTimeMillis();
+            try (Connection connection = dataSource.getConnection()) {
+                connection.setAutoCommit(false); // Start transaction
+                reloadActions(connection, "user_actions", oldConfig);
+                reloadActions(connection, "natural_actions", oldConfig);
+                connection.commit(); // Commit transaction
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Error reloading actions", e);
+            }
+            long endTime = System.currentTimeMillis();
+            long duration = endTime - startTime;
+            plugin.sendDebugMessage("Database updated in " + duration + "ms");
+        });
+    }
 
-                BigDecimal bd = new BigDecimal(newPoints[0]).setScale(5, BigDecimal.ROUND_HALF_UP);
-                newPoints[0] = bd.doubleValue();
-                
-                try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE user_actions SET points = ?, ignore = ? WHERE id = ?")) {
+    /**
+     * Reloads the actions in the specified table based on the new configuration.
+     * @param connection The connection to the database.
+     * @param tableName The name of the table to reload the actions for.
+     * @param oldConfig The old configuration section containing the previous action points.
+     * @throws SQLException If an error occurs while reloading the actions.
+     */
+    private void reloadActions(Connection connection, String tableName, ConfigurationSection oldConfig) throws SQLException {
+        String selectQuery = "SELECT id, action_type, type, points FROM " + tableName;
+        try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery);
+             ResultSet resultSet = selectStatement.executeQuery()) {
+            
+            try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE " + tableName + " SET points = ?, ignore = ? WHERE id = ?")) {
+                int count = 0;
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    ActionType actionType = parseActionType(resultSet.getString("action_type"));
+                    String type = resultSet.getString("type");
+                    double points = resultSet.getDouble("points");
+                    boolean[] ignore = new boolean[1];
+                    double[] newPoints = new double[1];
+                    
+                    updateValues(oldConfig, actionType, type, points, newPoints, ignore);
+                    
+                    BigDecimal bd = new BigDecimal(newPoints[0]).setScale(5, BigDecimal.ROUND_HALF_UP);
+                    newPoints[0] = bd.doubleValue();
+                    
                     updateStatement.setDouble(1, newPoints[0]);
                     updateStatement.setBoolean(2, ignore[0]);
                     updateStatement.setInt(3, id);
-                    updateStatement.executeUpdate();
+                    updateStatement.addBatch();
+                    
+                    if (++count % BATCH_SIZE == 0) {
+                        updateStatement.executeBatch();
+                    }
                 }
+                updateStatement.executeBatch(); // Execute any remaining updates
             }
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error reloading user actions", e);
-        }
-
-        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM natural_actions")) {
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                ActionType actionType = parseActionType(resultSet.getString("action_type"));
-                String type = resultSet.getString("type");
-                double points = resultSet.getDouble("points");
-                boolean[] ignore = new boolean[1];
-                double[] newPoints = new double[1];
-                
-                updateValues(oldConfig, actionType, type, points, newPoints, ignore);
-
-                BigDecimal bd = new BigDecimal(newPoints[0]).setScale(5, BigDecimal.ROUND_HALF_UP);
-                newPoints[0] = bd.doubleValue();
-                
-                try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE natural_actions SET points = ?, ignore = ? WHERE id = ?")) {
-                    updateStatement.setDouble(1, newPoints[0]);
-                    updateStatement.setBoolean(2, ignore[0]);
-                    updateStatement.setInt(3, id);
-                    updateStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error reloading natural actions", e);
         }
     }
 
@@ -513,8 +522,7 @@ public class SQLiteUtil {
             case "grown":
                 return ActionType.GROWN;
             default:
-                plugin.getLogger().log(Level.SEVERE, "Invalid action type: " + actionTypeStr);
-                return null;
+                return ActionType.OTHER;
         }
     }
 }
