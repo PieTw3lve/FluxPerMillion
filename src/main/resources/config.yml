@@ -18,7 +18,7 @@ fishing:
 minecart:
   # The Cooldown is in ticks (20 ticks = 1 second).
   boost_cooldown: 5
-  boost_amount: 0.1
+  boost_amount: 0.15
 flux_meter:
   # Refresh interval is in ticks (20 ticks = 1 second).
   refresh_interval: 72000
@@ -41,6 +41,7 @@ flux_points:
   coal_place: 0.25
   compost_complete: -2.0
   crop_growth: -0.25
+  elytra_boost: 1.0
   entity_overpopulate: 0.25
   entity_preserve: -2.0
   flint_and_steel_use: 0.25
@@ -48,6 +49,7 @@ flux_points:
   fuel_burn: 0.25
   grass_growth: -0.05
   over_fish: 0.25
+  minecart_boost: 1.0
   pollution: 0.25
   torch_break: -0.25
   torch_place: 0.25
