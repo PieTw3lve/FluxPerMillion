@@ -9,7 +9,7 @@ farming:
   # The threshold represents the number of entities of the same type (e.g. cows, pigs, etc.)
   overpopulate_threshold: 20
   preserved_threshold: 7
-  check_radius: 10
+  search_radius: 10
 fishing:
   # Every fish caught will reset the timer.
   # Time is in ticks (20 ticks = 1 second).
