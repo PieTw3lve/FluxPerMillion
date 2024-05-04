@@ -1,5 +1,5 @@
 # FluxPerMillion Configuration File
-# Version 1.0.4
+# Version 1.0.5
 
 debug:
   # Enable debug messages in the console.
@@ -15,6 +15,10 @@ fishing:
   # Time is in ticks (20 ticks = 1 second).
   timer: 36000
   threshold: 50
+minecart:
+  # The Cooldown is in ticks (20 ticks = 1 second).
+  boost_cooldown: 5
+  boost_amount: 0.1
 flux_meter:
   # Refresh interval is in ticks (20 ticks = 1 second).
   refresh_interval: 72000
