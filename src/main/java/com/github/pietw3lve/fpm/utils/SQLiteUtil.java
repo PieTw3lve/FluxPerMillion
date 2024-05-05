@@ -314,7 +314,7 @@ public class SQLiteUtil {
 
                     updateValues(oldConfig, actionType, type, points, newPoints, ignore);
                     
-                    BigDecimal bd = new BigDecimal(newPoints[0]).setScale(5, BigDecimal.ROUND_HALF_UP);
+                    BigDecimal bd = new BigDecimal(newPoints[0]).setScale(5);
                     newPoints[0] = bd.doubleValue();
                     
                     updateStatement.setDouble(1, newPoints[0]);
