@@ -45,7 +45,7 @@ import com.github.pietw3lve.fpm.listeners.player.ComposterAction;
 import com.github.pietw3lve.fpm.listeners.player.FishCaughtAction;
 import com.github.pietw3lve.fpm.listeners.player.MinecartBoostAction;
 import com.github.pietw3lve.fpm.listeners.player.TreeStripAction;
-import com.github.pietw3lve.fpm.listeners.player.UpdateFPMBar;
+import com.github.pietw3lve.fpm.listeners.player.UpdateFPMBarAction;
 import com.github.pietw3lve.fpm.listeners.world.TreeGrowAction;
 
 public class EventListener implements Listener {
@@ -65,7 +65,7 @@ public class EventListener implements Listener {
         actions.put(FurnaceBurnEvent.class, new ArrayList<>(Arrays.asList(new FuelSmeltAction(plugin))));
         actions.put(PlayerInteractEvent.class, new ArrayList<>(Arrays.asList(new ComposterAction(plugin), new TreeStripAction(plugin), new MinecartBoostAction(plugin))));
         actions.put(PlayerFishEvent.class, new ArrayList<>(Arrays.asList(new FishCaughtAction(plugin))));
-        actions.put(PlayerJoinEvent.class, new ArrayList<>(Arrays.asList(new UpdateFPMBar(plugin))));
+        actions.put(PlayerJoinEvent.class, new ArrayList<>(Arrays.asList(new UpdateFPMBarAction(plugin))));
         actions.put(StructureGrowEvent.class, new ArrayList<>(Arrays.asList(new TreeGrowAction(plugin))));
     }
 

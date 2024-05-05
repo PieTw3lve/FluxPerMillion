@@ -7,11 +7,11 @@ import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.handlers.FluxMeterHandler;
 import com.github.pietw3lve.fpm.listeners.EventAction;
 
-public class UpdateFPMBar implements EventAction<PlayerJoinEvent> {
+public class UpdateFPMBarAction implements EventAction<PlayerJoinEvent> {
     
     private final FluxMeterHandler fluxMeterHandler;
 
-    public UpdateFPMBar(FluxPerMillion plugin) {
+    public UpdateFPMBarAction(FluxPerMillion plugin) {
         this.fluxMeterHandler = plugin.getFluxMeter();
     }
 
