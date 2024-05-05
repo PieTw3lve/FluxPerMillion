@@ -16,6 +16,8 @@ fishing:
   timer: 36000
   threshold: 50
 minecart:
+  # Allows players to gain a speed boost in minecarts using coal.
+  boost_enabled: true
   # The Cooldown is in ticks (20 ticks = 1 second).
   boost_cooldown: 5
   boost_amount: 0.15

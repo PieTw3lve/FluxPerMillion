@@ -20,9 +20,11 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 
 public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
 
+    private static final String BOOST_ENABLED = "minecart.boost_enabled";
     private static final String FLUX_POINTS_MINECART_BOOST = "flux_points.minecart_boost";
     private static final String MINECART_BOOST_COOLDOWN = "minecart.boost_cooldown";
     private static final String MINECART_BOOST_AMOUNT = "minecart.boost_amount";
+    private static final boolean DEFAULT_BOOST_ENABLED = true;
     private static final double DEFAULT_FLUX_POINTS_MINECART_BOOST = 1.0;
     private static final int DEFAULT_MINECART_BOOST_COOLDOWN = 5;
     private static final double DEFAULT_MINECART_BOOST_AMOUNT = 0.15;
@@ -40,7 +42,7 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
         Action action = event.getAction();
         Material mainHandItemType = player.getInventory().getItemInMainHand().getType();
         Material offHandItemType = player.getInventory().getItemInOffHand().getType();
-        return !isPlayerOnBoostCooldown(player) && isPlayerInMinecart(player) && isRightClick(action) && (isBoostFuel(mainHandItemType) || isBoostFuel(offHandItemType));
+        return isEnabled(BOOST_ENABLED, DEFAULT_BOOST_ENABLED) && !isPlayerOnBoostCooldown(player) && isPlayerInMinecart(player) && isRightClick(action) && (isBoostFuel(mainHandItemType) || isBoostFuel(offHandItemType));
     }
 
     @Override
@@ -59,7 +61,7 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
         minecart.setVelocity(velocity);
         player.spawnParticle(org.bukkit.Particle.FLAME, player.getLocation(), 10, 0.5, 0.5, 0.5, 0.1);
         player.playSound(player, org.bukkit.Sound.ENTITY_BLAZE_SHOOT, 1, 1);
-        
+
         if (player.getGameMode() != GameMode.CREATIVE) {
             if (isBoostFuel(mainHandItem.getType())) {
                 mainHandItem.setAmount(mainHandItem.getAmount() - 1);
@@ -85,6 +87,10 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
         Vector direction = eyeLocation.getDirection().normalize();
         double speedBoost = plugin.getConfig().getDouble(MINECART_BOOST_AMOUNT, DEFAULT_MINECART_BOOST_AMOUNT);
         return direction.multiply(speedBoost);
+    }
+
+    private boolean isEnabled(String key, boolean defaultValue) {
+        return plugin.getConfig().getBoolean(key, defaultValue);
     }
 
     private boolean isPlayerOnBoostCooldown(Player player) {
