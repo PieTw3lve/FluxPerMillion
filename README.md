@@ -18,6 +18,7 @@ FluxPerMillion is a Minecraft plugin that adds an environmental twist to the gam
 - **Sustainable Practices**: Encourage eco-friendly practices like composting, reforestation, and recycling.
 - **Environmental Awareness**: Raise consciousness about real-world environmental issues, fostering player engagement in conservation efforts, fire prevention, and pollution control.
 - **Customizable Settings**: Configure Flux values, thresholds, decay rates, rewards, and penalties to suit your server's gameplay.
+- **New Game Mechanics**: The addition of Flux introduces new gameplay dynamics, allowing players to perform actions that alter Flux levels, which are not achievable in vanilla Minecraft. For instance, players can now gain a speed boost while riding a minecart by right-clicking coal while in the minecart.
 - **Deadly Disasters Support**: Integrate with Deadly Disasters to enhance gameplay with environmental challenges.
 - **PlaceholderAPI Support**: Display Flux values in chat, action bar, and scoreboard using PlaceholderAPI placeholders.
 
