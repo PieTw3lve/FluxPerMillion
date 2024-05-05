@@ -10,6 +10,7 @@ import com.github.pietw3lve.fpm.FluxPerMillion;
 import net.md_5.bungee.api.ChatColor;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -314,7 +315,7 @@ public class SQLiteUtil {
 
                     updateValues(oldConfig, actionType, type, points, newPoints, ignore);
                     
-                    BigDecimal bd = new BigDecimal(newPoints[0]).setScale(5);
+                    BigDecimal bd = new BigDecimal(newPoints[0]).setScale(5, RoundingMode.HALF_UP);
                     newPoints[0] = bd.doubleValue();
                     
                     updateStatement.setDouble(1, newPoints[0]);
