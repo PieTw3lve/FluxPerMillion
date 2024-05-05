@@ -6,6 +6,8 @@ import java.util.List;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
@@ -59,8 +61,8 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
         Vector velocity = (finalVelocity.length() > maxMinecartVelocity) ? finalVelocity.normalize().multiply(maxMinecartVelocity) : currentVelocity.add(boostVelocity);
 
         minecart.setVelocity(velocity);
-        player.spawnParticle(org.bukkit.Particle.FLAME, player.getLocation(), 10, 0.5, 0.5, 0.5, 0.1);
-        player.playSound(player, org.bukkit.Sound.ENTITY_BLAZE_SHOOT, 1, 1);
+        player.spawnParticle(Particle.FLAME, player.getLocation(), 10, 0.5, 0.5, 0.5, 0.1);
+        player.playSound(player, Sound.ENTITY_BLAZE_SHOOT, 1, 1);
 
         if (player.getGameMode() != GameMode.CREATIVE) {
             if (isBoostFuel(mainHandItem.getType())) {
