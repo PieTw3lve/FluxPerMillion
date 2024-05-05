@@ -75,6 +75,7 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
         minecartBoostCooldown.add(player.getUniqueId().toString());
         
         long cooldown = plugin.getConfig().getInt(MINECART_BOOST_COOLDOWN, DEFAULT_MINECART_BOOST_COOLDOWN);
+        player.setCooldown(event.getMaterial(), (int) cooldown);
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             minecartBoostCooldown.remove(player.getUniqueId().toString());
         }, cooldown);
