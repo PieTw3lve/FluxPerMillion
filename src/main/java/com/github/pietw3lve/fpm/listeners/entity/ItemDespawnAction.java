@@ -5,33 +5,30 @@ import java.util.Collection;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemDespawnEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
+import com.github.pietw3lve.fpm.listeners.EventAction;
 
-public class ItemDespawnListener implements Listener {
+public class ItemDespawnAction implements EventAction<ItemDespawnEvent> {
     
+    private static final String FLUX_POINTS_POLLUTION = "flux_points.pollution";
+    private static final double DEFAULT_FLUX_POINTS_POLLUTION = 0.25;
+
     private final FluxPerMillion plugin;
 
-    /**
-     * EntityRemoveListener Constructor.
-     * @param plugin
-     */
-    public ItemDespawnListener(FluxPerMillion plugin) {
+    public ItemDespawnAction(FluxPerMillion plugin) {
         this.plugin = plugin;
     }
 
-    /**
-     * Listens for item despawn events.
-     * @param event EntityRemoveEvent
-     */
-    @EventHandler
-    public void onItemDespawn(ItemDespawnEvent event) {
-        if (event.isCancelled()) return;
+    @Override
+    public boolean matches(ItemDespawnEvent event) {
+        return true;
+    }
 
+    @Override
+    public void execute(ItemDespawnEvent event) {
         Entity item = event.getEntity();
         Location itemLocation = event.getEntity().getLocation();
         Collection<Entity> nearbyEntities = item.getNearbyEntities(40, 40, 40);
@@ -48,7 +45,7 @@ public class ItemDespawnListener implements Listener {
             }
         }
 
-        double points = plugin.getConfig().getDouble("flux_points.pollution", 0.25);
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_POLLUTION, DEFAULT_FLUX_POINTS_POLLUTION);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), itemLocation, closestPlayer, "despawned", "item", points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }

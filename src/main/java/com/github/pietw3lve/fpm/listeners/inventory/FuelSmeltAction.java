@@ -5,33 +5,30 @@ import java.util.Collection;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
+import com.github.pietw3lve.fpm.listeners.EventAction;
 
-public class FurnaceBurnListener implements Listener {
+public class FuelSmeltAction implements EventAction<FurnaceBurnEvent> {
     
+    private static final String FLUX_POINTS_FUEL_BURN = "flux_points.fuel_burn";
+    private static final double DEFAULT_FLUX_POINTS_FUEL_BURN = 0.25;
+
     private final FluxPerMillion plugin;
 
-    /**
-     * FurnaceBurnListener Constructor.
-     * @param plugin
-     */
-    public FurnaceBurnListener(FluxPerMillion plugin) {
+    public FuelSmeltAction(FluxPerMillion plugin) {
         this.plugin = plugin;
     }
 
-    /**
-     * Listens for furnace burn events.
-     * @param event FurnaceBurnEvent
-     */
-    @EventHandler
-    public void onFurnaceSmelt(FurnaceBurnEvent event) {
-        if (event.isCancelled()) return;
+    @Override
+    public boolean matches(FurnaceBurnEvent event) {
+        return true;
+    }
 
+    @Override
+    public void execute(FurnaceBurnEvent event) {
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent();
         Location furnaceLocation = event.getBlock().getLocation();
         Collection<Entity> nearbyEntities = event.getBlock().getWorld().getNearbyEntities(furnaceLocation, 20, 20, 20);
@@ -48,7 +45,7 @@ public class FurnaceBurnListener implements Listener {
             }
         }
 
-        double points = plugin.getConfig().getDouble("flux_points.fuel_burn", 0.25) * (event.getBurnTime() / 200.0);
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_FUEL_BURN, DEFAULT_FLUX_POINTS_FUEL_BURN) * (event.getBurnTime() / 200.0);
         fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), furnaceLocation, closestPlayer, "burned", "fuel", points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
