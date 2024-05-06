@@ -26,7 +26,7 @@ public class ComposterAction implements EventAction<PlayerInteractEvent> {
     public boolean matches(PlayerInteractEvent event) {
         Action action = event.getAction();
         Block block = event.getClickedBlock();
-        return action == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.COMPOSTER;
+        return isRightClick(action) && isComposter(block);
     }
 
     @Override
@@ -39,5 +39,13 @@ public class ComposterAction implements EventAction<PlayerInteractEvent> {
             FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "filled", "composter", points);
             plugin.getServer().getPluginManager().callEvent(fluxEvent);
         }
+    }
+
+    private boolean isRightClick(Action action) {
+        return action == Action.RIGHT_CLICK_BLOCK;
+    }
+
+    private boolean isComposter(Block block) {
+        return block.getType() == Material.COMPOSTER;
     }
 }

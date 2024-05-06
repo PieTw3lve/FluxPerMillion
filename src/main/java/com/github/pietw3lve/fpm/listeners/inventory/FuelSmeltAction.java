@@ -15,6 +15,7 @@ public class FuelSmeltAction implements EventAction<FurnaceBurnEvent> {
     
     private static final String FLUX_POINTS_FUEL_BURN = "flux_points.fuel_burn";
     private static final double DEFAULT_FLUX_POINTS_FUEL_BURN = 0.25;
+    private static final int SEARCH_RADIUS = 20;
 
     private final FluxPerMillion plugin;
 
@@ -31,7 +32,7 @@ public class FuelSmeltAction implements EventAction<FurnaceBurnEvent> {
     public void execute(FurnaceBurnEvent event) {
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent();
         Location furnaceLocation = event.getBlock().getLocation();
-        Collection<Entity> nearbyEntities = event.getBlock().getWorld().getNearbyEntities(furnaceLocation, 20, 20, 20);
+        Collection<Entity> nearbyEntities = event.getBlock().getWorld().getNearbyEntities(furnaceLocation, SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS);
 
         Player closestPlayer = null;
         double closestDistance = Double.MAX_VALUE;

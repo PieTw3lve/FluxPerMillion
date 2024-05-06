@@ -15,6 +15,7 @@ public class ItemDespawnAction implements EventAction<ItemDespawnEvent> {
     
     private static final String FLUX_POINTS_POLLUTION = "flux_points.pollution";
     private static final double DEFAULT_FLUX_POINTS_POLLUTION = 0.25;
+    private static final int SEARCH_RADIUS = 40;
 
     private final FluxPerMillion plugin;
 
@@ -31,7 +32,7 @@ public class ItemDespawnAction implements EventAction<ItemDespawnEvent> {
     public void execute(ItemDespawnEvent event) {
         Entity item = event.getEntity();
         Location itemLocation = event.getEntity().getLocation();
-        Collection<Entity> nearbyEntities = item.getNearbyEntities(40, 40, 40);
+        Collection<Entity> nearbyEntities = item.getNearbyEntities(SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS);
 
         Player closestPlayer = null;
         double closestDistance = Double.MAX_VALUE;

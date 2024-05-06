@@ -27,13 +27,17 @@ public class TreeStripAction implements EventAction<PlayerInteractEvent> {
         Action action = event.getAction();
         Block block = event.getClickedBlock();
         Material mainHandItemType = player.getInventory().getItemInMainHand().getType();
-        return action == Action.RIGHT_CLICK_BLOCK && block != null && !block.hasMetadata("fpm:placed") && treeHandler.isTreeLog(block) && isAxe(mainHandItemType);
+        return isRightClick(action) && !block.hasMetadata("fpm:placed") && treeHandler.isTreeLog(block) && isAxe(mainHandItemType);
     }
 
     @Override
     public void execute(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
         block.setMetadata("fpm:stripped", new FixedMetadataValue(plugin, true));
+    }
+
+    private boolean isRightClick(Action action) {
+        return action == Action.RIGHT_CLICK_BLOCK;
     }
 
     private boolean isAxe(Material material) {
