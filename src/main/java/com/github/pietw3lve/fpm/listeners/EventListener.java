@@ -46,6 +46,7 @@ import com.github.pietw3lve.fpm.listeners.player.ElytraBoostAction;
 import com.github.pietw3lve.fpm.listeners.player.FireworkLaunchAction;
 import com.github.pietw3lve.fpm.listeners.player.FishCaughtAction;
 import com.github.pietw3lve.fpm.listeners.player.MinecartBoostAction;
+import com.github.pietw3lve.fpm.listeners.player.MinecartOverclockAction;
 import com.github.pietw3lve.fpm.listeners.player.TreeStripAction;
 import com.github.pietw3lve.fpm.listeners.player.UpdateFPMBarAction;
 import com.github.pietw3lve.fpm.listeners.world.TreeGrowAction;
@@ -65,7 +66,7 @@ public class EventListener implements Listener {
         actions.put(EntityBreedEvent.class, new ArrayList<>(Arrays.asList(new EntityBreedAction(plugin))));
         actions.put(ItemDespawnEvent.class, new ArrayList<>(Arrays.asList(new ItemDespawnAction(plugin))));
         actions.put(FurnaceBurnEvent.class, new ArrayList<>(Arrays.asList(new FuelSmeltAction(plugin))));
-        actions.put(PlayerInteractEvent.class, new ArrayList<>(Arrays.asList(new ComposterAction(plugin), new ElytraBoostAction(plugin), new FireworkLaunchAction(plugin), new TreeStripAction(plugin), new MinecartBoostAction(plugin))));
+        actions.put(PlayerInteractEvent.class, new ArrayList<>(Arrays.asList(new ComposterAction(plugin), new ElytraBoostAction(plugin), new FireworkLaunchAction(plugin), new TreeStripAction(plugin), new MinecartBoostAction(plugin), new MinecartOverclockAction(plugin))));
         actions.put(PlayerFishEvent.class, new ArrayList<>(Arrays.asList(new FishCaughtAction(plugin))));
         actions.put(PlayerJoinEvent.class, new ArrayList<>(Arrays.asList(new UpdateFPMBarAction(plugin))));
         actions.put(StructureGrowEvent.class, new ArrayList<>(Arrays.asList(new TreeGrowAction(plugin))));

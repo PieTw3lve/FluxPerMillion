@@ -22,14 +22,20 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 
 public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
 
-    private static final String BOOST_ENABLED = "minecart.boost_enabled";
     private static final String FLUX_POINTS_MINECART_BOOST = "flux_points.minecart_boost";
-    private static final String MINECART_BOOST_COOLDOWN = "minecart.boost_cooldown";
-    private static final String MINECART_BOOST_AMOUNT = "minecart.boost_amount";
-    private static final boolean DEFAULT_BOOST_ENABLED = true;
+    private static final String BOOST_ENABLED = "custom_mechanics.minecart.surge_boost.enabled";
+    private static final String MINECART_BOOST_AMOUNT = "custom_mechanics.minecart.surge_boost.amount";
+    private static final String MINECART_BOOST_COOLDOWN = "custom_mechanics.minecart.surge_boost.cooldown";
     private static final double DEFAULT_FLUX_POINTS_MINECART_BOOST = 1.0;
-    private static final int DEFAULT_MINECART_BOOST_COOLDOWN = 5;
+    private static final boolean DEFAULT_BOOST_ENABLED = true;
     private static final double DEFAULT_MINECART_BOOST_AMOUNT = 0.15;
+    private static final int DEFAULT_MINECART_BOOST_COOLDOWN = 5;
+
+    private static final int PARTICLE_COUNT = 10;
+    private static final double PARTICLE_OFFSET = 0.5;
+    private static final double PARTICLE_SPEED = 0.1;
+    private static final float SOUND_VOLUME = 1;
+    private static final float SOUND_PITCH = 1;
 
     private final FluxPerMillion plugin;
     private List<String> minecartBoostCooldown = new ArrayList<String>();
@@ -55,21 +61,17 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
         
         Minecart minecart = (Minecart) player.getVehicle();
         Vector currentVelocity = minecart.getVelocity();
-        Vector boostVelocity = calculateBoostVelocity(player);
-        Vector finalVelocity = currentVelocity.add(boostVelocity);
+        Vector boostVelocity = currentVelocity.add(calculateBoostVelocity(player));
         double maxMinecartVelocity = minecart.getMaxSpeed();
-        Vector velocity = (finalVelocity.length() > maxMinecartVelocity) ? finalVelocity.normalize().multiply(maxMinecartVelocity) : currentVelocity.add(boostVelocity);
+        Vector finalVelocity = (boostVelocity.length() > maxMinecartVelocity) ? boostVelocity.normalize().multiply(maxMinecartVelocity) : currentVelocity.add(boostVelocity);
 
-        minecart.setVelocity(velocity);
-        player.spawnParticle(Particle.FLAME, player.getLocation(), 10, 0.5, 0.5, 0.5, 0.1);
-        player.playSound(player, Sound.ENTITY_BLAZE_SHOOT, 1, 1);
+        minecart.setVelocity(finalVelocity);
+        player.spawnParticle(Particle.FLAME, player.getLocation(), PARTICLE_COUNT, PARTICLE_OFFSET, PARTICLE_OFFSET, PARTICLE_OFFSET, PARTICLE_SPEED);
+        player.playSound(player, Sound.ENTITY_BLAZE_SHOOT, SOUND_VOLUME, SOUND_PITCH);
 
         if (player.getGameMode() != GameMode.CREATIVE) {
-            if (isBoostFuel(mainHandItem.getType())) {
-                mainHandItem.setAmount(mainHandItem.getAmount() - 1);
-            } else if (isBoostFuel(offHandItem.getType())) {
-                offHandItem.setAmount(offHandItem.getAmount() - 1);
-            }
+            reduceItemAmountIfFuel(mainHandItem);
+            reduceItemAmountIfFuel(offHandItem);
         }
         
         minecartBoostCooldown.add(player.getUniqueId().toString());
@@ -90,6 +92,12 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
         Vector direction = eyeLocation.getDirection().normalize();
         double speedBoost = plugin.getConfig().getDouble(MINECART_BOOST_AMOUNT, DEFAULT_MINECART_BOOST_AMOUNT);
         return direction.multiply(speedBoost);
+    }
+
+    private void reduceItemAmountIfFuel(ItemStack item) {
+        if (isBoostFuel(item.getType())) {
+            item.setAmount(item.getAmount() - 1);
+        }
     }
 
     private boolean isEnabled(String key, boolean defaultValue) {

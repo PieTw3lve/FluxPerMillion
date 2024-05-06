@@ -15,12 +15,6 @@ fishing:
   # Time is in ticks (20 ticks = 1 second).
   timer: 36000
   threshold: 50
-minecart:
-  # Allows players to gain a speed boost in minecarts using coal.
-  boost_enabled: true
-  # The Cooldown is in ticks (20 ticks = 1 second).
-  boost_cooldown: 5
-  boost_amount: 0.15
 flux_meter:
   # Refresh interval is in ticks (20 ticks = 1 second).
   refresh_interval: 72000
@@ -53,6 +47,7 @@ flux_points:
   grass_growth: -0.05
   over_fish: 0.25
   minecart_boost: 1.0
+  minecart_overclock: 3.0
   pollution: 0.25
   torch_break: -0.25
   torch_place: 0.25
@@ -130,6 +125,23 @@ effects:
           amplifier: 0
         weakness:
           amplifier: 0
+custom_mechanics:
+  minecart:
+    surge_boost:
+      # Right-clicking a minecart with coal will apply a speed boost.
+      enabled: true
+      # The amount of boost applied to the minecart's speed.
+      amount: 0.15
+      # Cooldown is in ticks (20 ticks = 1 second)
+      cooldown: 5
+    overclock:
+      # Right-clicking a minecart with a coal block will apply an overclock effect.
+      # The overclock effect will increase the minecart's max speed for a limited time
+      enabled: true
+      # The multiplier applied to the minecart's max speed during overclock.
+      multiplier: 2.0
+      # Duration is in ticks (20 ticks = 1 second)
+      duration: 600
 deadly_disasters:
   # Ignore this section if Deadly Disasters plugin is disabled or not installed.
   enabled: false
