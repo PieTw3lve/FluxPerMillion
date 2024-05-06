@@ -128,14 +128,14 @@ effects:
 custom_mechanics:
   minecart:
     surge_boost:
-      # Right-clicking a minecart with coal will apply a speed boost.
+      # Right-clicking coal while in a minecart will apply a speed boost.
       enabled: true
       # The amount of boost applied to the minecart's speed.
       amount: 0.15
       # Cooldown is in ticks (20 ticks = 1 second)
       cooldown: 5
     overclock:
-      # Right-clicking a minecart with a coal block will apply an overclock effect.
+      # Right-clicking a coal block while in a minecart will apply an overclock effect.
       # The overclock effect will increase the minecart's max speed for a limited time
       enabled: true
       # The multiplier applied to the minecart's max speed during overclock.
