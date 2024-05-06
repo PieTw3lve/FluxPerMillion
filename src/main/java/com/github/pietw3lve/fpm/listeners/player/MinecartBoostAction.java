@@ -24,12 +24,12 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
 
     private static final String FLUX_POINTS_MINECART_BOOST = "flux_points.minecart_boost";
     private static final String BOOST_ENABLED = "custom_mechanics.minecart.surge_boost.enabled";
-    private static final String MINECART_BOOST_AMOUNT = "custom_mechanics.minecart.surge_boost.amount";
-    private static final String MINECART_BOOST_COOLDOWN = "custom_mechanics.minecart.surge_boost.cooldown";
+    private static final String BOOST_AMOUNT = "custom_mechanics.minecart.surge_boost.amount";
+    private static final String BOOST_COOLDOWN = "custom_mechanics.minecart.surge_boost.cooldown";
     private static final double DEFAULT_FLUX_POINTS_MINECART_BOOST = 1.0;
     private static final boolean DEFAULT_BOOST_ENABLED = true;
-    private static final double DEFAULT_MINECART_BOOST_AMOUNT = 0.15;
-    private static final int DEFAULT_MINECART_BOOST_COOLDOWN = 5;
+    private static final double DEFAULT_BOOST_AMOUNT = 0.15;
+    private static final int DEFAULT_BOOST_COOLDOWN = 5;
 
     private static final int PARTICLE_COUNT = 10;
     private static final double PARTICLE_OFFSET = 0.5;
@@ -76,7 +76,7 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
         
         minecartBoostCooldown.add(player.getUniqueId().toString());
         
-        long cooldown = plugin.getConfig().getInt(MINECART_BOOST_COOLDOWN, DEFAULT_MINECART_BOOST_COOLDOWN);
+        long cooldown = plugin.getConfig().getInt(BOOST_COOLDOWN, DEFAULT_BOOST_COOLDOWN);
         player.setCooldown(event.getMaterial(), (int) cooldown);
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             minecartBoostCooldown.remove(player.getUniqueId().toString());
@@ -90,7 +90,7 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
     private Vector calculateBoostVelocity(Player player) {
         Location eyeLocation = player.getEyeLocation();
         Vector direction = eyeLocation.getDirection().normalize();
-        double speedBoost = plugin.getConfig().getDouble(MINECART_BOOST_AMOUNT, DEFAULT_MINECART_BOOST_AMOUNT);
+        double speedBoost = plugin.getConfig().getDouble(BOOST_AMOUNT, DEFAULT_BOOST_AMOUNT);
         return direction.multiply(speedBoost);
     }
 
