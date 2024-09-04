@@ -1,11 +1,10 @@
 <h1 align="center">FluxPerMillion</h1>
 
 <p align="center">
-	<img src="https://github.com/PieTw3lve/FluxPerMillion/actions/workflows/maven.yml/badge.svg" alt="Build and Publish"></a>
-	<img src="https://img.shields.io/github/v/release/PieTw3lve/FluxPerMillion" alt="GitHub release (latest by date)">
-	<img src="https://img.shields.io/badge/Minecraft-1.20.2--1.20.4-orange.svg" alt="Supported versions">
-	<img src="https://img.shields.io/badge/SpigotMC-yellow.svg" alt="SpigotMC">
-	<a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3"></a>
+	<img src="https://img.shields.io/github/actions/workflow/status/PieTw3lve/FluxPerMillion/maven.yml?style=for-the-badge&logo=GitHub" alt="Build and Publish"></a>
+	<img src="https://img.shields.io/github/v/release/PieTw3lve/FluxPerMillion?display_name=tag&style=for-the-badge&label=Release" alt="GitHub release (latest by date)">
+	<img src="https://img.shields.io/badge/Minecraft-1.20.2--1.20.4-orange.svg?style=for-the-badge" alt="Supported versions">
+	<a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge" alt="License: GPL v3"></a>
 </p>
 
 ## Information
@@ -14,13 +13,11 @@ FluxPerMillion is a Minecraft plugin that adds an environmental twist to the gam
 
 ## Features
 
-- **Real-time Tracking**: Monitor player actions that contribute to Flux.
-- **Sustainable Practices**: Encourage eco-friendly practices like composting, reforestation, and recycling.
-- **Environmental Awareness**: Raise consciousness about real-world environmental issues, fostering player engagement in conservation efforts, fire prevention, and pollution control.
-- **New Game Mechanics**: With the addition of Flux, players can now execute specific actions that were previously impossible in vanilla Minecraft to either increase or decrease Flux. For instance, players can gain a speed boost while riding a minecart by right-clicking on coal.
-- **Customizable Settings**: Configure Flux values, thresholds, decay rates, custom gameplay mechanics, rewards, and penalties to suit your server's needs.
-- **Deadly Disasters Support**: Integrate with Deadly Disasters to enhance gameplay with environmental challenges.
-- **PlaceholderAPI Support**: Display Flux values in chat, action bar, and scoreboard using PlaceholderAPI placeholders.
+-   **Real-time Tracking**: Monitor player actions that contribute to Flux.
+-   **Sustainable Practices**: Encourage eco-friendly practices like composting, reforestation, and recycling.
+-   **Environmental Awareness**: Raise consciousness about real-world environmental issues, fostering player engagement in conservation efforts, fire prevention, and pollution control.
+-   **New Game Mechanics**: With the addition of Flux, players can now execute specific actions that were previously impossible in vanilla Minecraft to either increase or decrease Flux. For instance, players can gain a speed boost while riding a minecart by right-clicking on coal.
+-   **Customizable Settings**: Configure Flux values, thresholds, decay rates, custom gameplay mechanics, rewards, and penalties to suit your server's needs.
 
 ## Commands
 
@@ -32,7 +29,7 @@ FluxPerMillion is a Minecraft plugin that adds an environmental twist to the gam
 | `/fpm lookup <player> <duration> <page>` | Lookup a player's Flux activity.  | fpm.lookup |
 | `/fpm reload`                            | Reload configuration.             | fpm.reload |
 
-## PlaceholderAPI
+## Placeholders
 
 | Placeholder                         | Description                               |
 | ----------------------------------- | ----------------------------------------- |
@@ -46,9 +43,11 @@ FluxPerMillion is a Minecraft plugin that adds an environmental twist to the gam
 
 ## Soft Dependencies
 
-- [Deadly Disasters](https://www.spigotmc.org/resources/deadly-disasters.90806/)
-- [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
+-   [Deadly Disasters](https://www.spigotmc.org/resources/deadly-disasters.90806/)
+    -   Customize and configure deadly disasters to trigger at specific Flux thresholds.
+-   [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
+    -   Offers placeholders to display Flux values in chat, the action bar, and on scoreboards.
 
 ## Reporting Issues
 
-- If you encounter any issues with the plugin, please report them [here](https://github.com/PieTw3lve/FluxPerMillion/issues).
+-   If you encounter any issues with the plugin, please report them [here](https://github.com/PieTw3lve/FluxPerMillion/issues).
