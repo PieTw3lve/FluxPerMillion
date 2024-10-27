@@ -3,7 +3,7 @@
 <p align="center">
 	<img src="https://img.shields.io/github/actions/workflow/status/PieTw3lve/FluxPerMillion/maven.yml?style=for-the-badge&logo=GitHub" alt="Build and Publish"></a>
 	<img src="https://img.shields.io/github/v/release/PieTw3lve/FluxPerMillion?display_name=tag&style=for-the-badge&label=Release" alt="GitHub release (latest by date)">
-	<img src="https://img.shields.io/badge/Minecraft-1.20.2--1.20.4-orange.svg?style=for-the-badge" alt="Supported versions">
+	<img src="https://img.shields.io/badge/Minecraft-1.20.2--1.21.1-orange.svg?style=for-the-badge" alt="Supported versions">
 	<a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge" alt="License: GPL v3"></a>
 </p>
 
