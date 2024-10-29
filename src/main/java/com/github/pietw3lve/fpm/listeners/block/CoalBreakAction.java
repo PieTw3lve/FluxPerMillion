@@ -12,7 +12,7 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 public class CoalBreakAction implements EventAction<BlockBreakEvent> {
     
     private static final String FLUX_POINTS_COAL_BREAK = "flux_points.coal_break";
-    private static final double DEFAULT_FLUX_POINTS_COAL_BREAK = -0.25;
+    private static final double DEFAULT_FLUX_POINTS_COAL_BREAK = 0.25;
 
     private final FluxPerMillion plugin;
 
