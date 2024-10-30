@@ -156,11 +156,8 @@ public class Lookup implements CommandExecutor {
             String actionType = String.format(ChatColor.WHITE + "%s", action.get(2));
             String type = String.format(ChatColor.GOLD + "%s", action.get(3));
             String points = String.format(((Double) action.get(5) >= 0 ? ChatColor.RED : ChatColor.GREEN) + "%.2f", action.get(5));
-            boolean ignore = (Boolean) action.get(6);
-            String coordinates = String.format(ChatColor.GRAY + ChatColor.ITALIC.toString() + "(x%s/y%s/z%s/%s)", action.get(8), action.get(9), action.get(10), action.get(7));
+            String coordinates = String.format(ChatColor.GRAY + ChatColor.ITALIC.toString() + "(x%s/y%s/z%s/%s)", action.get(7), action.get(8), action.get(9), action.get(6));
             String divider = ChatColor.RESET + "-";
-
-            if (ignore) continue;
 
             Duration duration = (Duration) action.get(4);
             long daysAgo = duration.toDays();

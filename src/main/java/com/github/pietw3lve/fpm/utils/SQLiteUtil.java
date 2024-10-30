@@ -2,14 +2,11 @@ package com.github.pietw3lve.fpm.utils;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.sqlite.SQLiteDataSource;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,22 +28,6 @@ public class SQLiteUtil {
     private static final String INSERT_USER_ACTION_SQL = "INSERT INTO user_actions (uuid, action_type, type, points, world, x, y, z) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String INSERT_NATURAL_ACTION_SQL = "INSERT INTO natural_actions (action_type, type, points, world, x, y, z) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String CALCULATE_TOTAL_POINTS_SQL = "SELECT COALESCE(SUM(points), 0) as total FROM (SELECT points FROM user_actions UNION ALL SELECT points FROM natural_actions)";
-    private static final int BATCH_SIZE = 100; // Adjust batch size as needed
-
-    private enum ActionType {
-        BURNED,
-        REMOVED,
-        PLACED,
-        FILLED,
-        OVERPOPULATED,
-        PRESERVED,
-        DESPAWNED,
-        USED,
-        OVER,
-        CUT,
-        GROWN,
-        OTHER
-    }
 
     /**
      * SQLiteHandler Constructor.
@@ -77,7 +58,6 @@ public class SQLiteUtil {
             playerColumns.put("type", "TEXT");
             playerColumns.put("timestamp", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
             playerColumns.put("points", "REAL");
-            playerColumns.put("ignore", "BOOLEAN DEFAULT FALSE");
             playerColumns.put("world", "TEXT");
             playerColumns.put("x", "INTEGER");
             playerColumns.put("y", "INTEGER");
@@ -88,14 +68,13 @@ public class SQLiteUtil {
             naturalColumns.put("type", "TEXT");
             naturalColumns.put("timestamp", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
             naturalColumns.put("points", "REAL");
-            naturalColumns.put("ignore", "BOOLEAN DEFAULT FALSE");
             naturalColumns.put("world", "TEXT");
             naturalColumns.put("x", "INTEGER");
             naturalColumns.put("y", "INTEGER");
             naturalColumns.put("z", "INTEGER");
 
-            statement.execute("CREATE TABLE IF NOT EXISTS user_actions (id INTEGER PRIMARY KEY, uuid TEXT, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, ignore BOOLEAN DEFAULT FALSE, world TEXT, x INTEGER, y INTEGER, z INTEGER)");
-            statement.execute("CREATE TABLE IF NOT EXISTS natural_actions (id INTEGER PRIMARY KEY, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, ignore BOOLEAN DEFAULT FALSE, world TEXT, x INTEGER, y INTEGER, z INTEGER)");
+            statement.execute("CREATE TABLE IF NOT EXISTS user_actions (id INTEGER PRIMARY KEY, uuid TEXT, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, world TEXT, x INTEGER, y INTEGER, z INTEGER)");
+            statement.execute("CREATE TABLE IF NOT EXISTS natural_actions (id INTEGER PRIMARY KEY, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, world TEXT, x INTEGER, y INTEGER, z INTEGER)");
             
             for (Map.Entry<String, String> entry : playerColumns.entrySet()) {
                 addMissingColumn(statement, "user_actions", entry.getKey(), entry.getValue());
@@ -105,13 +84,13 @@ public class SQLiteUtil {
                 addMissingColumn(statement, "natural_actions", entry.getKey(), entry.getValue());
             }
 
-            statement.execute("CREATE INDEX IF NOT EXISTS idx_points_user_actions ON user_actions (points)");
-            statement.execute("CREATE INDEX IF NOT EXISTS idx_points_natural_actions ON natural_actions (points)");
+            // Update old tables to the newest format
+            if (!plugin.getConfig().getString("debug.version").equals("1.1.0")) {
+                updateTables(statement);
+            }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error initializing database", e);
         }
-
-        this.reload(plugin.getConfig().getConfigurationSection("flux_points"));
     }
 
     /**
@@ -188,7 +167,6 @@ public class SQLiteUtil {
                     actionInfo.add(resultSet.getString("type"));
                     actionInfo.add(duration);
                     actionInfo.add(resultSet.getDouble("points"));
-                    actionInfo.add(resultSet.getBoolean("ignore"));
                     actionInfo.add(resultSet.getString("world"));
                     actionInfo.add(resultSet.getInt("x"));
                     actionInfo.add(resultSet.getInt("y"));
@@ -214,7 +192,7 @@ public class SQLiteUtil {
 
         double playerFlux = 0;
     
-        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT COALESCE(SUM(points), 0) as total FROM user_actions WHERE uuid = ? AND ignore = FALSE")) {
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT COALESCE(SUM(points), 0) as total FROM user_actions WHERE uuid = ?")) {
             statement.setString(1, player.getUniqueId().toString());
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -274,69 +252,6 @@ public class SQLiteUtil {
     }
 
     /**
-     * Reloads the actions in the database based on the new configuration.
-     * @param oldConfig The old configuration section containing the previous action points.
-     */
-    public void reload(ConfigurationSection oldConfig) {
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-            plugin.sendDebugMessage("Updating database...");
-            long startTime = System.currentTimeMillis();
-            try (Connection connection = dataSource.getConnection()) {
-                connection.setAutoCommit(false); // Start transaction
-                reloadActions(connection, "user_actions", oldConfig);
-                reloadActions(connection, "natural_actions", oldConfig);
-                connection.commit(); // Commit transaction
-            } catch (SQLException e) {
-                plugin.getLogger().log(Level.SEVERE, "Error reloading actions", e);
-            }
-            long endTime = System.currentTimeMillis();
-            long duration = endTime - startTime;
-            plugin.sendDebugMessage("Database updated in " + duration + "ms");
-        });
-    }
-
-    /**
-     * Reloads the actions in the specified table based on the new configuration.
-     * @param connection The connection to the database.
-     * @param tableName The name of the table to reload the actions for.
-     * @param oldConfig The old configuration section containing the previous action points.
-     * @throws SQLException If an error occurs while reloading the actions.
-     */
-    private void reloadActions(Connection connection, String tableName, ConfigurationSection oldConfig) throws SQLException {
-        String selectQuery = "SELECT id, action_type, type, points FROM " + tableName;
-        try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery);
-             ResultSet resultSet = selectStatement.executeQuery()) {
-            
-            try (PreparedStatement updateStatement = connection.prepareStatement("UPDATE " + tableName + " SET points = ?, ignore = ? WHERE id = ?")) {
-                int count = 0;
-                while (resultSet.next()) {
-                    int id = resultSet.getInt("id");
-                    ActionType actionType = parseActionType(resultSet.getString("action_type"));
-                    String type = resultSet.getString("type");
-                    double points = resultSet.getDouble("points");
-                    boolean[] ignore = new boolean[1];
-                    double[] newPoints = new double[1];
-
-                    updateValues(oldConfig, actionType, type, points, newPoints, ignore);
-                    
-                    BigDecimal bd = new BigDecimal(newPoints[0]).setScale(5, RoundingMode.HALF_UP);
-                    newPoints[0] = bd.doubleValue();
-                    
-                    updateStatement.setDouble(1, newPoints[0]);
-                    updateStatement.setBoolean(2, ignore[0]);
-                    updateStatement.setInt(3, id);
-                    updateStatement.addBatch();
-                    
-                    if (++count % BATCH_SIZE == 0) {
-                        updateStatement.executeBatch();
-                    }
-                }
-                updateStatement.executeBatch(); // Execute any remaining updates
-            }
-        }
-    }
-
-    /**
      * Adds a missing column to the specified table.
      * @param statement The statement to execute the query on.
      * @param tableName The name of the table to add the column to.
@@ -358,176 +273,18 @@ public class SQLiteUtil {
         }
     }
 
-    /**
-     * Updates the values of the action points based on the new configuration.
-     * @param oldConfig The old configuration section containing the previous action points.
-     * @param actionType The type of action to update.
-     * @param type The type of action to update.
-     * @param points The amount of points to update.
-     * @param newPoints The new amount of points to update.
-     * @param ignore Whether to ignore the action or not.
-     */
-    private void updateValues(ConfigurationSection oldConfig, ActionType actionType, String type, double points, double[] newPoints, boolean[] ignore) {
-        ConfigurationSection newConfig = plugin.getConfig().getConfigurationSection("flux_points");
-        if (newConfig == null) newPoints[0] = points;
+    private void updateTables(Statement statement) throws SQLException {
+        statement.execute("CREATE INDEX IF NOT EXISTS idx_points_user_actions ON user_actions (points)");
+        statement.execute("CREATE INDEX IF NOT EXISTS idx_points_natural_actions ON natural_actions (points)");
 
-        switch (actionType) {
-            case BURNED:
-                if (type.contains("block")) {
-                    newPoints[0] = newConfig.getDouble("block_burn", points);
-                } 
-                else if (type.contains("fuel")) {
-                    if (newConfig.getDouble("fuel_burn", points) == 0) {
-                        ignore[0] = true;
-                        newPoints[0] = points / oldConfig.getDouble("fuel_burn", points);
-                        break;
-                    } else {
-                        if (oldConfig.getDouble("fuel_burn", points) != 0) {
-                            newPoints[0] = (points / oldConfig.getDouble("fuel_burn", points)) * newConfig.getDouble("fuel_burn", points);
-                        } else {
-                            newPoints[0] = points * newConfig.getDouble("fuel_burn", points);
-                        }
-                    }
-                }
-                break;
-            case REMOVED:
-                if (type.contains("campfire")) {
-                    newPoints[0] = newConfig.getDouble("campfire_break", points);
-                }
-                else if (type.contains("soul campfire")) {
-                    newPoints[0] = newConfig.getDouble("campfire_break", points);
-                } 
-                else if (type.contains("composter")) {
-                    newPoints[0] = newConfig.getDouble("compost_break", points);
-                }
-                else if (type.contains("coal block")) {
-                    newPoints[0] = newConfig.getDouble("coal_break", points) * 9;
-                } 
-                else if (type.contains("coal ore")) {
-                    newPoints[0] = newConfig.getDouble("coal_break", points);
-                }
-                else if (type.contains("torch")) {
-                    newPoints[0] = newConfig.getDouble("torch_break", points);
-                }
-                break;
-            case PLACED:
-                if (type.contains("campfire")) {
-                    newPoints[0] = newConfig.getDouble("campfire_place", points);
-                }
-                else if (type.contains("soul campfire")) {
-                    newPoints[0] = newConfig.getDouble("campfire_place", points);
-                } 
-                else if (type.contains("coal block")) {
-                    newPoints[0] = newConfig.getDouble("coal_place", points) * 9;
-                } 
-                else if (type.contains("coal ore")) {
-                    newPoints[0] = newConfig.getDouble("coal_place", points);
-                }
-                else if (type.contains("torch")) {
-                    newPoints[0] = newConfig.getDouble("torch_place", points);
-                }
-                break;
-            case FILLED:
-                if (type.contains("composter")) {
-                    newPoints[0] = newConfig.getDouble("compost_complete", points);
-                }
-                break;
-            case OVERPOPULATED:
-                newPoints[0] = newConfig.getDouble("entity_overpopulate", points);
-                break;
-            case PRESERVED:
-                newPoints[0] = newConfig.getDouble("entity_preserve", points);
-                break;
-            case DESPAWNED:
-                newPoints[0] = newConfig.getDouble("pollution", points);
-                break;
-            case USED:
-                if (type.contains("command")) {
-                    newPoints[0] = points;
-                }
-                else if (type.contains("flint and steel")) {
-                    newPoints[0] = newConfig.getDouble("flint_and_steel_use", points);
-                }
-                break;
-            case OVER:
-                if (type.contains("fishing")) {
-                    newPoints[0] = newConfig.getDouble("over_fish", points);
-                }
-                break;
-            case CUT:
-                if (type.contains("tree")) {
-                    if (newConfig.getDouble("tree_cut", points) == 0) {
-                        ignore[0] = true;
-                        newPoints[0] = points / oldConfig.getDouble("tree_cut", points);
-                        break;
-                    } else {
-                        if (oldConfig.getDouble("tree_cut", points) != 0) {
-                            newPoints[0] = (points / oldConfig.getDouble("tree_cut", points)) * newConfig.getDouble("tree_cut", points);
-                        } else {
-                            newPoints[0] = points * newConfig.getDouble("tree_cut", points);
-                        }
-                    }
-                }
-                break;
-            case GROWN:
-                if (type.contains("crop")) {
-                    newPoints[0] = newConfig.getDouble("crop_growth", points);
-                } 
-                else if (type.contains("grass")) {
-                    newPoints[0] = newConfig.getDouble("grass_growth", points);
-                }
-                else if (type.contains("tree")) {
-                    if (newConfig.getDouble("tree_growth", points) == 0) {
-                        ignore[0] = true;
-                        newPoints[0] = points / oldConfig.getDouble("tree_growth", points);
-                        break;
-                    } else {
-                        if (oldConfig.getDouble("tree_growth", points) != 0) {
-                            newPoints[0] = (points / oldConfig.getDouble("tree_growth", points)) * newConfig.getDouble("tree_growth", points);
-                        } else {
-                            newPoints[0] = points * newConfig.getDouble("tree_growth", points);
-                        }
-                    }
-                }
-                break;
-            case OTHER:
-                newPoints[0] = points;
-                break;
-        }
-    }
+        // Drop the ignore column from user_actions
+        statement.execute("CREATE TABLE IF NOT EXISTS user_actions_new AS SELECT id, uuid, action_type, type, timestamp, points, world, x, y, z FROM user_actions");
+        statement.execute("DROP TABLE user_actions");
+        statement.execute("ALTER TABLE user_actions_new RENAME TO user_actions");
 
-    /**
-     * Represents the different types of actions that can be performed.
-     * Each action type corresponds to a specific action performed in the game.
-     * @param actionTypeStr The action type string to parse.
-     * @return The ActionType enum value corresponding to the provided action type string.
-     */
-    private ActionType parseActionType(String actionTypeStr) {
-        switch (actionTypeStr.toLowerCase()) {
-            case "burned":
-                return ActionType.BURNED;
-            case "removed":
-                return ActionType.REMOVED;
-            case "placed":
-                return ActionType.PLACED;
-            case "filled":
-                return ActionType.FILLED;
-            case "overpopulated":
-                return ActionType.OVERPOPULATED;
-            case "preserved":
-                return ActionType.PRESERVED;
-            case "despawned":
-                return ActionType.DESPAWNED;
-            case "used":
-                return ActionType.USED;
-            case "over":
-                return ActionType.OVER;
-            case "cut":
-                return ActionType.CUT;
-            case "grown":
-                return ActionType.GROWN;
-            default:
-                return ActionType.OTHER;
-        }
+        // Drop the ignore column from natural_actions
+        statement.execute("CREATE TABLE IF NOT EXISTS natural_actions_new AS SELECT id, action_type, type, timestamp, points, world, x, y, z FROM natural_actions");
+        statement.execute("DROP TABLE natural_actions");
+        statement.execute("ALTER TABLE natural_actions_new RENAME TO natural_actions");
     }
 }

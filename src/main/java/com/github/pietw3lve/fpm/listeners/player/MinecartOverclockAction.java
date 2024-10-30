@@ -52,7 +52,7 @@ public class MinecartOverclockAction implements EventAction<PlayerInteractEvent>
         Action action = event.getAction();
         Material mainHandItemType = player.getInventory().getItemInMainHand().getType();
         Material offHandItemType = player.getInventory().getItemInOffHand().getType();
-        return  isEnabled(OVERCLOCK_ENABLED, DEFAULT_OVERCLOCK_ENABLED) && isPlayerInMinecart(player) && !isMinecartOnBoostCooldown((Minecart) player.getVehicle()) && isRightClick(action) && (isOverclockFuel(mainHandItemType) || isOverclockFuel(offHandItemType));
+        return isEnabled(OVERCLOCK_ENABLED, DEFAULT_OVERCLOCK_ENABLED) && isPlayerInMinecart(player) && !isMinecartOnBoostCooldown((Minecart) player.getVehicle()) && isRightClick(action) && (isOverclockFuel(mainHandItemType) || isOverclockFuel(offHandItemType));
     }
 
     @Override

@@ -1,8 +1,8 @@
 # FluxPerMillion Configuration File
-# Version 1.1.0
 
 debug:
     # Enable debug messages in the console.
+    version: 1.1.0 # Do not modify this value.
     messages: false
     tree_feller: false
 farming:
@@ -41,8 +41,7 @@ flux_points:
     entity_preserve: -2.0
     firework_launch: 0.25
     flint_and_steel_use: 0.25
-    # Value for fuel_burn is multiplied by burn time.
-    fuel_burn: 0.25
+    fuel_burn: 0.25 # Multiply by burn time
     grass_growth: -0.05
     over_fish: 0.25
     minecart_boost: 0.25
@@ -50,9 +49,8 @@ flux_points:
     pollution: 0.25
     torch_break: -0.25
     torch_place: 0.25
-    # Values for tree_cut and tree_growth are multiplied by the number of logs in the tree.
-    tree_cut: 0.25
-    tree_growth: -0.25
+    tree_cut: 0.25 # Multiply by number of logs
+    tree_growth: -0.25 # Multiply by number of logs
 effects:
     # Effects are applied to players when the flux meter reaches a specific tier.
     # Interval is in ticks (20 ticks = 1 second).
