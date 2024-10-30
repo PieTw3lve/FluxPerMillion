@@ -1,5 +1,6 @@
 package com.github.pietw3lve.fpm.utils;
 
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -29,8 +30,8 @@ public class SQLiteUtil {
 
     private final FluxPerMillion plugin;
     private SQLiteDataSource dataSource;
-    private static final String INSERT_USER_ACTION_SQL = "INSERT INTO user_actions (uuid, action_type, type, points) VALUES (?, ?, ?, ?)";
-    private static final String INSERT_NATURAL_ACTION_SQL = "INSERT INTO natural_actions (action_type, type, points) VALUES (?, ?, ?)";
+    private static final String INSERT_USER_ACTION_SQL = "INSERT INTO user_actions (uuid, action_type, type, points, world, x, y, z) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_NATURAL_ACTION_SQL = "INSERT INTO natural_actions (action_type, type, points, world, x, y, z) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String CALCULATE_TOTAL_POINTS_SQL = "SELECT COALESCE(SUM(points), 0) as total FROM (SELECT points FROM user_actions UNION ALL SELECT points FROM natural_actions)";
     private static final int BATCH_SIZE = 100; // Adjust batch size as needed
 
@@ -79,6 +80,10 @@ public class SQLiteUtil {
             playerColumns.put("timestamp", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
             playerColumns.put("points", "REAL");
             playerColumns.put("ignore", "BOOLEAN DEFAULT FALSE");
+            playerColumns.put("world", "TEXT");
+            playerColumns.put("x", "INTEGER");
+            playerColumns.put("y", "INTEGER");
+            playerColumns.put("z", "INTEGER");
             Map<String, String> naturalColumns = new HashMap<>();
             naturalColumns.put("id", "INTEGER PRIMARY KEY");
             naturalColumns.put("action_type", "TEXT");
@@ -86,9 +91,13 @@ public class SQLiteUtil {
             naturalColumns.put("timestamp", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
             naturalColumns.put("points", "REAL");
             naturalColumns.put("ignore", "BOOLEAN DEFAULT FALSE");
+            naturalColumns.put("world", "TEXT");
+            naturalColumns.put("x", "INTEGER");
+            naturalColumns.put("y", "INTEGER");
+            naturalColumns.put("z", "INTEGER");
 
-            statement.execute("CREATE TABLE IF NOT EXISTS user_actions (id INTEGER PRIMARY KEY, uuid TEXT, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, ignore BOOLEAN DEFAULT FALSE)");
-            statement.execute("CREATE TABLE IF NOT EXISTS natural_actions (id INTEGER PRIMARY KEY, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, ignore BOOLEAN DEFAULT FALSE)");
+            statement.execute("CREATE TABLE IF NOT EXISTS user_actions (id INTEGER PRIMARY KEY, uuid TEXT, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, ignore BOOLEAN DEFAULT FALSE, world TEXT, x INTEGER, y INTEGER, z INTEGER)");
+            statement.execute("CREATE TABLE IF NOT EXISTS natural_actions (id INTEGER PRIMARY KEY, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, ignore BOOLEAN DEFAULT FALSE, world TEXT, x INTEGER, y INTEGER, z INTEGER)");
             
             for (Map.Entry<String, String> entry : playerColumns.entrySet()) {
                 addMissingColumn(statement, "user_actions", entry.getKey(), entry.getValue());
@@ -113,17 +122,45 @@ public class SQLiteUtil {
      * @param actionType The type of action to record.
      * @param type The type of action to record.
      * @param points The amount of points to record.
+     * @param location The location of the action.
      */
-    public void recordUserAction(Player player, String actionType, String type, double points) {
+    public void recordPlayerAction(Player player, String actionType, String type, double points, Location location) {
         if (points == 0) return;
         try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(INSERT_USER_ACTION_SQL)) {
             statement.setString(1, player.getUniqueId().toString());
             statement.setString(2, actionType);
             statement.setString(3, type);
             statement.setDouble(4, points);
+            statement.setString(5, location.getWorld().getName());
+            statement.setInt(6, location.getBlockX());
+            statement.setInt(7, location.getBlockY());
+            statement.setInt(8, location.getBlockZ());
             statement.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error recording user action", e);
+        }
+    }
+
+    /**
+     * Records a natural action in the database.
+     * @param actionType The type of action to record.
+     * @param type The type of action to record.
+     * @param points The amount of points to record.
+     * @param location The location of the action.
+     */
+    public void recordNaturalAction(String actionType, String type, double points, Location location) {
+        if (points == 0) return;
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(INSERT_NATURAL_ACTION_SQL)) {
+            statement.setString(1, actionType);
+            statement.setString(2, type);
+            statement.setDouble(3, points);
+            statement.setString(4, location.getWorld().getName());
+            statement.setInt(5, location.getBlockX());
+            statement.setInt(6, location.getBlockY());
+            statement.setInt(7, location.getBlockZ());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error recording natural action", e);
         }
     }
 
@@ -203,24 +240,6 @@ public class SQLiteUtil {
         }
     
         return playerFlux;
-    }
-
-    /**
-     * Records a natural action in the database.
-     * @param actionType The type of action to record.
-     * @param type The type of action to record.
-     * @param points The amount of points to record.
-     */
-    public void recordNaturalAction(String actionType, String type, double points) {
-        if (points == 0) return;
-        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(INSERT_NATURAL_ACTION_SQL)) {
-            statement.setString(1, actionType);
-            statement.setString(2, type);
-            statement.setDouble(3, points);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error recording natural action", e);
-        }
     }
 
     /**

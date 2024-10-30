@@ -41,10 +41,10 @@ public class FluxLevelChangeListener implements Listener {
         if (points == 0) return;
 
         if (event.isPlayerAction()) {
-            plugin.getDbUtil().recordUserAction(player, actionType, type, points);
+            plugin.getDbUtil().recordPlayerAction(player, actionType, type, points, location);
             plugin.sendDebugMessage(String.format("%s %s %s - Added %.2f point(s). (x%d/y%d/z%d/%s)", player.getName(), actionType, type, points, location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getWorld().getName()));
         } else {
-            plugin.getDbUtil().recordNaturalAction(actionType, type, points);
+            plugin.getDbUtil().recordNaturalAction(actionType, type, points, location);
             plugin.sendDebugMessage(String.format("%s %s - Added %.2f point(s). (x%d/y%d/z%d/%s)", actionType.substring(0, 1).toUpperCase() + actionType.substring(1), type, points, location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getWorld().getName()));
         }
     }
