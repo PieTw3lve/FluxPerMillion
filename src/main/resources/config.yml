@@ -45,7 +45,7 @@ flux_points:
     fuel_burn: 0.25
     grass_growth: -0.05
     over_fish: 0.25
-    minecart_boost: 1.0
+    minecart_boost: 0.25
     minecart_overclock: 3.0
     pollution: 0.25
     torch_break: -0.25
