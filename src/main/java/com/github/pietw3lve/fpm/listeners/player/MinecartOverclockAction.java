@@ -30,7 +30,7 @@ public class MinecartOverclockAction implements EventAction<PlayerInteractEvent>
     private static final double DEFAULT_OVERCLOCK_MULTIPLIER = 2.0;
     private static final long DEFAULT_OVERCLOCK_DURATION = 600;
 
-    private static final int PARTICLE_COUNT = 2;
+    private static final int PARTICLE_COUNT = 4;
     private static final double PARTICLE_OFFSET = 0.5;
     private static final double PARTICLE_SPEED = 0.1;
     private static final int TASK_DELAY = 0;
@@ -64,14 +64,14 @@ public class MinecartOverclockAction implements EventAction<PlayerInteractEvent>
         BukkitRunnable particleTask = new BukkitRunnable() {
             @Override
             public void run() {
-                player.spawnParticle(Particle.END_ROD, minecart.getLocation(), PARTICLE_COUNT, PARTICLE_OFFSET, PARTICLE_OFFSET, PARTICLE_OFFSET, PARTICLE_SPEED);
+                player.spawnParticle(Particle.SOUL_FIRE_FLAME, minecart.getLocation(), PARTICLE_COUNT, PARTICLE_OFFSET, PARTICLE_OFFSET, PARTICLE_OFFSET, PARTICLE_SPEED);
             }
         };
 
         double multiplier = plugin.getConfig().getDouble(OVERCLOCK_MULTIPLIER, DEFAULT_OVERCLOCK_MULTIPLIER);
         minecart.setMaxSpeed(minecart.getMaxSpeed() * multiplier);
         particleTask.runTaskTimer(plugin, TASK_DELAY, TASK_PERIOD);
-        player.playSound(player, Sound.ENTITY_ZOMBIE_VILLAGER_CURE, SOUND_VOLUME, SOUND_PITCH);
+        player.playSound(player, Sound.ENTITY_WITHER_AMBIENT, SOUND_VOLUME, SOUND_PITCH);
 
         if (player.getGameMode() != GameMode.CREATIVE) {
             reduceItemAmountIfFuel(mainHandItem);
