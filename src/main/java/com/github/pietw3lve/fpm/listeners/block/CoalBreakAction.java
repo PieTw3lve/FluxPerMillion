@@ -23,7 +23,7 @@ public class CoalBreakAction implements EventAction<BlockBreakEvent> {
     @Override
     public boolean matches(BlockBreakEvent event) {
         Block block = event.getBlock();
-        return isCoalOre(block) || isCoalBlock(block);
+        return isCoalOre(block) && !block.hasMetadata("fpm:placed");
     }
 
     @Override
@@ -31,23 +31,13 @@ public class CoalBreakAction implements EventAction<BlockBreakEvent> {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         String blockName = block.getType().toString().replace("_", " ").toLowerCase();
-        double points;
-        
-        if (isCoalOre(block)) {
-            points = plugin.getConfig().getDouble(FLUX_POINTS_COAL_BREAK, DEFAULT_FLUX_POINTS_COAL_BREAK);
-        } else {
-            points = plugin.getConfig().getDouble(FLUX_POINTS_COAL_BREAK, DEFAULT_FLUX_POINTS_COAL_BREAK) * 9;
-        }
-
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_COAL_BREAK, DEFAULT_FLUX_POINTS_COAL_BREAK);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "removed", blockName, points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
+        plugin.sendDebugMessage(String.valueOf(isCoalOre(block) && !block.hasMetadata("fpm:placed")));
     }
 
     private boolean isCoalOre(Block block) {
         return block.getType() == Material.COAL_ORE || block.getType() == Material.DEEPSLATE_COAL_ORE;
     }
-
-    private boolean isCoalBlock(Block block) {
-        return block.getType() == Material.COAL_BLOCK;
-    }   
 }

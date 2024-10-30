@@ -25,7 +25,6 @@ import org.bukkit.event.world.StructureGrowEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.listeners.block.BlockBurnAction;
-import com.github.pietw3lve.fpm.listeners.block.BreakMetadataSetAction;
 import com.github.pietw3lve.fpm.listeners.block.CampfireBreakAction;
 import com.github.pietw3lve.fpm.listeners.block.CampfirePlaceAction;
 import com.github.pietw3lve.fpm.listeners.block.CoalBreakAction;
@@ -60,7 +59,7 @@ public class EventListener implements Listener {
         actions.put(BlockFertilizeEvent.class, new ArrayList<>(Arrays.asList(new CropFertilizeAction(plugin))));
         actions.put(BlockGrowEvent.class, new ArrayList<>(Arrays.asList(new CropMaxAgeAction(plugin))));
         actions.put(BlockSpreadEvent.class, new ArrayList<>(Arrays.asList(new GrassSpreadAction(plugin))));
-        actions.put(BlockBreakEvent.class, new ArrayList<>(Arrays.asList(new BreakMetadataSetAction(plugin), new CampfireBreakAction(plugin), new CoalBreakAction(plugin), new TorchBreakAction(plugin), new TreeBreakAction(plugin))));
+        actions.put(BlockBreakEvent.class, new ArrayList<>(Arrays.asList(new CampfireBreakAction(plugin), new CoalBreakAction(plugin), new TorchBreakAction(plugin), new TreeBreakAction(plugin))));
         actions.put(BlockPlaceEvent.class, new ArrayList<>(Arrays.asList(new PlaceMetadataSetAction(plugin), new CampfirePlaceAction(plugin), new TorchPlaceAction(plugin), new FirePlaceAction(plugin))));
         actions.put(EntityBreedEvent.class, new ArrayList<>(Arrays.asList(new EntityBreedAction(plugin))));
         actions.put(ItemDespawnEvent.class, new ArrayList<>(Arrays.asList(new ItemDespawnAction(plugin))));
