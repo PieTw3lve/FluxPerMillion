@@ -8,8 +8,6 @@ import org.sqlite.SQLiteDataSource;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 
-import net.md_5.bungee.api.ChatColor;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Connection;
@@ -164,14 +162,14 @@ public class SQLiteUtil {
         }
     }
 
-    /**
+     /**
      * Retrieves a player's actions from the database since a specified date.
      * @param player The player to retrieve the actions for.
      * @param fromDate The date to retrieve the actions from.
      * @return A list of the player's actions.
      */
-    public List<String> getPlayerActions(OfflinePlayer player, String fromDate) {
-        List<String> playerActions = new ArrayList<>();
+    public List<List<Object>> getPlayerActions(OfflinePlayer player, String fromDate) {
+        List<List<Object>> playerActions = new ArrayList<>();
         
         if (player == null) return playerActions;
         try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM user_actions WHERE uuid = ? AND timestamp >= ? ORDER BY timestamp DESC")) {
@@ -180,34 +178,21 @@ public class SQLiteUtil {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
+                    List<Object> actionInfo = new ArrayList<>();
                     LocalDateTime actionTime = resultSet.getTimestamp("timestamp").toLocalDateTime().atZone(ZoneId.of("UTC")).toLocalDateTime();
-                    String playerName = String.format(ChatColor.GOLD + "%s", player.getName());
-                    String actionType = String.format(ChatColor.WHITE + "%s", resultSet.getString("action_type"));
-                    String type = String.format(ChatColor.GOLD + "%s", resultSet.getString("type"));
-                    String points = String.format((resultSet.getDouble("points") >= 0 ? ChatColor.RED : ChatColor.GREEN) + "%.2f", resultSet.getDouble("points"));
-                    boolean ignore = resultSet.getBoolean("ignore");
-                    String divider = ChatColor.RESET + "-";
-
-                    if (ignore) continue;
-
                     Duration duration = Duration.between(actionTime, LocalDateTime.now(ZoneId.of("UTC")));
-                    long daysAgo = duration.toDays();
-                    long hoursAgo = duration.toHours() % 24;
-                    long minutesAgo = duration.toMinutes() % 60;
-                    long secondsAgo = duration.getSeconds() % 60;
 
-                    String timeAgo;
-                    if (daysAgo > 0) {
-                        timeAgo = String.format(ChatColor.GRAY + "%d/d ago", daysAgo);
-                    } else if (hoursAgo > 0) {
-                        timeAgo = String.format(ChatColor.GRAY + "%d/h ago", hoursAgo);
-                    } else if (minutesAgo > 0) {
-                        timeAgo = String.format(ChatColor.GRAY + "%d/m ago", minutesAgo);
-                    } else {
-                        timeAgo = String.format(ChatColor.GRAY + "%d/s ago", secondsAgo);
-                    }
-
-                    String actionInfo = String.format("%s %s %s %s %s %s %s §rFlux", timeAgo, divider, playerName, actionType, type, divider, points);
+                    actionInfo.add(resultSet.getInt("id"));
+                    actionInfo.add(player.getName().toString());
+                    actionInfo.add(resultSet.getString("action_type"));
+                    actionInfo.add(resultSet.getString("type"));
+                    actionInfo.add(duration);
+                    actionInfo.add(resultSet.getDouble("points"));
+                    actionInfo.add(resultSet.getBoolean("ignore"));
+                    actionInfo.add(resultSet.getString("world"));
+                    actionInfo.add(resultSet.getInt("x"));
+                    actionInfo.add(resultSet.getInt("y"));
+                    actionInfo.add(resultSet.getInt("z"));
 
                     playerActions.add(actionInfo);
                 }
