@@ -41,7 +41,7 @@ public class PlaceholderHandler {
      */
     public void reload() {
         expansion = new FPMExpansion(plugin);
-        enabled = plugin.getConfig().getBoolean("placeholderapi.enabled", false);
+        enabled = plugin.getConfig().getBoolean("placeholderapi.enabled");
         
         if (!enabled) {
             expansion.unregister();

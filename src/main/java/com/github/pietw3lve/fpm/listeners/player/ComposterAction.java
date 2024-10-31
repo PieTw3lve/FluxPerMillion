@@ -14,7 +14,6 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 public class ComposterAction implements EventAction<PlayerInteractEvent> {
     
     private static final String FLUX_POINTS_COMPOST_COMPLETE = "flux_points.compost_complete";
-    private static final double DEFAULT_FLUX_POINTS_COMPOST_COMPLETE = -2.0;
 
     private final FluxPerMillion plugin;
     
@@ -35,7 +34,7 @@ public class ComposterAction implements EventAction<PlayerInteractEvent> {
         Block block = event.getClickedBlock();
         Levelled composter = (Levelled) block.getBlockData();
         if (composter.getLevel() == composter.getMaximumLevel()) {
-            double points = plugin.getConfig().getDouble(FLUX_POINTS_COMPOST_COMPLETE, DEFAULT_FLUX_POINTS_COMPOST_COMPLETE);
+            double points = plugin.getConfig().getDouble(FLUX_POINTS_COMPOST_COMPLETE);
             FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "filled", "composter", points);
             plugin.getServer().getPluginManager().callEvent(fluxEvent);
         }

@@ -12,7 +12,6 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 public class ElytraBoostAction implements EventAction<PlayerInteractEvent> {
     
     private static final String FLUX_POINTS_ELYTRA_BOOST = "flux_points.elytra_boost";
-    private static final double DEFAULT_FLUX_POINTS_ELYTRA_BOOST = 1.0;
 
     private final FluxPerMillion plugin;
 
@@ -29,7 +28,7 @@ public class ElytraBoostAction implements EventAction<PlayerInteractEvent> {
     @Override
     public void execute(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        double points = plugin.getConfig().getDouble(FLUX_POINTS_ELYTRA_BOOST, DEFAULT_FLUX_POINTS_ELYTRA_BOOST);
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_ELYTRA_BOOST);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "boosted", "elytra", points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }

@@ -26,10 +26,6 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
     private static final String BOOST_ENABLED = "custom_mechanics.minecart.surge_boost.enabled";
     private static final String BOOST_AMOUNT = "custom_mechanics.minecart.surge_boost.amount";
     private static final String BOOST_COOLDOWN = "custom_mechanics.minecart.surge_boost.cooldown";
-    private static final double DEFAULT_FLUX_POINTS_MINECART_BOOST = 1.0;
-    private static final boolean DEFAULT_BOOST_ENABLED = true;
-    private static final double DEFAULT_BOOST_AMOUNT = 0.15;
-    private static final int DEFAULT_BOOST_COOLDOWN = 5;
 
     private static final int PARTICLE_COUNT = 10;
     private static final double PARTICLE_OFFSET = 0.5;
@@ -50,7 +46,7 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
         Action action = event.getAction();
         Material mainHandItemType = player.getInventory().getItemInMainHand().getType();
         Material offHandItemType = player.getInventory().getItemInOffHand().getType();
-        return isEnabled(BOOST_ENABLED, DEFAULT_BOOST_ENABLED) && !isPlayerOnBoostCooldown(player) && isPlayerInMinecart(player) && isRightClick(action) && (isBoostFuel(mainHandItemType) || isBoostFuel(offHandItemType));
+        return isEnabled(BOOST_ENABLED) && !isPlayerOnBoostCooldown(player) && isPlayerInMinecart(player) && isRightClick(action) && (isBoostFuel(mainHandItemType) || isBoostFuel(offHandItemType));
     }
 
     @Override
@@ -76,13 +72,13 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
         
         minecartBoostCooldown.add(player.getUniqueId().toString());
         
-        long cooldown = plugin.getConfig().getInt(BOOST_COOLDOWN, DEFAULT_BOOST_COOLDOWN);
+        long cooldown = plugin.getConfig().getInt(BOOST_COOLDOWN);
         player.setCooldown(event.getMaterial(), (int) cooldown);
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             minecartBoostCooldown.remove(player.getUniqueId().toString());
         }, cooldown);
 
-        double points = plugin.getConfig().getDouble(FLUX_POINTS_MINECART_BOOST, DEFAULT_FLUX_POINTS_MINECART_BOOST);
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_MINECART_BOOST);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "boosted", "minecart", points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
@@ -90,7 +86,7 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
     private Vector calculateBoostVelocity(Player player) {
         Location eyeLocation = player.getEyeLocation();
         Vector direction = eyeLocation.getDirection().normalize();
-        double speedBoost = plugin.getConfig().getDouble(BOOST_AMOUNT, DEFAULT_BOOST_AMOUNT);
+        double speedBoost = plugin.getConfig().getDouble(BOOST_AMOUNT);
         return direction.multiply(speedBoost);
     }
 
@@ -100,8 +96,8 @@ public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
         }
     }
 
-    private boolean isEnabled(String key, boolean defaultValue) {
-        return plugin.getConfig().getBoolean(key, defaultValue);
+    private boolean isEnabled(String key) {
+        return plugin.getConfig().getBoolean(key);
     }
 
     private boolean isPlayerOnBoostCooldown(Player player) {

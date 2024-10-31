@@ -78,7 +78,7 @@ public class FishTrackerHandler {
      * Reloads the fish tracker configuration.
      */
     public void reload() {
-        overFishThreshold = plugin.getConfig().getInt("fishing.threshold", 50);
-        resetIntervalTicks = plugin.getConfig().getLong("fishing.timer", 36000);
+        overFishThreshold = plugin.getConfig().getInt("fishing.threshold");
+        resetIntervalTicks = plugin.getConfig().getLong("fishing.timer");
     }
 }

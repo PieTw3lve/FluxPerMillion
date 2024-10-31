@@ -12,7 +12,6 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 public class CoalBreakAction implements EventAction<BlockBreakEvent> {
     
     private static final String FLUX_POINTS_COAL_BREAK = "flux_points.coal_break";
-    private static final double DEFAULT_FLUX_POINTS_COAL_BREAK = 0.25;
 
     private final FluxPerMillion plugin;
 
@@ -31,7 +30,7 @@ public class CoalBreakAction implements EventAction<BlockBreakEvent> {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         String blockName = block.getType().toString().replace("_", " ").toLowerCase();
-        double points = plugin.getConfig().getDouble(FLUX_POINTS_COAL_BREAK, DEFAULT_FLUX_POINTS_COAL_BREAK);
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_COAL_BREAK);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "removed", blockName, points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
         plugin.sendDebugMessage(String.valueOf(isCoalOre(block) && !block.hasMetadata("fpm:placed")));

@@ -14,7 +14,6 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 public class ItemDespawnAction implements EventAction<ItemDespawnEvent> {
     
     private static final String FLUX_POINTS_POLLUTION = "flux_points.pollution";
-    private static final double DEFAULT_FLUX_POINTS_POLLUTION = 0.25;
     private static final int SEARCH_RADIUS = 40;
 
     private final FluxPerMillion plugin;
@@ -46,7 +45,7 @@ public class ItemDespawnAction implements EventAction<ItemDespawnEvent> {
             }
         }
 
-        double points = plugin.getConfig().getDouble(FLUX_POINTS_POLLUTION, DEFAULT_FLUX_POINTS_POLLUTION);
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_POLLUTION);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), itemLocation, closestPlayer, "despawned", "item", points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }

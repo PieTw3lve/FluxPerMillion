@@ -13,7 +13,6 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 public class CropMaxAgeAction implements EventAction<BlockGrowEvent> {
     
     private static final String FLUX_POINTS_CROP_GROWTH = "flux_points.crop_growth";
-    private static final double DEFAULT_FLUX_POINTS_CROP_GROWTH = -0.25;
 
     private final FluxPerMillion plugin;
 
@@ -31,7 +30,7 @@ public class CropMaxAgeAction implements EventAction<BlockGrowEvent> {
     public void execute(BlockGrowEvent event) {
         Block block = event.getBlock();
         Player player = block.hasMetadata("fpm:fertilized") ? (Player) block.getMetadata("fpm:fertilized").get(0).value() : null;
-        double points = plugin.getConfig().getDouble(FLUX_POINTS_CROP_GROWTH, DEFAULT_FLUX_POINTS_CROP_GROWTH);
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_CROP_GROWTH);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "grown", "crop", points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }

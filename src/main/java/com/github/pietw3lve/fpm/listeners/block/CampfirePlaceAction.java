@@ -12,7 +12,6 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 public class CampfirePlaceAction implements EventAction<BlockPlaceEvent> {
     
     private static final String FLUX_POINTS_CAMPFIRE_PLACE = "flux_points.campfire_place";
-    private static final double DEFAULT_FLUX_POINTS_CAMPFIRE_PLACE = 0.5;
 
     private final FluxPerMillion plugin;
 
@@ -31,7 +30,7 @@ public class CampfirePlaceAction implements EventAction<BlockPlaceEvent> {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         String blockName = block.getType().toString().replace("_", " ").toLowerCase();
-        double points = plugin.getConfig().getDouble(FLUX_POINTS_CAMPFIRE_PLACE, DEFAULT_FLUX_POINTS_CAMPFIRE_PLACE);
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_CAMPFIRE_PLACE);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "placed", blockName, points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }

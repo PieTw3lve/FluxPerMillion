@@ -25,10 +25,6 @@ public class MinecartOverclockAction implements EventAction<PlayerInteractEvent>
     private static final String OVERCLOCK_ENABLED = "custom_mechanics.minecart.overclock.enabled";
     private static final String OVERCLOCK_MULTIPLIER = "custom_mechanics.minecart.overclock.multiplier";
     private static final String OVERCLOCK_DURATION = "custom_mechanics.minecart.overclock.duration";
-    private static final double DEFAULT_FLUX_POINTS_MINECART_OVERCLOCK = 3.0;
-    private static final boolean DEFAULT_OVERCLOCK_ENABLED = true;
-    private static final double DEFAULT_OVERCLOCK_MULTIPLIER = 2.0;
-    private static final long DEFAULT_OVERCLOCK_DURATION = 600;
 
     private static final int PARTICLE_COUNT = 4;
     private static final double PARTICLE_OFFSET = 0.5;
@@ -52,7 +48,7 @@ public class MinecartOverclockAction implements EventAction<PlayerInteractEvent>
         Action action = event.getAction();
         Material mainHandItemType = player.getInventory().getItemInMainHand().getType();
         Material offHandItemType = player.getInventory().getItemInOffHand().getType();
-        return isEnabled(OVERCLOCK_ENABLED, DEFAULT_OVERCLOCK_ENABLED) && isPlayerInMinecart(player) && !isMinecartOnBoostCooldown((Minecart) player.getVehicle()) && isRightClick(action) && (isOverclockFuel(mainHandItemType) || isOverclockFuel(offHandItemType));
+        return isEnabled(OVERCLOCK_ENABLED) && isPlayerInMinecart(player) && !isMinecartOnBoostCooldown((Minecart) player.getVehicle()) && isRightClick(action) && (isOverclockFuel(mainHandItemType) || isOverclockFuel(offHandItemType));
     }
 
     @Override
@@ -68,7 +64,7 @@ public class MinecartOverclockAction implements EventAction<PlayerInteractEvent>
             }
         };
 
-        double multiplier = plugin.getConfig().getDouble(OVERCLOCK_MULTIPLIER, DEFAULT_OVERCLOCK_MULTIPLIER);
+        double multiplier = plugin.getConfig().getDouble(OVERCLOCK_MULTIPLIER);
         minecart.setMaxSpeed(minecart.getMaxSpeed() * multiplier);
         particleTask.runTaskTimer(plugin, TASK_DELAY, TASK_PERIOD);
         player.playSound(player, Sound.ENTITY_WITHER_AMBIENT, SOUND_VOLUME, SOUND_PITCH);
@@ -78,7 +74,7 @@ public class MinecartOverclockAction implements EventAction<PlayerInteractEvent>
             reduceItemAmountIfFuel(offHandItem);
         }
 
-        long duration = plugin.getConfig().getLong(OVERCLOCK_DURATION, DEFAULT_OVERCLOCK_DURATION);
+        long duration = plugin.getConfig().getLong(OVERCLOCK_DURATION);
         overclockedMinecarts.add(minecart.getUniqueId().toString());
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             minecart.setMaxSpeed(minecart.getMaxSpeed() / multiplier);
@@ -86,7 +82,7 @@ public class MinecartOverclockAction implements EventAction<PlayerInteractEvent>
             particleTask.cancel();
         }, duration);
 
-        double points = plugin.getConfig().getDouble(FLUX_POINTS_MINECART_OVERCLOCK, DEFAULT_FLUX_POINTS_MINECART_OVERCLOCK);
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_MINECART_OVERCLOCK);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "overclocked", "minecart", points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
@@ -97,8 +93,8 @@ public class MinecartOverclockAction implements EventAction<PlayerInteractEvent>
         }
     }
 
-    private boolean isEnabled(String key, boolean defaultValue) {
-        return plugin.getConfig().getBoolean(key, defaultValue);
+    private boolean isEnabled(String key) {
+        return plugin.getConfig().getBoolean(key);
     }
 
     private boolean isMinecartOnBoostCooldown(Minecart minecart) {

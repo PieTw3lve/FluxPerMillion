@@ -57,20 +57,20 @@ public class MessageHandler {
      * Reload the messages.
      */
     public void reload() {
-        inspectMessage = plugin.getConfig().getString("messages.inspect", "§7Player §6%player% §7accumulated §6%points% §7Flux.");
+        inspectMessage = plugin.getConfig().getString("messages.inspect");
         lookupMessages = configToList(plugin.getConfig().getConfigurationSection("messages.lookup"));
-        reloadMessage = plugin.getConfig().getString("messages.reload", "§aConfiguration file has been reloaded.");
+        reloadMessage = plugin.getConfig().getString("messages.reload");
         statusMessages = configToList(plugin.getConfig().getConfigurationSection("messages.status"));
         toggleMessages = configToList(plugin.getConfig().getConfigurationSection("messages.toggle"));
         overFishingLines = plugin.getConfig().getStringList("messages.fishing.over_fishing");
-        noPermissionMessage = plugin.getConfig().getString("messages.errors.no_permission", "§cYou do not have permission to execute this command.");
-        playerNotFoundMessage = plugin.getConfig().getString("messages.errors.player_not_found", "§cPlayer not found.");
-        playerOnlyCommandMessage = plugin.getConfig().getString("messages.errors.player_only_command", "§cThis command can only be executed by a player.");
-        noActionsFoundMessage = plugin.getConfig().getString("messages.errors.no_actions_found", "§cNo actions found for %player%.");
-        pageNotFoundMessage = plugin.getConfig().getString("messages.errors.page_not_found", "§cPage does not exist!");
-        invalidArgsMessage = plugin.getConfig().getString("messages.errors.invalid_arguments", "§cInvalid arguments! Usage: %usage%");
-        invalidTimeDurationMessage = plugin.getConfig().getString("messages.errors.invalid_time_duration", "§cInvalid time duration! Usage: %usage%");
-        invalidPageNumberMessage = plugin.getConfig().getString("messages.errors.invalid_page_number", "§cInvalid page number! Usage: %usage%");
+        noPermissionMessage = plugin.getConfig().getString("messages.errors.no_permission");
+        playerNotFoundMessage = plugin.getConfig().getString("messages.errors.player_not_found");
+        playerOnlyCommandMessage = plugin.getConfig().getString("messages.errors.player_only_command");
+        noActionsFoundMessage = plugin.getConfig().getString("messages.errors.no_actions_found");
+        pageNotFoundMessage = plugin.getConfig().getString("messages.errors.page_not_found");
+        invalidArgsMessage = plugin.getConfig().getString("messages.errors.invalid_arguments");
+        invalidTimeDurationMessage = plugin.getConfig().getString("messages.errors.invalid_time_duration");
+        invalidPageNumberMessage = plugin.getConfig().getString("messages.errors.invalid_page_number");
     }
 
     /**

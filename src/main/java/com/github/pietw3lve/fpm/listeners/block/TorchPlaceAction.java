@@ -12,7 +12,6 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 public class TorchPlaceAction implements EventAction<BlockPlaceEvent> {
     
     private static final String FLUX_POINTS_TORCH_PLACE = "flux_points.torch_place";
-    private static final double DEFAULT_FLUX_POINTS_TORCH_PLACE = 0.25;
 
     private final FluxPerMillion plugin;
 
@@ -31,7 +30,7 @@ public class TorchPlaceAction implements EventAction<BlockPlaceEvent> {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         String blockName = block.getType().toString().replace("_", " ").toLowerCase();
-        double points = plugin.getConfig().getDouble(FLUX_POINTS_TORCH_PLACE, DEFAULT_FLUX_POINTS_TORCH_PLACE);
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_TORCH_PLACE);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "placed", blockName, points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }

@@ -12,7 +12,6 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 public class CampfireBreakAction implements EventAction<BlockBreakEvent> {
     
     private static final String FLUX_POINTS_CAMPFIRE_BREAK = "flux_points.campfire_break";
-    private static final double DEFAULT_FLUX_POINTS_CAMPFIRE_BREAK = -0.5;
 
     private final FluxPerMillion plugin;
 
@@ -31,7 +30,7 @@ public class CampfireBreakAction implements EventAction<BlockBreakEvent> {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         String blockName = block.getType().toString().replace("_", " ").toLowerCase();
-        double points = plugin.getConfig().getDouble(FLUX_POINTS_CAMPFIRE_BREAK, DEFAULT_FLUX_POINTS_CAMPFIRE_BREAK);
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_CAMPFIRE_BREAK);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "removed", blockName, points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }

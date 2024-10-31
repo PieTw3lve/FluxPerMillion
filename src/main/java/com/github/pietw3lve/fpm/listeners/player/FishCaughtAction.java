@@ -14,7 +14,6 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 public class FishCaughtAction implements EventAction<PlayerFishEvent> {
     
     private static final String FLUX_POINTS_OVER_FISH = "flux_points.over_fish";
-    private static final double DEFAULT_FLUX_POINTS_OVER_FISH = 0.25;
 
     private final FluxPerMillion plugin;
     private final FishTrackerHandler fishTracker;
@@ -34,7 +33,7 @@ public class FishCaughtAction implements EventAction<PlayerFishEvent> {
         Player player = event.getPlayer();
         if (fishTracker.hasReachedFishThreshold(player)) {
             List<String> overFishingLines = plugin.getMessageHandler().getOverFishingLines();
-            double points = plugin.getConfig().getDouble(FLUX_POINTS_OVER_FISH, DEFAULT_FLUX_POINTS_OVER_FISH);
+            double points = plugin.getConfig().getDouble(FLUX_POINTS_OVER_FISH);
             Random rand = new Random();
             
             if (!overFishingLines.isEmpty()) {

@@ -13,7 +13,6 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 public class TreeGrowAction implements EventAction<StructureGrowEvent> {
     
     private static final String FLUX_POINTS_TREE_GROWTH = "flux_points.tree_growth";
-    private static final double DEFAULT_FLUX_POINTS_TREE_GROWTH = -0.25;
 
     private final FluxPerMillion plugin;
     private final TreeHandler treeUtils;
@@ -33,7 +32,7 @@ public class TreeGrowAction implements EventAction<StructureGrowEvent> {
     public void execute(StructureGrowEvent event) {
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent();
         long logCount = event.getBlocks().stream().filter(block -> treeUtils.getTreeLogs().contains(block.getType())).count();
-        double points = logCount * plugin.getConfig().getDouble(FLUX_POINTS_TREE_GROWTH, DEFAULT_FLUX_POINTS_TREE_GROWTH);
+        double points = logCount * plugin.getConfig().getDouble(FLUX_POINTS_TREE_GROWTH);
 
         for (BlockState block : event.getBlocks()) {
             if (treeUtils.getTreeLogs().contains(block.getType())) {

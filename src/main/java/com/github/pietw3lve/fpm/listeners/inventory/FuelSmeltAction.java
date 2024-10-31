@@ -14,7 +14,6 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 public class FuelSmeltAction implements EventAction<FurnaceBurnEvent> {
     
     private static final String FLUX_POINTS_FUEL_BURN = "flux_points.fuel_burn";
-    private static final double DEFAULT_FLUX_POINTS_FUEL_BURN = 0.25;
     private static final int SEARCH_RADIUS = 20;
 
     private final FluxPerMillion plugin;
@@ -46,7 +45,7 @@ public class FuelSmeltAction implements EventAction<FurnaceBurnEvent> {
             }
         }
 
-        double points = plugin.getConfig().getDouble(FLUX_POINTS_FUEL_BURN, DEFAULT_FLUX_POINTS_FUEL_BURN) * (event.getBurnTime() / 200.0);
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_FUEL_BURN) * (event.getBurnTime() / 200.0);
         fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), furnaceLocation, closestPlayer, "burned", "fuel", points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }

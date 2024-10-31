@@ -92,13 +92,13 @@ public class FluxMeterHandler {
      * Reloads the flux meter.
      */
     public void reload() {
-        refreshInterval = plugin.getConfig().getInt("flux_meter.refresh_interval", 72000);
-        tier1Threshold = plugin.getConfig().getDouble("flux_meter.tier_1_threshold", 0.25);
-        tier2Threshold = plugin.getConfig().getDouble("flux_meter.tier_2_threshold", 0.50);
-        tier3Threshold = plugin.getConfig().getDouble("flux_meter.tier_3_threshold", 0.75);
-        max = plugin.getConfig().getDouble("flux_meter.maximum_flux_capacity", 1000000.0);
-        min = plugin.getConfig().getDouble("flux_meter.minimum_flux_capacity", 0.0);
-        decay = plugin.getConfig().getInt("flux_meter.decay", -1);
+        refreshInterval = plugin.getConfig().getInt("flux_meter.refresh_interval");
+        tier1Threshold = plugin.getConfig().getDouble("flux_meter.tier_1_threshold");
+        tier2Threshold = plugin.getConfig().getDouble("flux_meter.tier_2_threshold");
+        tier3Threshold = plugin.getConfig().getDouble("flux_meter.tier_3_threshold");
+        max = plugin.getConfig().getDouble("flux_meter.maximum_flux_capacity");
+        min = plugin.getConfig().getDouble("flux_meter.minimum_flux_capacity");
+        decay = plugin.getConfig().getInt("flux_meter.decay");
         
         if (fluxMeterTask != null) {
             plugin.getServer().getScheduler().cancelTask(fluxMeterTask.getTaskId());

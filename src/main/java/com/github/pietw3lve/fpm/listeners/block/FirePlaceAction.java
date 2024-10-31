@@ -12,7 +12,6 @@ import com.github.pietw3lve.fpm.listeners.EventAction;
 public class FirePlaceAction implements EventAction<BlockPlaceEvent> {
     
     private static final String FLUX_POINTS_FIRE_PLACE = "flux_points.flint_and_steel_use";
-    private static final double DEFAULT_FLUX_POINTS_FIRE_PLACE = 0.25;
 
     private final FluxPerMillion plugin;
 
@@ -30,7 +29,7 @@ public class FirePlaceAction implements EventAction<BlockPlaceEvent> {
     public void execute(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
-        double points = plugin.getConfig().getDouble(FLUX_POINTS_FIRE_PLACE, DEFAULT_FLUX_POINTS_FIRE_PLACE);
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_FIRE_PLACE);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "used", "flint and steel", points);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }

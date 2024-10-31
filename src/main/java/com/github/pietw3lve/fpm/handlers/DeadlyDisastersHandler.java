@@ -40,7 +40,6 @@ public class DeadlyDisastersHandler {
     
     private final FluxPerMillion plugin;
     private final FluxMeterHandler fluxMeter;
-    private final List<Double> DEFAULT_FREQUENCY;
     private BukkitTask disastersTask;
     private long minInterval;
     private long maxInterval;
@@ -57,7 +56,6 @@ public class DeadlyDisastersHandler {
     public DeadlyDisastersHandler(FluxPerMillion plugin) {
         this.plugin = plugin;
         this.fluxMeter = plugin.getFluxMeter();
-        this.DEFAULT_FREQUENCY = Arrays.asList(0.1, 0.2, 0.3, 0.3);
         this.disastersTask = null;
         this.enabled = false;
         this.preventDisastersWhenIdle = false;
@@ -378,7 +376,7 @@ public class DeadlyDisastersHandler {
         difficulties = new ArrayList<>();
         
         for (int i = 0; i <= 3; i++) {
-            probabilities.add(plugin.getConfig().getDouble("deadly_disasters.tier_" + i + ".frequency", DEFAULT_FREQUENCY.get(i)));
+            probabilities.add(plugin.getConfig().getDouble("deadly_disasters.tier_" + i + ".frequency"));
             disasters.add(configToList(plugin.getConfig().getConfigurationSection("deadly_disasters.tier_" + i + ".disasters")));
             difficulties.add(configToList(plugin.getConfig().getConfigurationSection("deadly_disasters.tier_" + i + ".difficulties")));
         }
