@@ -25,7 +25,7 @@ public class FluxMeterHandler {
     private double tier3Threshold;
     private double percent;
     private double max;
-    private double min;
+    private double offset;
     private int decay;
 
     /**
@@ -44,8 +44,8 @@ public class FluxMeterHandler {
      */
     public void update() {
         plugin.getDbUtil().deleteOldActions(decay);
-        totalPoints = plugin.getDbUtil().calculateTotalPoints();
-        percent = Math.max(Math.min(totalPoints, max), min) / max;
+        totalPoints = plugin.getDbUtil().calculateTotalPoints() + offset;
+        percent = Math.max(Math.min(totalPoints, max), 0) / max;
         fluxMeter.setProgress(percent);
 
         if (percent >= tier3Threshold) {
@@ -97,7 +97,7 @@ public class FluxMeterHandler {
         tier2Threshold = plugin.getConfig().getDouble("flux_meter.tier_2_threshold");
         tier3Threshold = plugin.getConfig().getDouble("flux_meter.tier_3_threshold");
         max = plugin.getConfig().getDouble("flux_meter.maximum_flux_capacity");
-        min = plugin.getConfig().getDouble("flux_meter.minimum_flux_capacity");
+        offset = plugin.getConfig().getDouble("flux_meter.flux_capacity_offset");
         decay = plugin.getConfig().getInt("flux_meter.decay");
         
         if (fluxMeterTask != null) {
@@ -177,8 +177,8 @@ public class FluxMeterHandler {
      * Returns the minimum flux capacity.
      * @param task
      */
-    public double getMin() {
-        return min;
+    public double getOffset() {
+        return offset;
     }
 
     /**

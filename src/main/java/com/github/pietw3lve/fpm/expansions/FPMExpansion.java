@@ -71,8 +71,8 @@ public class FPMExpansion extends PlaceholderExpansion {
         else if (identifier.equals("max_points")) {
             return String.format("%.0f", plugin.getFluxMeter().getMax());
         }
-        else if (identifier.equals("min_points")) {
-            return String.format("%.0f", plugin.getFluxMeter().getMin());
+        else if (identifier.equals("offset_points")) {
+            return String.format("%.0f", plugin.getFluxMeter().getOffset());
         }
         else if (identifier.equals("status_level")) {
             return String.format("%s", plugin.getFluxMeter().getStatusLevel());

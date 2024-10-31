@@ -1,7 +1,6 @@
 # FluxPerMillion Configuration File
 
 debug:
-    # Enable debug messages in the console.
     version: 1.1.0 # Do not modify this value.
     messages: false
     tree_feller: false
@@ -20,7 +19,7 @@ flux_meter:
     refresh_interval: 72000
     # Total Flux can exceed the minimum and maximum values, but the meter will not display it.
     maximum_flux_capacity: 1000000.0
-    minimum_flux_capacity: 0.0
+    flux_capacity_offset: 0.0
     # The threshold represents the percentage of the maximum flux capacity.
     tier_1_threshold: 0.25
     tier_2_threshold: 0.5
