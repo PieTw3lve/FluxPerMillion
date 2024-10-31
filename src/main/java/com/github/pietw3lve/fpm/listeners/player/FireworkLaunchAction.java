@@ -7,9 +7,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class FireworkLaunchAction implements EventAction<PlayerInteractEvent> {
+public class FireworkLaunchAction implements EventActionUtil<PlayerInteractEvent> {
     
     private static final String FLUX_POINTS_FIREWORK_LAUNCH = "flux_points.firework_launch";
 

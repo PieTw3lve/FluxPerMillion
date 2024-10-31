@@ -8,9 +8,9 @@ import org.bukkit.event.entity.EntityBreedEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class EntityBreedAction implements EventAction<EntityBreedEvent> {
+public class EntityBreedAction implements EventActionUtil<EntityBreedEvent> {
     
     private static final String ENTITY_OVERPOPULATE_LIMIT = "farming.overpopulate_threshold";
     private static final String ENTITY_PRESERVE_LIMIT = "farming.preserved_threshold";

@@ -7,9 +7,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class FirePlaceAction implements EventAction<BlockPlaceEvent> {
+public class FirePlaceAction implements EventActionUtil<BlockPlaceEvent> {
     
     private static final String FLUX_POINTS_FIRE_PLACE = "flux_points.flint_and_steel_use";
 

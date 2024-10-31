@@ -7,9 +7,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class ElytraBoostAction implements EventAction<PlayerInteractEvent> {
+public class ElytraBoostAction implements EventActionUtil<PlayerInteractEvent> {
     
     private static final String FLUX_POINTS_ELYTRA_BOOST = "flux_points.elytra_boost";
 

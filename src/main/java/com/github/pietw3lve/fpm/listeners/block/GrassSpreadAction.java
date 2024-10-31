@@ -6,9 +6,9 @@ import org.bukkit.event.block.BlockSpreadEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class GrassSpreadAction implements EventAction<BlockSpreadEvent> {
+public class GrassSpreadAction implements EventActionUtil<BlockSpreadEvent> {
     
     private static final String FLUX_POINTS_GRASS_GROWTH = "flux_points.grass_growth";
 

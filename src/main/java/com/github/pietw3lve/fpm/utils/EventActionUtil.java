@@ -1,4 +1,4 @@
-package com.github.pietw3lve.fpm.listeners;
+package com.github.pietw3lve.fpm.utils;
 
 import org.bukkit.event.Event;
 
@@ -9,7 +9,7 @@ import org.bukkit.event.Event;
  * @param <T> the type of event that this action can handle
  * @author PieTw3lve
  */
-public interface EventAction<T extends Event> {
+public interface EventActionUtil<T extends Event> {
     /**
      * Checks if the action matches the given event.
      *

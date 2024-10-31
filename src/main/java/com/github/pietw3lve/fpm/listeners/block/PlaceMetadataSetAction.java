@@ -5,9 +5,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class PlaceMetadataSetAction implements EventAction<BlockPlaceEvent> {
+public class PlaceMetadataSetAction implements EventActionUtil<BlockPlaceEvent> {
     
     private final FluxPerMillion plugin;
 

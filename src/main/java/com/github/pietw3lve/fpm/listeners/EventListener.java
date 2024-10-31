@@ -48,10 +48,11 @@ import com.github.pietw3lve.fpm.listeners.player.MinecartOverclockAction;
 import com.github.pietw3lve.fpm.listeners.player.TreeStripAction;
 import com.github.pietw3lve.fpm.listeners.player.UpdateFPMBarAction;
 import com.github.pietw3lve.fpm.listeners.world.TreeGrowAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
 public class EventListener implements Listener {
     
-    private Map<Class<? extends Event>, List<EventAction<? extends Event>>> actions;
+    private Map<Class<? extends Event>, List<EventActionUtil<? extends Event>>> actions;
     
     public EventListener(FluxPerMillion plugin) {
         actions = new HashMap<>();
@@ -137,9 +138,9 @@ public class EventListener implements Listener {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private <T extends Event> void handleEvent(T event) {
-        List<EventAction<? extends Event>> eventActions = actions.get(event.getClass());
+        List<EventActionUtil<? extends Event>> eventActions = actions.get(event.getClass());
         if (eventActions != null) {
-            for (EventAction action : eventActions) {
+            for (EventActionUtil action : eventActions) {
                 if (action.matches(event)) {
                     action.execute(event);
                 }

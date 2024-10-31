@@ -9,9 +9,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.handlers.TreeHandler;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class TreeBreakAction implements EventAction<BlockBreakEvent> {
+public class TreeBreakAction implements EventActionUtil<BlockBreakEvent> {
     
     private static final String FLUX_POINTS_TREE_BREAK = "flux_points.tree_cut";
     private static final String DEBUG_TREE_FELLER = "debug.tree_feller";

@@ -7,9 +7,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class CampfireBreakAction implements EventAction<BlockBreakEvent> {
+public class CampfireBreakAction implements EventActionUtil<BlockBreakEvent> {
     
     private static final String FLUX_POINTS_CAMPFIRE_BREAK = "flux_points.campfire_break";
 

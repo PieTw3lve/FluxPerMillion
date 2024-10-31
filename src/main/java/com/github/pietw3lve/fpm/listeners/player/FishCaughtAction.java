@@ -9,9 +9,9 @@ import org.bukkit.event.player.PlayerFishEvent;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.handlers.FishTrackerHandler;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class FishCaughtAction implements EventAction<PlayerFishEvent> {
+public class FishCaughtAction implements EventActionUtil<PlayerFishEvent> {
     
     private static final String FLUX_POINTS_OVER_FISH = "flux_points.over_fish";
 

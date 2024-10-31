@@ -7,9 +7,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class TorchBreakAction implements EventAction<BlockBreakEvent> {
+public class TorchBreakAction implements EventActionUtil<BlockBreakEvent> {
     
     private static final String FLUX_POINTS_TORCH_BREAK = "flux_points.torch_break";
 

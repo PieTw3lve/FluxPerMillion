@@ -18,9 +18,9 @@ import org.bukkit.util.Vector;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class MinecartBoostAction implements EventAction<PlayerInteractEvent> {
+public class MinecartBoostAction implements EventActionUtil<PlayerInteractEvent> {
 
     private static final String FLUX_POINTS_MINECART_BOOST = "flux_points.minecart_boost";
     private static final String BOOST_ENABLED = "custom_mechanics.minecart.surge_boost.enabled";

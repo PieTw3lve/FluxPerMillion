@@ -8,9 +8,9 @@ import org.bukkit.event.block.BlockGrowEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class CropMaxAgeAction implements EventAction<BlockGrowEvent> {
+public class CropMaxAgeAction implements EventActionUtil<BlockGrowEvent> {
     
     private static final String FLUX_POINTS_CROP_GROWTH = "flux_points.crop_growth";
 

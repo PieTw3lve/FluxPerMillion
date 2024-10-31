@@ -9,9 +9,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class ComposterAction implements EventAction<PlayerInteractEvent> {
+public class ComposterAction implements EventActionUtil<PlayerInteractEvent> {
     
     private static final String FLUX_POINTS_COMPOST_COMPLETE = "flux_points.compost_complete";
 

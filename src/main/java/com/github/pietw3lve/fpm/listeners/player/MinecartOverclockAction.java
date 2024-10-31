@@ -17,9 +17,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class MinecartOverclockAction implements EventAction<PlayerInteractEvent> {
+public class MinecartOverclockAction implements EventActionUtil<PlayerInteractEvent> {
     
     private static final String FLUX_POINTS_MINECART_OVERCLOCK = "flux_points.minecart_overclock";
     private static final String OVERCLOCK_ENABLED = "custom_mechanics.minecart.overclock.enabled";

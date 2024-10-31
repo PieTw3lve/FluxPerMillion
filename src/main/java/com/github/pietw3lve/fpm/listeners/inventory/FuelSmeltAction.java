@@ -9,9 +9,9 @@ import org.bukkit.event.inventory.FurnaceBurnEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class FuelSmeltAction implements EventAction<FurnaceBurnEvent> {
+public class FuelSmeltAction implements EventActionUtil<FurnaceBurnEvent> {
     
     private static final String FLUX_POINTS_FUEL_BURN = "flux_points.fuel_burn";
     private static final int SEARCH_RADIUS = 20;

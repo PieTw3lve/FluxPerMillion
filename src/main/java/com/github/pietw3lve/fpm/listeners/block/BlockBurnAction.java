@@ -4,9 +4,9 @@ import org.bukkit.event.block.BlockBurnEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class BlockBurnAction implements EventAction<BlockBurnEvent> {
+public class BlockBurnAction implements EventActionUtil<BlockBurnEvent> {
     
     private static final String FLUX_POINTS_BLOCK_BURN = "flux_points.block_burn";
 

@@ -8,9 +8,9 @@ import org.bukkit.event.world.StructureGrowEvent;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.handlers.TreeHandler;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class TreeGrowAction implements EventAction<StructureGrowEvent> {
+public class TreeGrowAction implements EventActionUtil<StructureGrowEvent> {
     
     private static final String FLUX_POINTS_TREE_GROWTH = "flux_points.tree_growth";
 

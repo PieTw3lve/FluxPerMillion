@@ -7,9 +7,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class TorchPlaceAction implements EventAction<BlockPlaceEvent> {
+public class TorchPlaceAction implements EventActionUtil<BlockPlaceEvent> {
     
     private static final String FLUX_POINTS_TORCH_PLACE = "flux_points.torch_place";
 

@@ -9,9 +9,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.handlers.TreeHandler;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class TreeStripAction implements EventAction<PlayerInteractEvent> {
+public class TreeStripAction implements EventActionUtil<PlayerInteractEvent> {
 
     private final FluxPerMillion plugin;
     private final TreeHandler treeHandler;

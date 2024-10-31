@@ -9,9 +9,9 @@ import org.bukkit.event.entity.ItemDespawnEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
-import com.github.pietw3lve.fpm.listeners.EventAction;
+import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class ItemDespawnAction implements EventAction<ItemDespawnEvent> {
+public class ItemDespawnAction implements EventActionUtil<ItemDespawnEvent> {
     
     private static final String FLUX_POINTS_POLLUTION = "flux_points.pollution";
     private static final int SEARCH_RADIUS = 40;
