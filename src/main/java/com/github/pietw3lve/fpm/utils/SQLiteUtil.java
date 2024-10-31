@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
+import javax.annotation.Nullable;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -25,9 +28,12 @@ public class SQLiteUtil {
 
     private final FluxPerMillion plugin;
     private SQLiteDataSource dataSource;
-    private static final String INSERT_USER_ACTION_SQL = "INSERT INTO user_actions (uuid, action_type, type, points, world, x, y, z) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String INSERT_NATURAL_ACTION_SQL = "INSERT INTO natural_actions (action_type, type, points, world, x, y, z) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    private static final String CALCULATE_TOTAL_POINTS_SQL = "SELECT COALESCE(SUM(points), 0) as total FROM (SELECT points FROM user_actions UNION ALL SELECT points FROM natural_actions)";
+    private Map<String, String> actionColumns;
+    private static final String INSERT_ACTION_SQL = "INSERT INTO actions (uuid, action_type, type, points, world, x, y, z) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SELECT_ACTIONS_SQL = "SELECT * FROM user_actions WHERE uuid = ? AND timestamp >= ? ORDER BY timestamp DESC";
+    private static final String CALCULATE_TOTAL_POINTS_PLAYER_SQL = "SELECT COALESCE(SUM(points), 0) as total FROM actions WHERE uuid = ?";
+    private static final String CALCULATE_TOTAL_POINTS_SQL = "SELECT COALESCE(SUM(points), 0) as total FROM actions";
+    private static final String DELETE_OLD_ACTIONS_SQL = "DELETE FROM actions WHERE timestamp < DATETIME('now', ? || ' days')";
 
     /**
      * SQLiteHandler Constructor.
@@ -51,37 +57,22 @@ public class SQLiteUtil {
         }
     
         try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement()) {
-            Map<String, String> playerColumns = new HashMap<>();
-            playerColumns.put("id", "INTEGER PRIMARY KEY");
-            playerColumns.put("uuid", "TEXT");
-            playerColumns.put("action_type", "TEXT");
-            playerColumns.put("type", "TEXT");
-            playerColumns.put("timestamp", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
-            playerColumns.put("points", "REAL");
-            playerColumns.put("world", "TEXT");
-            playerColumns.put("x", "INTEGER");
-            playerColumns.put("y", "INTEGER");
-            playerColumns.put("z", "INTEGER");
-            Map<String, String> naturalColumns = new HashMap<>();
-            naturalColumns.put("id", "INTEGER PRIMARY KEY");
-            naturalColumns.put("action_type", "TEXT");
-            naturalColumns.put("type", "TEXT");
-            naturalColumns.put("timestamp", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
-            naturalColumns.put("points", "REAL");
-            naturalColumns.put("world", "TEXT");
-            naturalColumns.put("x", "INTEGER");
-            naturalColumns.put("y", "INTEGER");
-            naturalColumns.put("z", "INTEGER");
+            actionColumns = new HashMap<>();
+            actionColumns.put("id", "INTEGER PRIMARY KEY");
+            actionColumns.put("uuid", "TEXT");
+            actionColumns.put("action_type", "TEXT");
+            actionColumns.put("type", "TEXT");
+            actionColumns.put("timestamp", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
+            actionColumns.put("points", "REAL");
+            actionColumns.put("world", "TEXT");
+            actionColumns.put("x", "INTEGER");
+            actionColumns.put("y", "INTEGER");
+            actionColumns.put("z", "INTEGER");
 
-            statement.execute("CREATE TABLE IF NOT EXISTS user_actions (id INTEGER PRIMARY KEY, uuid TEXT, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, world TEXT, x INTEGER, y INTEGER, z INTEGER)");
-            statement.execute("CREATE TABLE IF NOT EXISTS natural_actions (id INTEGER PRIMARY KEY, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, world TEXT, x INTEGER, y INTEGER, z INTEGER)");
-            
-            for (Map.Entry<String, String> entry : playerColumns.entrySet()) {
-                addMissingColumn(statement, "user_actions", entry.getKey(), entry.getValue());
-            }
+            statement.execute("CREATE TABLE IF NOT EXISTS actions (id INTEGER PRIMARY KEY, uuid TEXT, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, world TEXT, x INTEGER, y INTEGER, z INTEGER)");
 
-            for (Map.Entry<String, String> entry : naturalColumns.entrySet()) {
-                addMissingColumn(statement, "natural_actions", entry.getKey(), entry.getValue());
+            for (Map.Entry<String, String> entry : actionColumns.entrySet()) {
+                addMissingColumn(statement, "actions", entry.getKey(), entry.getValue());
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error initializing database", e);
@@ -96,10 +87,10 @@ public class SQLiteUtil {
      * @param points The amount of points to record.
      * @param location The location of the action.
      */
-    public void recordPlayerAction(Player player, String actionType, String type, double points, Location location) {
+    public void recordAction(@Nullable Player player, String actionType, String type, double points, Location location) {
         if (points == 0) return;
-        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(INSERT_USER_ACTION_SQL)) {
-            statement.setString(1, player.getUniqueId().toString());
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(INSERT_ACTION_SQL)) {
+            statement.setString(1, player != null ? player.getUniqueId().toString() : null);
             statement.setString(2, actionType);
             statement.setString(3, type);
             statement.setDouble(4, points);
@@ -113,29 +104,6 @@ public class SQLiteUtil {
         }
     }
 
-    /**
-     * Records a natural action in the database.
-     * @param actionType The type of action to record.
-     * @param type The type of action to record.
-     * @param points The amount of points to record.
-     * @param location The location of the action.
-     */
-    public void recordNaturalAction(String actionType, String type, double points, Location location) {
-        if (points == 0) return;
-        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(INSERT_NATURAL_ACTION_SQL)) {
-            statement.setString(1, actionType);
-            statement.setString(2, type);
-            statement.setDouble(3, points);
-            statement.setString(4, location.getWorld().getName());
-            statement.setInt(5, location.getBlockX());
-            statement.setInt(6, location.getBlockY());
-            statement.setInt(7, location.getBlockZ());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error recording natural action", e);
-        }
-    }
-
      /**
      * Retrieves a player's actions from the database since a specified date.
      * @param player The player to retrieve the actions for.
@@ -146,7 +114,7 @@ public class SQLiteUtil {
         List<List<Object>> playerActions = new ArrayList<>();
         
         if (player == null) return playerActions;
-        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM user_actions WHERE uuid = ? AND timestamp >= ? ORDER BY timestamp DESC")) {
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(SELECT_ACTIONS_SQL)) {
             statement.setString(1, player.getUniqueId().toString());
             statement.setObject(2, fromDate);
 
@@ -187,7 +155,7 @@ public class SQLiteUtil {
 
         double playerFlux = 0;
     
-        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT COALESCE(SUM(points), 0) as total FROM user_actions WHERE uuid = ?")) {
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(CALCULATE_TOTAL_POINTS_PLAYER_SQL)) {
             statement.setString(1, player.getUniqueId().toString());
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -220,7 +188,7 @@ public class SQLiteUtil {
     }
 
     /**
-     * Delete all user and natural actions that are older than a specified day.
+     * Delete all actions that are older than a specified number of days.
      * @param days The number of days to keep the actions.
      * @return The number of actions deleted.
      */
@@ -228,21 +196,14 @@ public class SQLiteUtil {
         if (days < 0) return 0; // Do not delete actions if days is negative
 
         int actionsDeleted = 0;
-    
-        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement("DELETE FROM user_actions WHERE timestamp < DATETIME('now', ? || ' days')")) {
+
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(DELETE_OLD_ACTIONS_SQL)) {
             statement.setInt(1, -days);
-            actionsDeleted += statement.executeUpdate();
+            actionsDeleted = statement.executeUpdate();
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error deleting old user actions", e);
+            plugin.getLogger().log(Level.SEVERE, "Error deleting old actions", e);
         }
-    
-        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement("DELETE FROM natural_actions WHERE timestamp < DATETIME('now', ? || ' days')")) {
-            statement.setInt(1, -days);
-            actionsDeleted += statement.executeUpdate();
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error deleting old natural actions", e);
-        }
-    
+
         return actionsDeleted;
     }
 
@@ -268,21 +229,62 @@ public class SQLiteUtil {
         }
     }
 
+    /**
+     * Updates the database tables to the latest version.
+     * @param statement The statement to execute the queries on.
+     * @throws SQLException If an error occurs while updating the tables.
+     */
     public void updateTables(Statement statement) throws SQLException {
-        // Drop the ignore column from user_actions
-        statement.execute("CREATE TABLE IF NOT EXISTS user_actions_new (id INTEGER PRIMARY KEY, uuid TEXT, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, world TEXT, x INTEGER, y INTEGER, z INTEGER)");
-        statement.execute("INSERT INTO user_actions_new SELECT id, uuid, action_type, type, timestamp, points, world, x, y, z FROM user_actions");
-        statement.execute("DROP TABLE user_actions");
-        statement.execute("ALTER TABLE user_actions_new RENAME TO user_actions");
-    
-        // Drop the ignore column from natural_actions
-        statement.execute("CREATE TABLE IF NOT EXISTS natural_actions_new (id INTEGER PRIMARY KEY, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, world TEXT, x INTEGER, y INTEGER, z INTEGER)");
-        statement.execute("INSERT INTO natural_actions_new SELECT id, action_type, type, timestamp, points, world, x, y, z FROM natural_actions");
-        statement.execute("DROP TABLE natural_actions");
-        statement.execute("ALTER TABLE natural_actions_new RENAME TO natural_actions");
+        // Check if user_actions table exists
+        boolean userActionsTableExists = false;
+        try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='user_actions'")) {
+            if (rs.next()) {
+                userActionsTableExists = true;
+            }
+        }
+
+        // Check if natural_actions table exists
+        boolean naturalActionsTableExists = false;
+        try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='natural_actions'")) {
+            if (rs.next()) {
+                naturalActionsTableExists = true;
+            }
+        }
+
+        // Add missing columns to user_actions and natural_actions
+        if (userActionsTableExists) {
+            for (Map.Entry<String, String> entry : actionColumns.entrySet()) {
+                addMissingColumn(statement, "user_actions", entry.getKey(), entry.getValue());
+            }
+        }
+        if (naturalActionsTableExists) {
+            for (Map.Entry<String, String> entry : actionColumns.entrySet()) {
+                addMissingColumn(statement, "natural_actions", entry.getKey(), entry.getValue());
+            }
+        }
+
+        // Migrate data from user_actions and natural_actions
+        if (userActionsTableExists) {
+            statement.execute("INSERT INTO actions (uuid, action_type, type, timestamp, points, world, x, y, z) SELECT uuid, action_type, type, timestamp, points, world, x, y, z FROM user_actions");
+        }
+        if (naturalActionsTableExists) {
+            statement.execute("INSERT INTO actions (uuid, action_type, type, timestamp, points, world, x, y, z) SELECT NULL, action_type, type, timestamp, points, world, x, y, z FROM natural_actions");
+        }
+
+        // Drop old tables if they exist
+        if (userActionsTableExists) {
+            statement.execute("DROP TABLE user_actions");
+        }
+        if (naturalActionsTableExists) {
+            statement.execute("DROP TABLE natural_actions");
+        }
     }
 
     public SQLiteDataSource getDataSource() {
         return dataSource;
+    }
+
+    public Map<String, String> getActionColumns() {
+        return actionColumns;
     }
 }

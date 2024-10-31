@@ -25,7 +25,7 @@ flux_meter:
     tier_1_threshold: 0.25
     tier_2_threshold: 0.5
     tier_3_threshold: 0.75
-    # Removes all actions that are older than the specified days (exclusive).
+    # Removes all actions that are older than the specified days.
     # Set to -1 to disable this feature.
     decay: -1
 flux_points:
