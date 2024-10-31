@@ -1,5 +1,9 @@
 package com.github.pietw3lve.fpm;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -17,6 +21,7 @@ import com.github.pietw3lve.fpm.listeners.EventListener;
 import com.github.pietw3lve.fpm.listeners.fpm.FluxLevelChangeListener;
 import com.github.pietw3lve.fpm.listeners.fpm.StatusLevelChangeListener;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil;
+import com.github.pietw3lve.fpm.utils.ConfigUpdaterUtil;
 
 
 public class FluxPerMillion extends JavaPlugin {
@@ -70,6 +75,17 @@ public class FluxPerMillion extends JavaPlugin {
 		this.dbHandler = new SQLiteUtil(this);
 		dbHandler.initializeDatabase();
 		saveDefaultConfig();
+
+		try {
+			ConfigUpdaterUtil.update(this, getResource("config.yml"), new File(getDataFolder().getAbsolutePath(), "config.yml"), Arrays.asList(""));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NoClassDefFoundError e) {
+			getLogger().severe("ConfigUpdater class not found. Ensure the dependency is included.");
+			e.printStackTrace();
+		}
+
+		reloadConfig();
 	}
 
 	/**

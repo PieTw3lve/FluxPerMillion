@@ -83,11 +83,6 @@ public class SQLiteUtil {
             for (Map.Entry<String, String> entry : naturalColumns.entrySet()) {
                 addMissingColumn(statement, "natural_actions", entry.getKey(), entry.getValue());
             }
-
-            // Update old tables to the newest format
-            if (!plugin.getConfig().getString("debug.version").equals("1.1.0")) {
-                updateTables(statement);
-            }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error initializing database", e);
         }
@@ -162,7 +157,7 @@ public class SQLiteUtil {
                     Duration duration = Duration.between(actionTime, LocalDateTime.now(ZoneId.of("UTC")));
 
                     actionInfo.add(resultSet.getInt("id"));
-                    actionInfo.add(player.getName().toString());
+                    actionInfo.add(player.getName());
                     actionInfo.add(resultSet.getString("action_type"));
                     actionInfo.add(resultSet.getString("type"));
                     actionInfo.add(duration);
@@ -273,18 +268,21 @@ public class SQLiteUtil {
         }
     }
 
-    private void updateTables(Statement statement) throws SQLException {
-        statement.execute("CREATE INDEX IF NOT EXISTS idx_points_user_actions ON user_actions (points)");
-        statement.execute("CREATE INDEX IF NOT EXISTS idx_points_natural_actions ON natural_actions (points)");
-
+    public void updateTables(Statement statement) throws SQLException {
         // Drop the ignore column from user_actions
-        statement.execute("CREATE TABLE IF NOT EXISTS user_actions_new AS SELECT id, uuid, action_type, type, timestamp, points, world, x, y, z FROM user_actions");
+        statement.execute("CREATE TABLE IF NOT EXISTS user_actions_new (id INTEGER PRIMARY KEY, uuid TEXT, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, world TEXT, x INTEGER, y INTEGER, z INTEGER)");
+        statement.execute("INSERT INTO user_actions_new SELECT id, uuid, action_type, type, timestamp, points, world, x, y, z FROM user_actions");
         statement.execute("DROP TABLE user_actions");
         statement.execute("ALTER TABLE user_actions_new RENAME TO user_actions");
-
+    
         // Drop the ignore column from natural_actions
-        statement.execute("CREATE TABLE IF NOT EXISTS natural_actions_new AS SELECT id, action_type, type, timestamp, points, world, x, y, z FROM natural_actions");
+        statement.execute("CREATE TABLE IF NOT EXISTS natural_actions_new (id INTEGER PRIMARY KEY, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, world TEXT, x INTEGER, y INTEGER, z INTEGER)");
+        statement.execute("INSERT INTO natural_actions_new SELECT id, action_type, type, timestamp, points, world, x, y, z FROM natural_actions");
         statement.execute("DROP TABLE natural_actions");
         statement.execute("ALTER TABLE natural_actions_new RENAME TO natural_actions");
+    }
+
+    public SQLiteDataSource getDataSource() {
+        return dataSource;
     }
 }
