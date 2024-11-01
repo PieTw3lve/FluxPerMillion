@@ -7,6 +7,7 @@ import java.util.Arrays;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.pietw3lve.fpm.commands.CommandHandler;
@@ -79,13 +80,10 @@ public class FluxPerMillion extends JavaPlugin {
 		this.dbHandler = new SQLiteUtil(this);
 		dbHandler.initializeDatabase();
 		saveDefaultConfig();
-
+		
 		try {
-			ConfigUpdaterUtil.update(this, getResource("config.yml"), new File(getDataFolder().getAbsolutePath(), "config.yml"), Arrays.asList(""));
+			ConfigUpdaterUtil.update((Plugin) this, "config.yml", new File(getDataFolder(), "config.yml"), Arrays.asList("effects", "deadly_disasters"));
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (NoClassDefFoundError e) {
-			getLogger().severe("ConfigUpdater class not found. Ensure the dependency is included.");
 			e.printStackTrace();
 		}
 
