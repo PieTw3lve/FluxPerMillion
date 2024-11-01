@@ -18,15 +18,18 @@ import com.github.pietw3lve.fpm.handlers.MessageHandler;
 import com.github.pietw3lve.fpm.handlers.PlaceholderHandler;
 import com.github.pietw3lve.fpm.handlers.TreeHandler;
 import com.github.pietw3lve.fpm.listeners.EventListener;
+import com.github.pietw3lve.fpm.listeners.GUIListener;
 import com.github.pietw3lve.fpm.listeners.fpm.FluxLevelChangeListener;
 import com.github.pietw3lve.fpm.listeners.fpm.StatusLevelChangeListener;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil;
 import com.github.pietw3lve.fpm.utils.ConfigUpdaterUtil;
+import com.github.pietw3lve.fpm.utils.GUIUtil;
 
 
 public class FluxPerMillion extends JavaPlugin {
 
 	private SQLiteUtil dbHandler;
+	private GUIUtil guiUtil;
 	private MessageHandler messageHandler;
 	private FluxMeterHandler fluxMeter;
 	private DeadlyDisastersHandler deadlyDisasters;
@@ -47,6 +50,7 @@ public class FluxPerMillion extends JavaPlugin {
 	 * Initialize all handlers.
 	 */
 	private void initializeHandlers() {
+		this.guiUtil = new GUIUtil();
 		this.messageHandler = new MessageHandler(this);
 		this.fluxMeter = new FluxMeterHandler(this);
 		this.deadlyDisasters = new DeadlyDisastersHandler(this);
@@ -92,7 +96,7 @@ public class FluxPerMillion extends JavaPlugin {
 	 * Register command executors.
 	 */
 	private void registerCommands() {
-		getCommand("fpm").setExecutor(new CommandHandler(this));
+		getCommand("fpm").setExecutor(new CommandHandler(this, this.guiUtil));
 	}
 
 	/**
@@ -101,6 +105,8 @@ public class FluxPerMillion extends JavaPlugin {
 	private void registerEventListeners() {
 		// Bukkit Listeners
 		getServer().getPluginManager().registerEvents(new EventListener(this), this);
+		// GUI Listener
+		getServer().getPluginManager().registerEvents(new GUIListener(this.guiUtil), this);
 		// Custom Listeners
 		getServer().getPluginManager().registerEvents(new FluxLevelChangeListener(this), this);
 		getServer().getPluginManager().registerEvents(new StatusLevelChangeListener(this), this);

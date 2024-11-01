@@ -75,11 +75,9 @@ public class Lookup implements CommandExecutor {
         }
 
         List<String> playerActionsString = toLookupList(playerActions);
-        List<String> defaultLookupMessages = plugin.getMessageHandler().getDefaultLookupMessages();
         List<String> lookupMessages = plugin.getMessageHandler().getLookupMessages();
         if (lookupMessages.size() < 3) {
             lookupMessages.clear();
-            lookupMessages.addAll(defaultLookupMessages);
         }
 
         try {

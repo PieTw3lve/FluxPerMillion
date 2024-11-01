@@ -295,10 +295,11 @@ messages:
         footer: ' §7(§r%action% §6entries§7)'
     reload: '§aConfiguration file has been reloaded.'
     status:
-        tier_0: '§a§l§nSTABLE§a§l: §aFlux capacity is stable.'
-        tier_1: '§6§l§nWARNING§6§l: §eFlux capacity is becoming a concern.'
-        tier_2: '§6§l§nWARNING§6§l: §cFlux capacity is increasing rapidly.'
-        tier_3: '§4§l§nCRITICAL§4§l: §4Flux capacity is at a critical level!'
+        conditions:
+            tier_0: '§aFlourishing'
+            tier_1: '§eStable'
+            tier_2: '§6Strained'
+            tier_3: '§4Peril'
     toggle:
         enabled: '§aFlux meter is now visible.'
         disabled: '§cFlux meter is now hidden.'

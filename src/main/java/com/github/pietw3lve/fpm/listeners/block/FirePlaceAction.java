@@ -8,6 +8,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class FirePlaceAction implements EventActionUtil<BlockPlaceEvent> {
     
@@ -30,7 +31,7 @@ public class FirePlaceAction implements EventActionUtil<BlockPlaceEvent> {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         double points = plugin.getConfig().getDouble(FLUX_POINTS_FIRE_PLACE);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "used", "flint and steel", points);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "used", "flint and steel", points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 

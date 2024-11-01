@@ -10,6 +10,7 @@ import org.bukkit.event.inventory.FurnaceBurnEvent;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class FuelSmeltAction implements EventActionUtil<FurnaceBurnEvent> {
     
@@ -46,7 +47,7 @@ public class FuelSmeltAction implements EventActionUtil<FurnaceBurnEvent> {
         }
 
         double points = plugin.getConfig().getDouble(FLUX_POINTS_FUEL_BURN) * (event.getBurnTime() / 200.0);
-        fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), furnaceLocation, closestPlayer, "burned", "fuel", points);
+        fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), furnaceLocation, closestPlayer, "burned", "fuel", points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 }

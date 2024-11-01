@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class FluxLevelChangeListener implements Listener {
     
@@ -37,10 +38,11 @@ public class FluxLevelChangeListener implements Listener {
         String type = event.getType();
         BigDecimal bd = new BigDecimal(event.getPoints()).setScale(5, RoundingMode.HALF_UP);
         double points = bd.doubleValue();
+        ActionCategory category = event.getCategory();
 
         if (points == 0) return;
 
-        plugin.getDbUtil().recordAction(player, actionType, type, points, location);
+        plugin.getDbUtil().recordAction(player, actionType, type, points, location, category);
 
         if (event.isPlayerAction()) {
             plugin.sendDebugMessage(String.format("%s %s %s - Added %.2f point(s). (x%d/y%d/z%d/%s)", 

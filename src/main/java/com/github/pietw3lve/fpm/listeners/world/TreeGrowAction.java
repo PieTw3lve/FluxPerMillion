@@ -2,13 +2,13 @@ package com.github.pietw3lve.fpm.listeners.world;
 
 import org.bukkit.TreeType;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Player;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.handlers.TreeHandler;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class TreeGrowAction implements EventActionUtil<StructureGrowEvent> {
     
@@ -40,12 +40,7 @@ public class TreeGrowAction implements EventActionUtil<StructureGrowEvent> {
             }
         }
 
-        if (event.getPlayer() != null) {
-            Player player = event.getPlayer();
-            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getLocation(), player, "grown", "tree", points);
-        } else {
-            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getLocation(), null, "grown", "tree", points);
-        }
+        fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getLocation(), event.getPlayer(), "grown", "tree", points, ActionCategory.AGRICULTURE);
 
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }

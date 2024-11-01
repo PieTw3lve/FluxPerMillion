@@ -33,7 +33,6 @@ public class Toggle implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        List<String> defaultToggleMessages = plugin.getMessageHandler().getDefaultToggleMessages();
         List<String> toggleMessages = plugin.getMessageHandler().getToggleMessages();
         FluxMeterHandler fluxMeter = plugin.getFluxMeter();
 
@@ -41,13 +40,13 @@ public class Toggle implements CommandExecutor {
             try {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', toggleMessages.get(0)));
             } catch (IndexOutOfBoundsException e) {
-                player.sendMessage(defaultToggleMessages.get(0));
+                plugin.getLogger().warning("Toggle message not found.");    
             }
         } else {
             try {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', toggleMessages.get(1)));
             } catch (IndexOutOfBoundsException e) {
-                player.sendMessage(defaultToggleMessages.get(1));
+                plugin.getLogger().warning("Toggle message not found.");
             }
         }
 

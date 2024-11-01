@@ -10,6 +10,7 @@ import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.handlers.FishTrackerHandler;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class FishCaughtAction implements EventActionUtil<PlayerFishEvent> {
     
@@ -40,7 +41,7 @@ public class FishCaughtAction implements EventActionUtil<PlayerFishEvent> {
                 player.sendMessage(overFishingLines.get(rand.nextInt(overFishingLines.size())));
             }
 
-            FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "over", "fishing", points);
+            FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "over", "fishing", points, ActionCategory.WILDLIFE);
             plugin.getServer().getPluginManager().callEvent(fluxEvent);
         }
         fishTracker.addFish(event.getPlayer());

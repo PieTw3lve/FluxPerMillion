@@ -8,6 +8,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class FireworkLaunchAction implements EventActionUtil<PlayerInteractEvent> {
     
@@ -30,7 +31,7 @@ public class FireworkLaunchAction implements EventActionUtil<PlayerInteractEvent
     public void execute(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         double points = plugin.getConfig().getDouble(FLUX_POINTS_FIREWORK_LAUNCH);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "used", "firework", points);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "used", "firework", points, ActionCategory.POLLUTION);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 

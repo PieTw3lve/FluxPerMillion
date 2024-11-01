@@ -11,20 +11,23 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
+import com.github.pietw3lve.fpm.utils.GUIUtil;
 
 import net.md_5.bungee.api.ChatColor;
 
 public class CommandHandler implements CommandExecutor, TabCompleter {
     
     private final FluxPerMillion plugin;
+    private final GUIUtil guiUtil;
     private final char[] timeUnits = { 'w', 'd', 'h', 'm', 's' };
 
     /**
      * CommandHandler Constructor.
      * @param plugin
      */
-    public CommandHandler(FluxPerMillion plugin) {
+    public CommandHandler(FluxPerMillion plugin, GUIUtil guiUtil) {
         this.plugin = plugin;
+        this.guiUtil = guiUtil;
     }
 
     @Override
@@ -61,7 +64,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', playerOnlyCommandMessage));
                     return true;
                 } else {
-                    return new Status(plugin).onCommand(sender, command, label, args);
+                    return new Status(plugin, guiUtil).onCommand(sender, command, label, args);
                 }
             case "lookup":
                 if (!sender.hasPermission("fpm.lookup")) {

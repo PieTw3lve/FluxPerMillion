@@ -9,6 +9,7 @@ import org.bukkit.event.block.BlockGrowEvent;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class CropMaxAgeAction implements EventActionUtil<BlockGrowEvent> {
     
@@ -31,7 +32,7 @@ public class CropMaxAgeAction implements EventActionUtil<BlockGrowEvent> {
         Block block = event.getBlock();
         Player player = block.hasMetadata("fpm:fertilized") ? (Player) block.getMetadata("fpm:fertilized").get(0).value() : null;
         double points = plugin.getConfig().getDouble(FLUX_POINTS_CROP_GROWTH);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "grown", "crop", points);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "grown", "crop", points, ActionCategory.AGRICULTURE);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 

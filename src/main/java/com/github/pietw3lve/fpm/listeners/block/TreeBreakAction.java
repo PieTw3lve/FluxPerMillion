@@ -10,6 +10,7 @@ import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.handlers.TreeHandler;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class TreeBreakAction implements EventActionUtil<BlockBreakEvent> {
     
@@ -37,7 +38,7 @@ public class TreeBreakAction implements EventActionUtil<BlockBreakEvent> {
         Set<Block> tree = treeUtils.getLiveTree(block);
         if (!tree.isEmpty()) {
             double points = plugin.getConfig().getDouble(FLUX_POINTS_TREE_BREAK) * treeUtils.getTreeLogsCount(tree);
-            FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "cut", "tree", points);
+            FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "cut", "tree", points, ActionCategory.AGRICULTURE);
             plugin.getServer().getPluginManager().callEvent(fluxEvent);
             if (plugin.getConfig().getBoolean(DEBUG_TREE_FELLER)) treeUtils.breakTree(tree);
         }

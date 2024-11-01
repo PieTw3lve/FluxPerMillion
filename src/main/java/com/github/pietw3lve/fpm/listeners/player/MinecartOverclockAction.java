@@ -18,6 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class MinecartOverclockAction implements EventActionUtil<PlayerInteractEvent> {
     
@@ -83,7 +84,7 @@ public class MinecartOverclockAction implements EventActionUtil<PlayerInteractEv
         }, duration);
 
         double points = plugin.getConfig().getDouble(FLUX_POINTS_MINECART_OVERCLOCK);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "overclocked", "minecart", points);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "overclocked", "minecart", points, ActionCategory.POLLUTION);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 

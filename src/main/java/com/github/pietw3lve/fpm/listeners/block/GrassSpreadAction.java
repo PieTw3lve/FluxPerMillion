@@ -7,6 +7,7 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class GrassSpreadAction implements EventActionUtil<BlockSpreadEvent> {
     
@@ -28,7 +29,7 @@ public class GrassSpreadAction implements EventActionUtil<BlockSpreadEvent> {
     public void execute(BlockSpreadEvent event) {
         Block source = event.getSource();
         double points = plugin.getConfig().getDouble(FLUX_POINTS_GRASS_GROWTH);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), source.getLocation(), null, "grown", "grass", points);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), source.getLocation(), null, "grown", "grass", points, ActionCategory.AGRICULTURE);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 

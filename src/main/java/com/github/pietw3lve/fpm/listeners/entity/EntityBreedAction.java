@@ -9,6 +9,7 @@ import org.bukkit.event.entity.EntityBreedEvent;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class EntityBreedAction implements EventActionUtil<EntityBreedEvent> {
     
@@ -50,10 +51,10 @@ public class EntityBreedAction implements EventActionUtil<EntityBreedEvent> {
 
         if (nearbyEntitiesCount > entityOverpopulateLimit) {
             double points = plugin.getConfig().getDouble(FLUX_POINTS_ENTITY_OVERPOPULATE);
-            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), entity.getLocation(), player, "overpopulated", entityType.toString().toLowerCase(), points);
+            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), entity.getLocation(), player, "overpopulated", entityType.toString().toLowerCase(), points, ActionCategory.WILDLIFE);
         } else if (nearbyEntitiesCount <= entityPreserveLimit) {
             double points = plugin.getConfig().getDouble(FLUX_POINTS_ENTITY_PRESERVE);
-            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), entity.getLocation(), player, "preserved", entityType.toString().toLowerCase(), points);
+            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), entity.getLocation(), player, "preserved", entityType.toString().toLowerCase(), points, ActionCategory.WILDLIFE);
         }
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }

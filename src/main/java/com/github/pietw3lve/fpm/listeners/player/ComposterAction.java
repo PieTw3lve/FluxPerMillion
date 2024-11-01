@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class ComposterAction implements EventActionUtil<PlayerInteractEvent> {
     
@@ -35,7 +36,7 @@ public class ComposterAction implements EventActionUtil<PlayerInteractEvent> {
         Levelled composter = (Levelled) block.getBlockData();
         if (composter.getLevel() == composter.getMaximumLevel()) {
             double points = plugin.getConfig().getDouble(FLUX_POINTS_COMPOST_COMPLETE);
-            FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "filled", "composter", points);
+            FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "filled", "composter", points, ActionCategory.AGRICULTURE);
             plugin.getServer().getPluginManager().callEvent(fluxEvent);
         }
     }

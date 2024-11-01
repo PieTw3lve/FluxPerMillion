@@ -10,6 +10,7 @@ import org.bukkit.event.entity.ItemDespawnEvent;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class ItemDespawnAction implements EventActionUtil<ItemDespawnEvent> {
     
@@ -46,7 +47,7 @@ public class ItemDespawnAction implements EventActionUtil<ItemDespawnEvent> {
         }
 
         double points = plugin.getConfig().getDouble(FLUX_POINTS_POLLUTION);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), itemLocation, closestPlayer, "despawned", "item", points);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), itemLocation, closestPlayer, "despawned", "item", points, ActionCategory.POLLUTION);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 }

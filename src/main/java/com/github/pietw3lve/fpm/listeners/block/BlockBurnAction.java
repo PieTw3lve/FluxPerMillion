@@ -5,6 +5,7 @@ import org.bukkit.event.block.BlockBurnEvent;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class BlockBurnAction implements EventActionUtil<BlockBurnEvent> {
     
@@ -24,7 +25,7 @@ public class BlockBurnAction implements EventActionUtil<BlockBurnEvent> {
     @Override
     public void execute(BlockBurnEvent event) {
         double points = plugin.getConfig().getDouble(FLUX_POINTS_BLOCK_BURN);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getBlock().getLocation(), null, "burned", "block", points);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getBlock().getLocation(), null, "burned", "block", points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 }

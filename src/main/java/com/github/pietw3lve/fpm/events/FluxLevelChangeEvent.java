@@ -9,6 +9,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import com.github.pietw3lve.fpm.handlers.FluxMeterHandler;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class FluxLevelChangeEvent extends Event implements Cancellable {
     
@@ -19,19 +20,21 @@ public class FluxLevelChangeEvent extends Event implements Cancellable {
     private String actionType;
     private String type;
     private double points;
+    private ActionCategory category;
     private boolean isCancelled;
 
     /**
      * FluxLevelChangeEvent Constructor.
      * @param plugin The FluxPerMillion plugin.
      */
-    public FluxLevelChangeEvent(FluxMeterHandler fluxMeter, Location location, @Nullable Player player, String actionType, String type, double points) {
+    public FluxLevelChangeEvent(FluxMeterHandler fluxMeter, Location location, @Nullable Player player, String actionType, String type, double points, ActionCategory category) {
         this.fluxMeter = fluxMeter;
         this.location = location;
         this.player = player;
         this.actionType = actionType;
         this.type = type;
         this.points = points;
+        this.category = category;
         this.isCancelled = points != 0 ? false : true;
     }
 
@@ -44,6 +47,7 @@ public class FluxLevelChangeEvent extends Event implements Cancellable {
         this.actionType = null;
         this.type = null;
         this.points = 0;
+        this.category = ActionCategory.DEFAULT;
         this.isCancelled = true;
     }
 
@@ -120,6 +124,14 @@ public class FluxLevelChangeEvent extends Event implements Cancellable {
      */
     public double getPoints() {
         return points;
+    }
+
+    /**
+     * Returns the category.
+     * @return The category.
+     */
+    public ActionCategory getCategory() {
+        return category;
     }
 
     /**

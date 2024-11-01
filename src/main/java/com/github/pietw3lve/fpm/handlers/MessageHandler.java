@@ -1,7 +1,6 @@
 package com.github.pietw3lve.fpm.handlers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -11,9 +10,6 @@ import com.github.pietw3lve.fpm.FluxPerMillion;
 public class MessageHandler {
     
     private final FluxPerMillion plugin;
-    private final List<String> defaultLookupMessages;
-    private final List<String> defaultStatusMessages;
-    private final List<String> defaultToggleMessages;
     private String inspectMessage;
     private List<String> lookupMessages;
     private String reloadMessage;
@@ -35,21 +31,6 @@ public class MessageHandler {
      */
     public MessageHandler(FluxPerMillion plugin) {
         this.plugin = plugin;
-        this.defaultLookupMessages = Arrays.asList(
-            "§r----- §6FluxPerMillion | Lookup Results §r-----",
-            " §6Page §r%index%/%total% ",
-            " §7(§r%action% §6entries§7)"
-        );
-        this.defaultStatusMessages = Arrays.asList(
-            "§a§l§nSTABLE§a§l: §aFlux capacity is stable.",
-            "§6§l§nWARNING§6§l: §eFlux capacity is becoming a concern.",
-            "§6§l§nWARNING§6§l: §cFlux capacity is increasing rapidly.",
-            "§4§l§nCRITICAL§4§l: §4Flux capacity is at a critical level!"
-        );
-        this.defaultToggleMessages = Arrays.asList(
-            "§aFlux meter is now visible.",
-            "§cFlux meter is now hidden."
-        );
         this.reload();
     }
 
@@ -60,7 +41,7 @@ public class MessageHandler {
         inspectMessage = plugin.getConfig().getString("messages.inspect");
         lookupMessages = configToList(plugin.getConfig().getConfigurationSection("messages.lookup"));
         reloadMessage = plugin.getConfig().getString("messages.reload");
-        statusMessages = configToList(plugin.getConfig().getConfigurationSection("messages.status"));
+        statusMessages = configToList(plugin.getConfig().getConfigurationSection("messages.status.conditions"));
         toggleMessages = configToList(plugin.getConfig().getConfigurationSection("messages.toggle"));
         overFishingLines = plugin.getConfig().getStringList("messages.fishing.over_fishing");
         noPermissionMessage = plugin.getConfig().getString("messages.errors.no_permission");
@@ -99,13 +80,6 @@ public class MessageHandler {
         return inspectMessage;
     }
 
-    /**
-     * Get default lookup messages.
-     * @return List of default lookup messages.
-     */
-    public List<String> getDefaultLookupMessages() {
-        return defaultLookupMessages;
-    }
 
     /**
      * Get lookup messages.
@@ -124,27 +98,11 @@ public class MessageHandler {
     }
 
     /**
-     * Get default status messages.
-     * @return List of default status messages.
-     */
-    public List<String> getDefaultStatusMessages() {
-        return defaultStatusMessages;
-    }
-
-    /**
      * Get status messages.
      * @return List of status messages.
      */
     public List<String> getStatusMessages() {
         return statusMessages;
-    }
-
-    /**
-     * Get default toggle messages.
-     * @return List of default toggle messages.
-     */
-    public List<String> getDefaultToggleMessages() {
-        return defaultToggleMessages;
     }
 
     /**

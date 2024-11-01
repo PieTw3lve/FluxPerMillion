@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.StatusLevelChangeEvent;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class FluxMeterHandler {
     
@@ -27,6 +28,11 @@ public class FluxMeterHandler {
     private double max;
     private double offset;
     private int decay;
+    private long lastRunTime;
+    private double energyPoints;
+    private double agriculturePoints;
+    private double pollutionPoints;
+    private double wildlifePoints;
 
     /**
      * FluxMeterHandler Constructor.
@@ -36,6 +42,7 @@ public class FluxMeterHandler {
         this.plugin = plugin;
         this.fluxMeterTask = null;
         this.fluxMeter = plugin.getServer().createBossBar("Flux Meter", BarColor.RED, BarStyle.SEGMENTED_12);
+        this.lastRunTime = System.currentTimeMillis();
         this.reload();
     }
 
@@ -45,6 +52,10 @@ public class FluxMeterHandler {
     public void update() {
         plugin.getDbUtil().deleteOldActions(decay);
         totalPoints = plugin.getDbUtil().calculateTotalPoints() + offset;
+        energyPoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.ENERGY));
+        agriculturePoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.AGRICULTURE));
+        pollutionPoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.POLLUTION));
+        wildlifePoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.WILDLIFE));
         percent = Math.max(Math.min(totalPoints, max), 0) / max;
         fluxMeter.setProgress(percent);
 
@@ -69,6 +80,7 @@ public class FluxMeterHandler {
             plugin.getServer().getPluginManager().callEvent(event);
             statusLevel = 0;
         }
+        lastRunTime = System.currentTimeMillis();
     }
 
     /**
@@ -174,7 +186,7 @@ public class FluxMeterHandler {
     }
 
     /**
-     * Returns the minimum flux capacity.
+     * Returns the offset flux.
      * @param task
      */
     public double getOffset() {
@@ -186,5 +198,47 @@ public class FluxMeterHandler {
      */
     public void setFluxMeterTask(BukkitTask task) {
         fluxMeterTask = task;
+    }
+
+    /**
+     * Returns the time until the next run.
+     * @return long
+     */
+    public long getTimeUntilNextRun() {
+        long currentTime = System.currentTimeMillis();
+        long elapsedTime = currentTime - lastRunTime;
+        return refreshInterval * 50 - elapsedTime; // refreshInterval is in ticks (20 ticks = 1 second)
+    }
+
+    /**
+     * Returns the energy points.
+     * @return double
+     */
+    public double getEnergyPoints() {
+        return energyPoints;
+    }
+
+    /**
+     * Returns the agriculture points.
+     * @return double
+     */
+    public double getAgriculturePoints() {
+        return agriculturePoints;
+    }
+
+    /**
+     * Returns the pollution points.
+     * @return double
+     */
+    public double getPollutionPoints() {
+        return pollutionPoints;
+    }
+
+    /**
+     * Returns the wildlife points.
+     * @return double
+     */
+    public double getWildlifePoints() {
+        return wildlifePoints;
     }
 }

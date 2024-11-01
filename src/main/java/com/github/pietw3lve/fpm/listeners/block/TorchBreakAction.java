@@ -8,6 +8,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
+import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class TorchBreakAction implements EventActionUtil<BlockBreakEvent> {
     
@@ -31,7 +32,7 @@ public class TorchBreakAction implements EventActionUtil<BlockBreakEvent> {
         Block block = event.getBlock();
         String blockName = block.getType().toString().replace("_", " ").toLowerCase();
         double points = plugin.getConfig().getDouble(FLUX_POINTS_TORCH_BREAK);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "removed", blockName, points);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "removed", blockName, points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 

@@ -29,10 +29,11 @@ public class SQLiteUtil {
     private final FluxPerMillion plugin;
     private SQLiteDataSource dataSource;
     private Map<String, String> actionColumns;
-    private static final String INSERT_ACTION_SQL = "INSERT INTO actions (uuid, action_type, type, points, world, x, y, z) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SELECT_ACTIONS_SQL = "SELECT * FROM user_actions WHERE uuid = ? AND timestamp >= ? ORDER BY timestamp DESC";
-    private static final String CALCULATE_TOTAL_POINTS_PLAYER_SQL = "SELECT COALESCE(SUM(points), 0) as total FROM actions WHERE uuid = ?";
+    private static final String INSERT_ACTION_SQL = "INSERT INTO actions (uuid, action_type, type, points, world, x, y, z, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SELECT_ACTIONS_SQL = "SELECT * FROM actions WHERE uuid = ? AND timestamp >= ? ORDER BY timestamp DESC";
     private static final String CALCULATE_TOTAL_POINTS_SQL = "SELECT COALESCE(SUM(points), 0) as total FROM actions";
+    private static final String CALCULATE_TOTAL_POINTS_FOR_PLAYER_SQL = "SELECT COALESCE(SUM(points), 0) as total FROM actions WHERE uuid = ?";
+    private static final String CALCULATE_TOTAL_POINTS_FOR_CATEGORY_SQL = "SELECT COALESCE(SUM(points), 0) as total FROM actions WHERE category = ?";
     private static final String DELETE_OLD_ACTIONS_SQL = "DELETE FROM actions WHERE timestamp < DATETIME('now', ? || ' days')";
 
     /**
@@ -68,14 +69,45 @@ public class SQLiteUtil {
             actionColumns.put("x", "INTEGER");
             actionColumns.put("y", "INTEGER");
             actionColumns.put("z", "INTEGER");
+            actionColumns.put("category", "INTEGER DEFAULT 0");
 
-            statement.execute("CREATE TABLE IF NOT EXISTS actions (id INTEGER PRIMARY KEY, uuid TEXT, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, world TEXT, x INTEGER, y INTEGER, z INTEGER)");
+            statement.execute("CREATE TABLE IF NOT EXISTS actions (id INTEGER PRIMARY KEY, uuid TEXT, action_type TEXT, type TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, points REAL, world TEXT, x INTEGER, y INTEGER, z INTEGER, category INTEGER DEFAULT 0)");
 
             for (Map.Entry<String, String> entry : actionColumns.entrySet()) {
                 addMissingColumn(statement, "actions", entry.getKey(), entry.getValue());
             }
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error initializing database", e);
+        }
+    }
+
+    /**
+     * Enum for action categories.
+     */
+    public enum ActionCategory {
+        DEFAULT(0),
+        ENERGY(1),
+        AGRICULTURE(2),
+        POLLUTION(3),
+        WILDLIFE(4);
+
+        private final int value;
+
+        ActionCategory(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public static ActionCategory fromValue(int value) {
+            for (ActionCategory category : values()) {
+                if (category.value == value) {
+                    return category;
+                }
+            }
+            return DEFAULT;
         }
     }
 
@@ -87,7 +119,7 @@ public class SQLiteUtil {
      * @param points The amount of points to record.
      * @param location The location of the action.
      */
-    public void recordAction(@Nullable Player player, String actionType, String type, double points, Location location) {
+    public void recordAction(@Nullable Player player, String actionType, String type, double points, Location location, ActionCategory category) {
         if (points == 0) return;
         try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(INSERT_ACTION_SQL)) {
             statement.setString(1, player != null ? player.getUniqueId().toString() : null);
@@ -98,6 +130,7 @@ public class SQLiteUtil {
             statement.setInt(6, location.getBlockX());
             statement.setInt(7, location.getBlockY());
             statement.setInt(8, location.getBlockZ());
+            statement.setInt(9, category.getValue());
             statement.executeUpdate();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error recording user action", e);
@@ -134,6 +167,7 @@ public class SQLiteUtil {
                     actionInfo.add(resultSet.getInt("x"));
                     actionInfo.add(resultSet.getInt("y"));
                     actionInfo.add(resultSet.getInt("z"));
+                    actionInfo.add(ActionCategory.fromValue(resultSet.getInt("category")));
 
                     playerActions.add(actionInfo);
                 }
@@ -155,7 +189,7 @@ public class SQLiteUtil {
 
         double playerFlux = 0;
     
-        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(CALCULATE_TOTAL_POINTS_PLAYER_SQL)) {
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(CALCULATE_TOTAL_POINTS_FOR_PLAYER_SQL)) {
             statement.setString(1, player.getUniqueId().toString());
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -184,6 +218,27 @@ public class SQLiteUtil {
             plugin.getLogger().log(Level.SEVERE, "Error calculating total points", e);
         }
     
+        return Math.max(0, totalPoints);
+    }
+
+    /**
+     * Calculates the total points for a specific category.
+     * @param category The category to calculate the total points for.
+     * @return The total points for the specified category.
+     */
+    public double calculateTotalPointsForCategory(ActionCategory category) {
+        double totalPoints = 0;
+
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(CALCULATE_TOTAL_POINTS_FOR_CATEGORY_SQL)) {
+            statement.setInt(1, category.getValue());
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                totalPoints = resultSet.getDouble("total");
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error calculating total points for category", e);
+        }
+
         return Math.max(0, totalPoints);
     }
 
