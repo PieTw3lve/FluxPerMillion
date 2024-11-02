@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.utils.ListPaginatorUtil;
 
+import co.aikar.commands.annotation.Optional;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -22,7 +21,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
-public class Lookup implements CommandExecutor {
+public class Lookup {
     
     private final FluxPerMillion plugin;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -35,35 +34,22 @@ public class Lookup implements CommandExecutor {
         this.plugin = plugin;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        OfflinePlayer player = plugin.getPlayer(args[1]);
+    public boolean execute(CommandSender sender, OfflinePlayer player, String duration, @Optional int page) {
         String timeString = null;
         
         try {
-            timeString = parseTimeString(args[2]);
+            timeString = parseTimeString(duration);
         } catch (Exception e) {
             String invalidTimeDurationMessage = plugin.getMessageHandler().getInvalidTimeDurationMessage();
             String usage = "/fpm lookup <player> <duration> <page>";
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', invalidTimeDurationMessage).replace("%usage%", usage));
             return true;
         }
-        
-        int page; 
 
         if (timeString == null) {
             String invalidTimeDurationMessage = plugin.getMessageHandler().getInvalidTimeDurationMessage();
             String usage = "/fpm lookup <player> <duration> <page>";
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', invalidTimeDurationMessage).replace("%usage%", usage));
-            return true;
-        }
-
-        try {
-            page = (args.length == 4) ? Integer.parseInt(args[3]) : 1;
-        } catch (NumberFormatException e) {
-            String invalidPageNumberMessage = plugin.getMessageHandler().getInvalidPageNumberMessage();
-            String usage = "/fpm lookup <player> <duration> <page>";
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', invalidPageNumberMessage).replace("%usage%", usage));
             return true;
         }
 
@@ -82,8 +68,8 @@ public class Lookup implements CommandExecutor {
 
         try {
             ListPaginatorUtil<String, String> paginator = new ListPaginatorUtil<>(5, ListPaginatorUtil.MessagePlatform.NORMAL, String::toString);
-            TextComponent previousArrow = getTextCommand("/fpm lookup " + args[1] + " " + args[2] + " " + (page - 1), "◀", "Previous page");
-            TextComponent nextArrow = getTextCommand("/fpm lookup " + args[1] + " " + args[2] + " " + (page + 1), "▶", "Next page");
+            TextComponent previousArrow = getTextCommand("/fpm lookup " + player.getName() + " " + duration + " " + (page - 1), "◀", "Previous page");
+            TextComponent nextArrow = getTextCommand("/fpm lookup " + player.getName() + " " + duration + " " + (page + 1), "▶", "Next page");
             paginator.setHeader((target, pageIndex, pageCount) -> target.sendMessage(ChatColor.translateAlternateColorCodes('&', lookupMessages.get(0).replace("%index%", String.valueOf(pageIndex)).replace("%total%", String.valueOf(pageCount)).replace("%action%", String.valueOf(playerActions.size())))));
             paginator.setFooter((target, pageIndex, pageCount) -> target.spigot().sendMessage(previousArrow, new TextComponent(ChatColor.translateAlternateColorCodes('&', lookupMessages.get(1)).replace("%index%", String.valueOf(pageIndex)).replace("%total%", String.valueOf(pageCount)).replace("%action%", String.valueOf(playerActions.size()))), nextArrow, new TextComponent(ChatColor.translateAlternateColorCodes('&', lookupMessages.get(2).replace("%index%", String.valueOf(pageIndex)).replace("%total%", String.valueOf(pageCount)).replace("%action%", String.valueOf(playerActions.size()))))));
             paginator.sendPage(playerActionsString, sender, page);

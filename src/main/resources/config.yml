@@ -1,330 +1,285 @@
 # FluxPerMillion Configuration File
 
 debug:
-    version: 1.1.0 # Do not modify this value.
-    messages: false
-    tree_feller: false
+  version: 1.1.0 # Do not modify this value.
+  language: en
+  messages: false
+  tree_feller: false
 farming:
-    # The threshold represents the number of entities of the same type (e.g. cows, pigs, etc.)
-    overpopulate_threshold: 20
-    preserved_threshold: 7
-    search_radius: 10
+  # The threshold represents the number of entities of the same type (e.g. cows, pigs, etc.)
+  overpopulate_threshold: 20
+  preserved_threshold: 7
+  search_radius: 10
 fishing:
-    # Every fish caught will reset the timer.
-    # Time is in ticks (20 ticks = 1 second).
-    timer: 36000
-    threshold: 50
+  # Every fish caught will reset the timer.
+  # Time is in ticks (20 ticks = 1 second).
+  timer: 36000
+  threshold: 50
 flux_meter:
-    # Refresh interval is in ticks (20 ticks = 1 second).
-    refresh_interval: 72000
-    # Total Flux can exceed the minimum and maximum values, but the meter will not display it.
-    maximum_flux_capacity: 1000000.0
-    flux_capacity_offset: 0.0
-    # The threshold represents the percentage of the maximum flux capacity.
-    tier_1_threshold: 0.25
-    tier_2_threshold: 0.5
-    tier_3_threshold: 0.75
-    # Removes all actions that are older than the specified days.
-    # Set to -1 to disable this feature.
-    decay: -1
+  # Refresh interval is in ticks (20 ticks = 1 second).
+  refresh_interval: 72000
+  # Total Flux can exceed the minimum and maximum values, but the meter will not display it.
+  maximum_flux_capacity: 1000000.0
+  flux_capacity_offset: 0.0
+  # The threshold represents the percentage of the maximum flux capacity.
+  tier_1_threshold: 0.25
+  tier_2_threshold: 0.5
+  tier_3_threshold: 0.75
+  # Removes all actions that are older than the specified days.
+  # Set to -1 to disable this feature.
+  decay: -1
 flux_points:
-    # Set action value to 0 to disable them.
-    block_burn: 2.0
-    campfire_break: -0.5
-    campfire_place: 0.5
-    coal_break: 0.25
-    compost_complete: -2.0
-    crop_growth: -0.25
-    elytra_boost: 1.0
-    entity_overpopulate: 0.25
-    entity_preserve: -2.0
-    firework_launch: 0.25
-    flint_and_steel_use: 0.25
-    fuel_burn: 0.25 # Multiply by burn time
-    grass_growth: -0.05
-    over_fish: 0.25
-    minecart_boost: 0.25
-    minecart_overclock: 3.0
-    pollution: 0.25
-    torch_break: -0.25
-    torch_place: 0.25
-    tree_cut: 0.25 # Multiply by number of logs
-    tree_growth: -0.25 # Multiply by number of logs
+  # Set action value to 0 to disable them.
+  block_burn: 2.0
+  campfire_break: -0.5
+  campfire_place: 0.5
+  coal_break: 0.25
+  compost_complete: -2.0
+  crop_growth: -0.25
+  elytra_boost: 1.0
+  entity_overpopulate: 0.25
+  entity_preserve: -2.0
+  firework_launch: 0.25
+  flint_and_steel_use: 0.25
+  fuel_burn: 0.25 # Multiply by burn time
+  grass_growth: -0.05
+  over_fish: 0.25
+  minecart_boost: 0.25
+  minecart_overclock: 3.0
+  pollution: 0.25
+  torch_break: -0.25
+  torch_place: 0.25
+  tree_cut: 0.25 # Multiply by number of logs
+  tree_growth: -0.25 # Multiply by number of logs
 effects:
-    # Effects are applied to players when the flux meter reaches a specific tier.
-    # Interval is in ticks (20 ticks = 1 second).
-    refresh_interval: 1200
-    enabled: true
-    tier_0:
-        player:
-            attributes:
-                # More information about attributes can be found at https://minecraft.fandom.com/wiki/Attribute
-                armor: 0
-                armor_toughness: 0
-                attack_damage: 1.0
-                attack_speed: 4.0
-                knockback_resistance: 0
-                luck: 0
-                max_health: 20
-                movement_speed: 0.1
-            potion_effects:
-                # More information about potion effects can be found at https://minecraft.fandom.com/wiki/Status_effect
-                fast_digging:
-                    amplifier: 0
-                speed:
-                    amplifier: 0
-    tier_1:
-        player:
-            attributes:
-                armor: 0
-                armor_toughness: 0
-                attack_damage: 1.0
-                attack_speed: 4.0
-                knockback_resistance: 0
-                luck: 0
-                max_health: 20
-                movement_speed: 0.1
-            potion_effects:
-                weakness:
-                    amplifier: 0
-    tier_2:
-        player:
-            attributes:
-                armor: 0
-                armor_toughness: 0
-                attack_damage: 1.0
-                attack_speed: 4.0
-                knockback_resistance: 0
-                luck: 0
-                max_health: 20
-                movement_speed: 0.1
-            potion_effects:
-                slow:
-                    amplifier: 0
-                weakness:
-                    amplifier: 0
-    tier_3:
-        player:
-            attributes:
-                armor: 0
-                armor_toughness: 0
-                attack_damage: 1.0
-                attack_speed: 4.0
-                knockback_resistance: 0
-                luck: 0
-                max_health: 20
-                movement_speed: 0.1
-            potion_effects:
-                slow_digging:
-                    amplifier: 0
-                slow:
-                    amplifier: 0
-                weakness:
-                    amplifier: 0
+  # Effects are applied to players when the flux meter reaches a specific tier.
+  # Interval is in ticks (20 ticks = 1 second).
+  refresh_interval: 1200
+  enabled: true
+  tier_0:
+    player:
+      attributes:
+        # More information about attributes can be found at https://minecraft.fandom.com/wiki/Attribute
+        armor: 0
+        armor_toughness: 0
+        attack_damage: 1.0
+        attack_speed: 4.0
+        knockback_resistance: 0
+        luck: 0
+        max_health: 20
+        movement_speed: 0.1
+      potion_effects:
+        # More information about potion effects can be found at https://minecraft.fandom.com/wiki/Status_effect
+        fast_digging:
+          amplifier: 0
+        speed:
+          amplifier: 0
+  tier_1:
+    player:
+      attributes:
+        armor: 0
+        armor_toughness: 0
+        attack_damage: 1.0
+        attack_speed: 4.0
+        knockback_resistance: 0
+        luck: 0
+        max_health: 20
+        movement_speed: 0.1
+      potion_effects:
+        weakness:
+          amplifier: 0
+  tier_2:
+    player:
+      attributes:
+        armor: 0
+        armor_toughness: 0
+        attack_damage: 1.0
+        attack_speed: 4.0
+        knockback_resistance: 0
+        luck: 0
+        max_health: 20
+        movement_speed: 0.1
+      potion_effects:
+        slow:
+          amplifier: 0
+        weakness:
+          amplifier: 0
+  tier_3:
+    player:
+      attributes:
+        armor: 0
+        armor_toughness: 0
+        attack_damage: 1.0
+        attack_speed: 4.0
+        knockback_resistance: 0
+        luck: 0
+        max_health: 20
+        movement_speed: 0.1
+      potion_effects:
+        slow_digging:
+          amplifier: 0
+        slow:
+          amplifier: 0
+        weakness:
+          amplifier: 0
 custom_mechanics:
-    minecart:
-        surge_boost:
-            # Right-clicking coal while in a minecart will apply a speed boost.
-            enabled: true
-            # The amount of boost applied to the minecart's speed.
-            amount: 0.15
-            # Cooldown is in ticks (20 ticks = 1 second)
-            cooldown: 5
-        overclock:
-            # Right-clicking a coal block while in a minecart will apply an overclock effect.
-            # The overclock effect will increase the minecart's max speed for a limited time
-            enabled: true
-            # The multiplier applied to the minecart's max speed during overclock.
-            multiplier: 2.0
-            # Duration is in ticks (20 ticks = 1 second)
-            duration: 600
+  minecart:
+    surge_boost:
+      # Right-clicking coal while in a minecart will apply a speed boost.
+      enabled: true
+      # The amount of boost applied to the minecart's speed.
+      amount: 0.15
+      # Cooldown is in ticks (20 ticks = 1 second)
+      cooldown: 5
+    overclock:
+      # Right-clicking a coal block while in a minecart will apply an overclock effect.
+      # The overclock effect will increase the minecart's max speed for a limited time
+      enabled: true
+      # The multiplier applied to the minecart's max speed during overclock.
+      multiplier: 2.0
+      # Duration is in ticks (20 ticks = 1 second)
+      duration: 600
 deadly_disasters:
-    # Ignore this section if Deadly Disasters plugin is disabled or not installed.
-    enabled: false
-    # Prevent disasters from occurring when no players are online.
-    prevent_disasters_when_idle: true
-    # Interval is in ticks (20 ticks = 1 second).
-    min_interval: 54000
-    max_interval: 216000
-    tier_0:
-        # The frequency represents the probability of a disaster occurring.
-        frequency: 0.1
-        # You can add or remove disasters from the list.
-        # The weight represents the probability of a specific disaster occurring.
-        # The total weight does not have to equal 100.
-        disasters:
-            blizzard:
-                weight: 30
-            extremewinds:
-                weight: 30
-            geyser:
-                weight: 10
-            sandstorm:
-                weight: 30
-        # When a disaster occurs, the difficulty level is randomly selected.
-        # You can add or remove difficulty levels from the list.
-        # The total weight does not have to equal 100.
-        difficulties:
-            level_1:
-                weight: 85
-            level_2:
-                weight: 15
-    tier_1:
-        frequency: 0.2
-        disasters:
-            blizzard:
-                weight: 25
-            cavein:
-                weight: 5
-            extremewinds:
-                weight: 25
-            geyser:
-                weight: 10
-            sandstorm:
-                weight: 25
-            soulstorm:
-                weight: 10
-        difficulties:
-            level_1:
-                weight: 40
-            level_2:
-                weight: 55
-            level_3:
-                weight: 5
-    tier_2:
-        frequency: 0.3
-        disasters:
-            blizzard:
-                weight: 15
-            cavein:
-                weight: 3
-            endstorm:
-                weight: 10
-            extremewinds:
-                weight: 15
-            hurricane:
-                weight: 15
-            geyser:
-                weight: 3
-            meteorshowers:
-                weight: 2
-            purge:
-                weight: 10
-            sandstorm:
-                weight: 15
-            soulstorm:
-                weight: 10
-            tsunami:
-                weight: 2
-        difficulties:
-            level_2:
-                weight: 25
-            level_3:
-                weight: 55
-            level_4:
-                weight: 15
-            level_5:
-                weight: 5
-    tier_3:
-        frequency: 0.3
-        disasters:
-            acidstorm:
-                weight: 8
-            blizzard:
-                weight: 8
-            cavein:
-                weight: 5
-            earthquake:
-                weight: 2
-            endstorm:
-                weight: 8
-            extremewinds:
-                weight: 8
-            hurricane:
-                weight: 8
-            geyser:
-                weight: 5
-            meteorshowers:
-                weight: 5
-            plague:
-                weight: 6
-            purge:
-                weight: 6
-            sandstorm:
-                weight: 8
-            sinkhole:
-                weight: 2
-            soulstorm:
-                weight: 8
-            supernova:
-                weight: 1
-            tsunami:
-                weight: 6
-            tornado:
-                weight: 6
-        difficulties:
-            level_4:
-                weight: 30
-            level_5:
-                weight: 55
-            level_6:
-                weight: 15
+  # Ignore this section if Deadly Disasters plugin is disabled or not installed.
+  enabled: false
+  # Prevent disasters from occurring when no players are online.
+  prevent_disasters_when_idle: true
+  # Interval is in ticks (20 ticks = 1 second).
+  min_interval: 54000
+  max_interval: 216000
+  tier_0:
+    # The frequency represents the probability of a disaster occurring.
+    frequency: 0.1
+    # You can add or remove disasters from the list.
+    # The weight represents the probability of a specific disaster occurring.
+    # The total weight does not have to equal 100.
+    disasters:
+      blizzard:
+        weight: 30
+      extremewinds:
+        weight: 30
+      geyser:
+        weight: 10
+      sandstorm:
+        weight: 30
+    # When a disaster occurs, the difficulty level is randomly selected.
+    # You can add or remove difficulty levels from the list.
+    # The total weight does not have to equal 100.
+    difficulties:
+      level_1:
+        weight: 85
+      level_2:
+        weight: 15
+  tier_1:
+    frequency: 0.2
+    disasters:
+      blizzard:
+        weight: 25
+      cavein:
+        weight: 5
+      extremewinds:
+        weight: 25
+      geyser:
+        weight: 10
+      sandstorm:
+        weight: 25
+      soulstorm:
+        weight: 10
+    difficulties:
+      level_1:
+        weight: 40
+      level_2:
+        weight: 55
+      level_3:
+        weight: 5
+  tier_2:
+    frequency: 0.3
+    disasters:
+      blizzard:
+        weight: 15
+      cavein:
+        weight: 3
+      endstorm:
+        weight: 10
+      extremewinds:
+        weight: 15
+      hurricane:
+        weight: 15
+      geyser:
+        weight: 3
+      meteorshowers:
+        weight: 2
+      purge:
+        weight: 10
+      sandstorm:
+        weight: 15
+      soulstorm:
+        weight: 10
+      tsunami:
+        weight: 2
+    difficulties:
+      level_2:
+        weight: 25
+      level_3:
+        weight: 55
+      level_4:
+        weight: 15
+      level_5:
+        weight: 5
+  tier_3:
+    frequency: 0.3
+    disasters:
+      acidstorm:
+        weight: 8
+      blizzard:
+        weight: 8
+      cavein:
+        weight: 5
+      earthquake:
+        weight: 2
+      endstorm:
+        weight: 8
+      extremewinds:
+        weight: 8
+      hurricane:
+        weight: 8
+      geyser:
+        weight: 5
+      meteorshowers:
+        weight: 5
+      plague:
+        weight: 6
+      purge:
+        weight: 6
+      sandstorm:
+        weight: 8
+      sinkhole:
+        weight: 2
+      soulstorm:
+        weight: 8
+      supernova:
+        weight: 1
+      tsunami:
+        weight: 6
+      tornado:
+        weight: 6
+    difficulties:
+      level_4:
+        weight: 30
+      level_5:
+        weight: 55
+      level_6:
+        weight: 15
 placeholderapi:
-    # Ignore this section if PlaceholderAPI plugin is disabled or not installed.
-    enabled: false
-    status_colors:
-        tier_0: '§a'
-        tier_1: '§e'
-        tier_2: '§c'
-        tier_3: '§4'
-    percentage_colors:
-        tier_0: '§a'
-        tier_1: '§e'
-        tier_2: '§c'
-        tier_3: '§4'
-messages:
-    # %player% is the player's name.
-    # %points% is the number of flux points.
-    inspect: '§7Player §6%player% §7accumulated §6%points% §7Flux.'
-    lookup:
-        # %index% is the current page number.
-        # %total% is the total number of pages.
-        # %action% is the number of entries displayed.
-        header: '§r----- §6FluxPerMillion | Lookup Results §r-----'
-        navigator: ' §6Page §r%index%/%total% '
-        footer: ' §7(§r%action% §6entries§7)'
-    reload: '§aConfiguration file has been reloaded.'
-    status:
-        conditions:
-            tier_0: '§aFlourishing'
-            tier_1: '§eStable'
-            tier_2: '§6Strained'
-            tier_3: '§4Peril'
-    toggle:
-        enabled: '§aFlux meter is now visible.'
-        disabled: '§cFlux meter is now hidden.'
-    fishing:
-        # Will randomly select one of the messages when the player has over fished.
-        # You can add or remove messages from the list.
-        over_fishing:
-            - '§c§oYou might want to reel in a bit and explore other waters.'
-            - "§c§oPerhaps it's time to cast your line towards new horizons."
-            - "§c§oLet's reel it in a bit and savor the anticipation of the next big catch."
-            - "§c§oSometimes, it's good to let a few fish swim by."
-            - "§c§oMaybe it's time to let your thoughts swim freely outside this pond for a bit."
-            - '§c§oEven the most skilled angler needs a break to sharpen their hooks.'
-            - "§c§oYour fishing skills are impressive, but don't forget to give your mind a breather."
-            - "§c§oYou've reeled in quite a catch; now it's time to let the waters settle and see what else swims by."
-            - '§c§oEven the most captivating fishing spots can benefit from a change of scenery.'
-            - '§c§oSometimes, a pause in fishing leads to the biggest catches.'
-    errors:
-        no_permission: '§cYou do not have permission to execute this command.'
-        player_not_found: '§cPlayer not found.'
-        player_only_command: '§cThis command can only be executed by a player.'
-        # %player% is the player's name.
-        no_actions_found: '§cNo actions found for %player%.'
-        page_not_found: '§cPage does not exist!'
-        # %usage% is the correct usage of the command.
-        invalid_arguments: '§cInvalid arguments! Usage: %usage%'
-        invalid_time_duration: '§cInvalid time duration! Usage: %usage%'
-        invalid_page_number: '§cInvalid page number! Usage: %usage%'
+  # Ignore this section if PlaceholderAPI plugin is disabled or not installed.
+  enabled: false
+  status_colors:
+    tier_0: '§a'
+    tier_1: '§e'
+    tier_2: '§c'
+    tier_3: '§4'
+  percentage_colors:
+    tier_0: '§a'
+    tier_1: '§e'
+    tier_2: '§c'
+    tier_3: '§4'

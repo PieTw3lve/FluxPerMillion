@@ -7,10 +7,9 @@ import java.util.Arrays;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.pietw3lve.fpm.commands.CommandHandler;
+import com.github.pietw3lve.fpm.commands.FPMCommands;
 import com.github.pietw3lve.fpm.handlers.DeadlyDisastersHandler;
 import com.github.pietw3lve.fpm.handlers.EffectsHandler;
 import com.github.pietw3lve.fpm.handlers.FishTrackerHandler;
@@ -23,12 +22,17 @@ import com.github.pietw3lve.fpm.listeners.GUIListener;
 import com.github.pietw3lve.fpm.listeners.fpm.FluxLevelChangeListener;
 import com.github.pietw3lve.fpm.listeners.fpm.StatusLevelChangeListener;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil;
+import com.google.common.collect.ImmutableList;
+
+import co.aikar.commands.PaperCommandManager;
+
 import com.github.pietw3lve.fpm.utils.ConfigUpdaterUtil;
 import com.github.pietw3lve.fpm.utils.GUIUtil;
 
 
 public class FluxPerMillion extends JavaPlugin {
 
+	private PaperCommandManager commandManager;
 	private SQLiteUtil dbHandler;
 	private GUIUtil guiUtil;
 	private MessageHandler messageHandler;
@@ -51,6 +55,7 @@ public class FluxPerMillion extends JavaPlugin {
 	 * Initialize all handlers.
 	 */
 	private void initializeHandlers() {
+		this.commandManager = new PaperCommandManager(this);
 		this.guiUtil = new GUIUtil();
 		this.messageHandler = new MessageHandler(this);
 		this.fluxMeter = new FluxMeterHandler(this);
@@ -80,9 +85,11 @@ public class FluxPerMillion extends JavaPlugin {
 		this.dbHandler = new SQLiteUtil(this);
 		dbHandler.initializeDatabase();
 		saveDefaultConfig();
+		saveDefaultLanguageFile();
 		
 		try {
-			ConfigUpdaterUtil.update((Plugin) this, "config.yml", new File(getDataFolder(), "config.yml"), Arrays.asList("effects", "deadly_disasters"));
+			ConfigUpdaterUtil.update(this, "config.yml", new File(getDataFolder(), "config.yml"), Arrays.asList("effects", "deadly_disasters"));
+			ConfigUpdaterUtil.update(this, "lang_en.yml", new File(getDataFolder(), "lang_en.yml"), Arrays.asList());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -91,10 +98,29 @@ public class FluxPerMillion extends JavaPlugin {
 	}
 
 	/**
+	 * Copy the default language file from the resources to the data folder.
+	 */
+	private void saveDefaultLanguageFile() {
+		File langFile = new File(getDataFolder(), "lang_en.yml");
+		if (!langFile.exists()) {
+			saveResource("lang_en.yml", false);
+		}
+	}
+
+	/**
 	 * Register command executors.
 	 */
 	private void registerCommands() {
-		getCommand("fpm").setExecutor(new CommandHandler(this, this.guiUtil));
+		this.commandManager.registerCommand(new FPMCommands(this));
+
+		// Register auto-completions
+		this.commandManager.getCommandCompletions().registerAsyncCompletion("duration", c -> {
+			String input = c.getInput();
+			if (input.matches("\\d+")) {
+				return ImmutableList.of(input + "w", input + "d", input + "h", input + "m", input + "s");
+			}
+			return ImmutableList.of();
+		});
 	}
 
 	/**
@@ -140,11 +166,27 @@ public class FluxPerMillion extends JavaPlugin {
 	}
 
 	/**
+	 * Returns the PaperCommandManager instance.
+	 * @return PaperCommandManager
+	 */
+	public PaperCommandManager getCommandManager() {
+		return this.commandManager;
+	}
+
+	/**
 	 * Returns the SQLiteUtil instance.
 	 * @return SQLiteUtil
 	 */
 	public SQLiteUtil getDbUtil() {
 		return this.dbHandler;
+	}
+
+	/**
+	 * Returns the GUIUtil instance.
+	 * @return GUIUtil
+	 */
+	public GUIUtil getGUIUtil() {
+		return this.guiUtil;
 	}
 
 	/**

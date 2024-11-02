@@ -1,0 +1,88 @@
+fpm-messages:
+  # %player% is the player's name.
+  # %points% is the number of flux points.
+  inspect: '§7Player §6%player% §7accumulated §6%points% §7Flux.'
+  lookup:
+    # %index% is the current page number.
+    # %total% is the total number of pages.
+    # %action% is the number of entries displayed.
+    header: '§r----- §6FluxPerMillion | Lookup Results §r-----'
+    navigator: ' §6Page §r%index%/%total% '
+    footer: ' §7(§r%action% §6entries§7)'
+  reload: '§aConfiguration file has been reloaded.'
+  status:
+    conditions:
+      tier_0: '§aFlourishing'
+      tier_1: '§eStable'
+      tier_2: '§6Strained'
+      tier_3: '§4Peril'
+  toggle:
+    enabled: '§aFlux meter is now visible.'
+    disabled: '§cFlux meter is now hidden.'
+  fishing:
+    # Will randomly select one of the messages when the player has over fished.
+    # You can add or remove messages from the list.
+    over_fishing:
+      - '§c§oYou might want to reel in a bit and explore other waters.'
+      - "§c§oPerhaps it's time to cast your line towards new horizons."
+      - "§c§oLet's reel it in a bit and savor the anticipation of the next big catch."
+      - "§c§oSometimes, it's good to let a few fish swim by."
+      - "§c§oMaybe it's time to let your thoughts swim freely outside this pond for a bit."
+      - '§c§oEven the most skilled angler needs a break to sharpen their hooks.'
+      - "§c§oYour fishing skills are impressive, but don't forget to give your mind a breather."
+      - "§c§oYou've reeled in quite a catch; now it's time to let the waters settle and see what else swims by."
+      - '§c§oEven the most captivating fishing spots can benefit from a change of scenery.'
+      - '§c§oSometimes, a pause in fishing leads to the biggest catches.'
+  errors:
+    # Use %player% placeholder to add the player's name.
+    no_actions_found: '§cNo actions found for %player%.'
+    page_not_found: '§cPage does not exist!'
+    # Use %usage% placeholder to add the correct usage of the command.
+    invalid_arguments: '§cInvalid arguments! Usage: %usage%'
+    invalid_time_duration: '§cInvalid time duration! Usage: %usage%'
+    invalid_page_number: '§cInvalid page number! Usage: %usage%'
+acf-minecraft:
+  # Everything is color 1 by default, unless overridden with <c#>TEXT</c#> tags.
+  # For example: "Error: Multiple players matched <c2>{search}</c2> <c3>({all})</c3>, please be more specific."
+  # This will use color 2 for {Search}, color 3 for the list of all valid options, and color 1 for everything else.
+  invalid_world: 'Error: That world does not exist.'
+  you_must_be_holding_item: 'Error: You must be holding an item in your main hand.'
+  player_is_vanished_confirm: |
+    Warning: <c2>{vanished}</c2> is vanished. Do not blow their cover!
+    To confirm your action, add <c2>:confirm</c2> to the end of their name.
+    Ex: <c2>{vanished}:confirm</c2>
+  username_too_short: 'Error: Username too short, must be at least three characters.'
+  is_not_a_valid_name: 'Error: <c2>{name}</c2> is not a valid username.'
+  multiple_players_match: 'Error: Multiple players matched <c2>{search}</c2> <c3>({all})</c3>, please be more specific.'
+  no_player_found_server: 'No player matching <c2>{search}</c2> is connected to this server.'
+  no_player_found_offline: 'No player matching <c2>{search}</c2> could be found.'
+  no_player_found: 'No player matching <c2>{search}</c2> could be found.'
+  location_please_specify_world: 'Error: Please specify world. Example: <c2>world:x,y,z</c2>.'
+  location_please_specify_xyz: 'Error: Please specify the coordinates x, y and z. Example: <c2>world:x,y,z</c2>.'
+  location_console_not_relative: 'Error: Console may not use relative coordinates for location.'
+acf-core:
+  permission_denied: "I'm sorry, but you do not have permission to perform this command."
+  permission_denied_parameter: "I'm sorry, but you do not have permission to perform this command."
+  error_generic_logged: 'An error occurred. This problem has been logged. Sorry for the inconvenience.'
+  unknown_command: 'Unknown Command, please type <c2>/help</c2>'
+  invalid_syntax: 'Usage: <c2>{command}</c2> <c3>{syntax}</c3>'
+  error_prefix: 'Error: {message}'
+  error_performing_command: "I'm sorry, but there was an error performing this command."
+  info_message: '{message}'
+  please_specify_one_of: 'Error: Please specify one of (<c2>{valid}</c2>).'
+  must_be_a_number: 'Error: {num} must be a number.'
+  must_be_min_length: 'Error: Must be at least {min} characters long.'
+  must_be_max_length: 'Error: Must be at most {max} characters long.'
+  please_specify_at_most: 'Error: Please specify a value at most {max}.'
+  please_specify_at_least: 'Error: Please specify a value at least {min}.'
+  not_allowed_on_console: 'Error: Console may not execute this command.'
+  could_not_find_player: 'Error: Could not find a player by the name: <c2>{search}</c2>'
+  no_command_matched_search: 'No command matched <c2>{search}</c2>.'
+  help_page_information: '- Showing page <c2>{page}</c2> of <c2>{totalpages}</c2> (<c3>{results}</c3> results).'
+  help_no_results: 'Error: No more results.'
+  help_header: '<c3>=== </c3><c1>Showing help for </c1><c2>{commandprefix}{command}</c2><c3> ===</c3>'
+  help_format: '<c1>{command}</c1> <c2>{parameters}</c2> <c3>{separator} {description}</c3>'
+  help_detailed_header: '<c3>=== </c3><c1>Showing detailed help for </c1><c2>{commandprefix}{command}</c3> ===</c3>'
+  help_detailed_command_format: '<c1>{command}</c1> <c2>{parameters}</c2> <c3>{separator} {description}</c3>'
+  help_detailed_parameter_format: '<c2>{syntaxorname}</c2>: <c3>{description}</c3>'
+  help_search_header: '<c3>=== </c3><c1>Search results for </c1><c2>{commandprefix}{command} {search}</c2><c3> ===</c3>'

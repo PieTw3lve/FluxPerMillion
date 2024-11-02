@@ -2,8 +2,6 @@ package com.github.pietw3lve.fpm.commands;
 
 import java.util.List;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -12,7 +10,7 @@ import com.github.pietw3lve.fpm.handlers.FluxMeterHandler;
 
 import net.md_5.bungee.api.ChatColor;
 
-public class Toggle implements CommandExecutor {
+public class Toggle {
  
     private final FluxPerMillion plugin;
 
@@ -24,8 +22,7 @@ public class Toggle implements CommandExecutor {
         this.plugin = plugin;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean execute(CommandSender sender) {
         if (!(sender instanceof Player)) {
             String playerOnlyCommandMessage = plugin.getMessageHandler().getPlayerOnlyCommandMessage();
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', playerOnlyCommandMessage));

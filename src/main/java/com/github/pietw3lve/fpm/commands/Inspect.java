@@ -1,15 +1,13 @@
 package com.github.pietw3lve.fpm.commands;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 
 import net.md_5.bungee.api.ChatColor;
 
-public class Inspect implements CommandExecutor {
+public class Inspect {
 
     private final FluxPerMillion plugin;
 
@@ -21,10 +19,7 @@ public class Inspect implements CommandExecutor {
         this.plugin = plugin;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        OfflinePlayer player = plugin.getPlayer(args[1]);
-
+    public boolean execute(CommandSender sender, OfflinePlayer player) {
         if (player == null) {
             String playerNotFoundMessage = plugin.getMessageHandler().getPlayerNotFoundMessage();
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', playerNotFoundMessage));

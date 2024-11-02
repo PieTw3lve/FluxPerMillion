@@ -1,14 +1,12 @@
 package com.github.pietw3lve.fpm.commands;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 
 import net.md_5.bungee.api.ChatColor;
 
-public class Reload implements CommandExecutor {
+public class Reload {
     
     private final FluxPerMillion plugin;
 
@@ -20,8 +18,7 @@ public class Reload implements CommandExecutor {
         this.plugin = plugin;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean execute(CommandSender sender) {
         plugin.reloadConfig();
         plugin.getMessageHandler().reload();
         plugin.getFluxMeter().reload();

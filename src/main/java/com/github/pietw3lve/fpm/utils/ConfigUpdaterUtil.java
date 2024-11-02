@@ -53,17 +53,19 @@ public class ConfigUpdaterUtil {
         Map<String, String> ignoredSectionsValues = parseIgnoredSections(toUpdate, comments, ignoredSections == null ? Collections.emptyList() : ignoredSections);
 
         // Check and update version
-        String currentVersion = currentConfig.getString("debug.version");
-        String defaultVersion = defaultConfig.getString("debug.version");
-        if (!defaultVersion.equals(currentVersion)) {
-            SQLiteUtil dbUtil = ((FluxPerMillion) plugin).getDbUtil();
-            try (Connection connection = dbUtil.getDataSource().getConnection(); Statement statement = connection.createStatement()) {
-                dbUtil.updateTables(statement);;
-            } catch (SQLException e) {
-                plugin.getLogger().log(Level.SEVERE, "An error occurred while updating the database tables.", e);
+        if (resourceName.equals("config.yml")) {
+            String currentVersion = currentConfig.getString("debug.version");
+            String defaultVersion = defaultConfig.getString("debug.version");
+            if (!defaultVersion.equals(currentVersion)) {
+                SQLiteUtil dbUtil = ((FluxPerMillion) plugin).getDbUtil();
+                try (Connection connection = dbUtil.getDataSource().getConnection(); Statement statement = connection.createStatement()) {
+                    dbUtil.updateTables(statement);;
+                } catch (SQLException e) {
+                    plugin.getLogger().log(Level.SEVERE, "An error occurred while updating the database tables.", e);
+                }
+                currentConfig.set("debug.version", defaultVersion);
+                plugin.saveConfig();
             }
-            currentConfig.set("debug.version", defaultVersion);
-            plugin.saveConfig();
         }
 
         // Will write updated config file "contents" to a string

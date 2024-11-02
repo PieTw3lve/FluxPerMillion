@@ -1,9 +1,14 @@
 package com.github.pietw3lve.fpm.handlers;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 
@@ -38,20 +43,39 @@ public class MessageHandler {
      * Reload the messages.
      */
     public void reload() {
-        inspectMessage = plugin.getConfig().getString("messages.inspect");
-        lookupMessages = configToList(plugin.getConfig().getConfigurationSection("messages.lookup"));
-        reloadMessage = plugin.getConfig().getString("messages.reload");
-        statusMessages = configToList(plugin.getConfig().getConfigurationSection("messages.status.conditions"));
-        toggleMessages = configToList(plugin.getConfig().getConfigurationSection("messages.toggle"));
-        overFishingLines = plugin.getConfig().getStringList("messages.fishing.over_fishing");
-        noPermissionMessage = plugin.getConfig().getString("messages.errors.no_permission");
-        playerNotFoundMessage = plugin.getConfig().getString("messages.errors.player_not_found");
-        playerOnlyCommandMessage = plugin.getConfig().getString("messages.errors.player_only_command");
-        noActionsFoundMessage = plugin.getConfig().getString("messages.errors.no_actions_found");
-        pageNotFoundMessage = plugin.getConfig().getString("messages.errors.page_not_found");
-        invalidArgsMessage = plugin.getConfig().getString("messages.errors.invalid_arguments");
-        invalidTimeDurationMessage = plugin.getConfig().getString("messages.errors.invalid_time_duration");
-        invalidPageNumberMessage = plugin.getConfig().getString("messages.errors.invalid_page_number");
+        String language = plugin.getConfig().getString("debug.language");
+        String langFile = "lang_" + language + ".yml";
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), langFile));
+        ConfigurationSection messagesSection = config.getConfigurationSection("fpm-messages");
+
+        loadMessages(messagesSection);
+        loadErrors(messagesSection);
+        loadLocales(langFile, language);
+    }
+
+    private void loadMessages(ConfigurationSection messagesSection) {
+        inspectMessage = messagesSection.getString("inspect");
+        lookupMessages = configToList(messagesSection.getConfigurationSection("lookup"));
+        reloadMessage = messagesSection.getString("reload");
+        statusMessages = configToList(messagesSection.getConfigurationSection("status.conditions"));
+        toggleMessages = configToList(messagesSection.getConfigurationSection("toggle"));
+        overFishingLines = messagesSection.getStringList("fishing.over_fishing");
+    }
+
+    private void loadErrors(ConfigurationSection messagesSection) {
+        noActionsFoundMessage = messagesSection.getString("errors.no_actions_found");
+        pageNotFoundMessage = messagesSection.getString("errors.page_not_found");
+        invalidArgsMessage = messagesSection.getString("errors.invalid_arguments");
+        invalidTimeDurationMessage = messagesSection.getString("errors.invalid_time_duration");
+        invalidPageNumberMessage = messagesSection.getString("errors.invalid_page_number");
+    }
+
+    private void loadLocales(String langFile, String language) {
+        try {
+            plugin.getCommandManager().getLocales().loadYamlLanguageFile(langFile, Locale.forLanguageTag(language));
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -79,7 +103,6 @@ public class MessageHandler {
     public String getInspectMessage() {
         return inspectMessage;
     }
-
 
     /**
      * Get lookup messages.
