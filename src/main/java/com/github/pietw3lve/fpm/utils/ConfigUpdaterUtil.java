@@ -170,12 +170,14 @@ public class ConfigUpdaterUtil {
         return comments;
     }
 
+    @SuppressWarnings("unchecked")
     private static Map<String, String> parseIgnoredSections(File toUpdate, Map<String, String> comments, List<String> ignoredSections) throws IOException {
         Map<String, String> ignoredSectionValues = new LinkedHashMap<>(ignoredSections.size());
 
         DumperOptions options = new DumperOptions();
         options.setLineBreak(DumperOptions.LineBreak.UNIX);
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        @SuppressWarnings("deprecation")
         Yaml yaml = new Yaml(new YamlConstructor(), new YamlRepresenter(), options);
 
         Map<Object, Object> root = (Map<Object, Object>) yaml.load(new FileReader(toUpdate));
@@ -200,6 +202,7 @@ public class ConfigUpdaterUtil {
         return ignoredSectionValues;
     }
 
+    @SuppressWarnings("unchecked")
     private static Map<Object, Object> getSection(String fullKey, Map<Object, Object> root) {
         String[] keys = fullKey.split("[" + SEPARATOR + "]", 2);
         String key = keys[0];
@@ -251,6 +254,7 @@ public class ConfigUpdaterUtil {
         Object obj = ymlMap.get(originalKey);
 
         if (obj instanceof Map) {
+            @SuppressWarnings("unchecked")
             Map<Object, Object> map = (Map<Object, Object>) obj;
 
             if (map.isEmpty()) {
