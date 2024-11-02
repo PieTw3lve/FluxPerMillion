@@ -111,6 +111,7 @@ public class FluxPerMillion extends JavaPlugin {
 	 * Register command executors.
 	 */
 	private void registerCommands() {
+		this.commandManager.enableUnstableAPI("help");
 		this.commandManager.registerCommand(new FPMCommands(this));
 
 		// Register auto-completions

@@ -1,14 +1,9 @@
 fpm-messages:
-  # %player% is the player's name.
-  # %points% is the number of flux points.
-  inspect: '§7Player §6%player% §7accumulated §6%points% §7Flux.'
+  inspect: '§7Player §6{player} §7accumulated §6{points} §7Flux.'
   lookup:
-    # %index% is the current page number.
-    # %total% is the total number of pages.
-    # %action% is the number of entries displayed.
     header: '§r----- §6FluxPerMillion | Lookup Results §r-----'
-    navigator: ' §6Page §r%index%/%total% '
-    footer: ' §7(§r%action% §6entries§7)'
+    navigator: ' §6Page §r{index}/{total} '
+    footer: ' §7(§r{action} §6entries§7)'
   reload: '§aConfiguration file has been reloaded.'
   status:
     conditions:
@@ -34,13 +29,10 @@ fpm-messages:
       - '§c§oEven the most captivating fishing spots can benefit from a change of scenery.'
       - '§c§oSometimes, a pause in fishing leads to the biggest catches.'
   errors:
-    # Use %player% placeholder to add the player's name.
-    no_actions_found: '§cNo actions found for %player%.'
-    page_not_found: '§cPage does not exist!'
-    # Use %usage% placeholder to add the correct usage of the command.
-    invalid_arguments: '§cInvalid arguments! Usage: %usage%'
-    invalid_time_duration: '§cInvalid time duration! Usage: %usage%'
-    invalid_page_number: '§cInvalid page number! Usage: %usage%'
+    no_actions_found: '§cFound no actions for {player}.'
+    page_not_found: '§cThis page does not exist!'
+    invalid_time_duration: '§cInvalid time duration! Usage: {usage}'
+    invalid_page_number: '§cInvalid page number! Usage: {usage}'
 acf-minecraft:
   # Everything is color 1 by default, unless overridden with <c#>TEXT</c#> tags.
   # For example: "Error: Multiple players matched <c2>{search}</c2> <c3>({all})</c3>, please be more specific."
@@ -61,13 +53,13 @@ acf-minecraft:
   location_please_specify_xyz: 'Error: Please specify the coordinates x, y and z. Example: <c2>world:x,y,z</c2>.'
   location_console_not_relative: 'Error: Console may not use relative coordinates for location.'
 acf-core:
-  permission_denied: "I'm sorry, but you do not have permission to perform this command."
-  permission_denied_parameter: "I'm sorry, but you do not have permission to perform this command."
+  permission_denied: 'You do not have permission to perform this command.'
+  permission_denied_parameter: 'You do not have permission to perform this command.'
   error_generic_logged: 'An error occurred. This problem has been logged. Sorry for the inconvenience.'
-  unknown_command: 'Unknown Command, please type <c2>/help</c2>'
-  invalid_syntax: 'Usage: <c2>{command}</c2> <c3>{syntax}</c3>'
+  unknown_command: 'Unknown Command. Please try a different command.'
+  invalid_syntax: 'Incorrect arguments! Usage: {command} {syntax}'
   error_prefix: 'Error: {message}'
-  error_performing_command: "I'm sorry, but there was an error performing this command."
+  error_performing_command: 'There was an error performing this command.'
   info_message: '{message}'
   please_specify_one_of: 'Error: Please specify one of (<c2>{valid}</c2>).'
   must_be_a_number: 'Error: {num} must be a number.'
@@ -80,9 +72,9 @@ acf-core:
   no_command_matched_search: 'No command matched <c2>{search}</c2>.'
   help_page_information: '- Showing page <c2>{page}</c2> of <c2>{totalpages}</c2> (<c3>{results}</c3> results).'
   help_no_results: 'Error: No more results.'
-  help_header: '<c3>=== </c3><c1>Showing help for </c1><c2>{commandprefix}{command}</c2><c3> ===</c3>'
-  help_format: '<c1>{command}</c1> <c2>{parameters}</c2> <c3>{separator} {description}</c3>'
-  help_detailed_header: '<c3>=== </c3><c1>Showing detailed help for </c1><c2>{commandprefix}{command}</c3> ===</c3>'
-  help_detailed_command_format: '<c1>{command}</c1> <c2>{parameters}</c2> <c3>{separator} {description}</c3>'
-  help_detailed_parameter_format: '<c2>{syntaxorname}</c2>: <c3>{description}</c3>'
-  help_search_header: '<c3>=== </c3><c1>Search results for </c1><c2>{commandprefix}{command} {search}</c2><c3> ===</c3>'
+  help_header: '<c2>---------</c2> <c1>FluxPerMillion | Help</c1> <c2>---------</c2>'
+  help_format: '<c1>/{command}</c1> <c3>{parameters}</c3> <c2>{separator}</c2> <c3>{description}</c3>'
+  help_detailed_header: '<c2>---------</c2> <c1>FluxPerMillion | Detailed Help</c1> <c2>---------</c2>'
+  help_detailed_command_format: '<c1>/{command}</c1> <c3>{parameters}</c3> <c2>{separator}</c2> <c3>{description}</c3>'
+  help_detailed_parameter_format: '<c1>{syntaxorname}</c1><c2>:</c2> <c3>{description}</c3>'
+  help_search_header: '<c2>---------</c2> <c1>FluxPerMillion | Search Results:</c1> <c3>{search}</c3> <c2>---------</c2>'

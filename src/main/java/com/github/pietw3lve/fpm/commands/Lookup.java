@@ -41,22 +41,22 @@ public class Lookup {
             timeString = parseTimeString(duration);
         } catch (Exception e) {
             String invalidTimeDurationMessage = plugin.getMessageHandler().getInvalidTimeDurationMessage();
-            String usage = "/fpm lookup <player> <duration> <page>";
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', invalidTimeDurationMessage).replace("%usage%", usage));
+            String usage = "/fpm lookup <player> <duration> [page]";
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', invalidTimeDurationMessage).replace("{usage}", usage));
             return true;
         }
 
         if (timeString == null) {
             String invalidTimeDurationMessage = plugin.getMessageHandler().getInvalidTimeDurationMessage();
-            String usage = "/fpm lookup <player> <duration> <page>";
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', invalidTimeDurationMessage).replace("%usage%", usage));
+            String usage = "/fpm lookup <player> <duration> [page]";
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', invalidTimeDurationMessage).replace("{usage}", usage));
             return true;
         }
 
         List<List<Object>> playerActions = plugin.getDbUtil().getPlayerActions(player, timeString);
         if (playerActions.isEmpty() ) {
             String noActionsFoundMessage = plugin.getMessageHandler().getNoActionsFoundMessage();
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', noActionsFoundMessage).replace("%player%", player.getName()));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', noActionsFoundMessage).replace("{player}", player.getName()));
             return true;
         }
 
@@ -70,8 +70,8 @@ public class Lookup {
             ListPaginatorUtil<String, String> paginator = new ListPaginatorUtil<>(5, ListPaginatorUtil.MessagePlatform.NORMAL, String::toString);
             TextComponent previousArrow = getTextCommand("/fpm lookup " + player.getName() + " " + duration + " " + (page - 1), "◀", "Previous page");
             TextComponent nextArrow = getTextCommand("/fpm lookup " + player.getName() + " " + duration + " " + (page + 1), "▶", "Next page");
-            paginator.setHeader((target, pageIndex, pageCount) -> target.sendMessage(ChatColor.translateAlternateColorCodes('&', lookupMessages.get(0).replace("%index%", String.valueOf(pageIndex)).replace("%total%", String.valueOf(pageCount)).replace("%action%", String.valueOf(playerActions.size())))));
-            paginator.setFooter((target, pageIndex, pageCount) -> target.spigot().sendMessage(previousArrow, new TextComponent(ChatColor.translateAlternateColorCodes('&', lookupMessages.get(1)).replace("%index%", String.valueOf(pageIndex)).replace("%total%", String.valueOf(pageCount)).replace("%action%", String.valueOf(playerActions.size()))), nextArrow, new TextComponent(ChatColor.translateAlternateColorCodes('&', lookupMessages.get(2).replace("%index%", String.valueOf(pageIndex)).replace("%total%", String.valueOf(pageCount)).replace("%action%", String.valueOf(playerActions.size()))))));
+            paginator.setHeader((target, pageIndex, pageCount) -> target.sendMessage(ChatColor.translateAlternateColorCodes('&', lookupMessages.get(0).replace("{index}", String.valueOf(pageIndex)).replace("{total}", String.valueOf(pageCount)).replace("{action}", String.valueOf(playerActions.size())))));
+            paginator.setFooter((target, pageIndex, pageCount) -> target.spigot().sendMessage(previousArrow, new TextComponent(ChatColor.translateAlternateColorCodes('&', lookupMessages.get(1)).replace("{index}", String.valueOf(pageIndex)).replace("{total}", String.valueOf(pageCount)).replace("{action}", String.valueOf(playerActions.size()))), nextArrow, new TextComponent(ChatColor.translateAlternateColorCodes('&', lookupMessages.get(2).replace("{index}", String.valueOf(pageIndex)).replace("{total}", String.valueOf(pageCount)).replace("{action}", String.valueOf(playerActions.size()))))));
             paginator.sendPage(playerActionsString, sender, page);
         } catch (Exception e) {
             String pageNotFoundMessage = plugin.getMessageHandler().getPageNotFoundMessage();

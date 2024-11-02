@@ -5,12 +5,12 @@ api-version: 1.15
 authors: ['PieTw3lve']
 website: https://github.com/PieTw3lve/FluxPerMillion
 description: Introduces a new game mechanic, Flux, which is a measure of the environmental impact of player actions.
+
 commands:
-    fpm:
-        description: Main command for the FluxPerMillion plugin.
-        usage: /<command> <subcommand> [args]
-        aliases: [flux, fluxpermillion]
-        default: true
+  FluxPerMillion:
+    usage: /fpm <help|inspect|lookup|reload|status|toggle>...
+    aliases: [fluxpermillion]
+    description: Universal command for the plugin. Use /fpm help, for more information.
 
 # Dependencies
 depend: []

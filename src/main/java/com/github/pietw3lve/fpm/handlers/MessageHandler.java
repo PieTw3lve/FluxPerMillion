@@ -1,16 +1,17 @@
 package com.github.pietw3lve.fpm.handlers;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
+
+import co.aikar.commands.MessageType;
 
 public class MessageHandler {
     
@@ -26,7 +27,6 @@ public class MessageHandler {
     private String playerOnlyCommandMessage;
     private String noActionsFoundMessage;
     private String pageNotFoundMessage;
-    private String invalidArgsMessage;
     private String invalidTimeDurationMessage;
     private String invalidPageNumberMessage;
 
@@ -51,6 +51,7 @@ public class MessageHandler {
         loadMessages(messagesSection);
         loadErrors(messagesSection);
         loadLocales(langFile, language);
+        setColorMessages();
     }
 
     private void loadMessages(ConfigurationSection messagesSection) {
@@ -65,16 +66,22 @@ public class MessageHandler {
     private void loadErrors(ConfigurationSection messagesSection) {
         noActionsFoundMessage = messagesSection.getString("errors.no_actions_found");
         pageNotFoundMessage = messagesSection.getString("errors.page_not_found");
-        invalidArgsMessage = messagesSection.getString("errors.invalid_arguments");
         invalidTimeDurationMessage = messagesSection.getString("errors.invalid_time_duration");
         invalidPageNumberMessage = messagesSection.getString("errors.invalid_page_number");
     }
 
+    private void setColorMessages() {
+        plugin.getCommandManager().setFormat(MessageType.SYNTAX, 1, ChatColor.RED);
+        plugin.getCommandManager().setFormat(MessageType.HELP, 1, ChatColor.GOLD);
+        plugin.getCommandManager().setFormat(MessageType.HELP, 2, ChatColor.WHITE);
+        plugin.getCommandManager().setFormat(MessageType.HELP, 3, ChatColor.GRAY);
+    }
+
     private void loadLocales(String langFile, String language) {
         try {
-            plugin.getCommandManager().getLocales().loadYamlLanguageFile(langFile, Locale.forLanguageTag(language));
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
+            plugin.getCommandManager().getLocales().loadYamlLanguageFile(langFile, new Locale(language));
+        } catch (Exception e) {
+            plugin.getLogger().log(java.util.logging.Level.SEVERE, "Failed to load language: " + language, e);
         }
     }
 
@@ -182,14 +189,6 @@ public class MessageHandler {
      */
     public String getPageNotFoundMessage() {
         return pageNotFoundMessage;
-    }
-
-    /**
-     * Get invalid arguments message.
-     * @return Invalid arguments message.
-     */
-    public String getInvalidArgsMessage() {
-        return invalidArgsMessage;
     }
 
     /**

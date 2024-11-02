@@ -29,7 +29,7 @@ public class Inspect {
         String inspectMessage = plugin.getMessageHandler().getInspectMessage();
         double playerFlux = plugin.getDbUtil().getPlayerFlux(player);
         String points = String.format((playerFlux >= 0 ? ChatColor.RED : ChatColor.GREEN) + "%.2f", playerFlux);
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', inspectMessage.replace("%player%", player.getName()).replace("%points%", points)));
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', inspectMessage.replace("{player}", player.getName()).replace("{points}", points)));
 
         return true;
     }
