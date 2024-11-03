@@ -59,27 +59,23 @@ public class FluxMeterHandler {
         percent = Math.max(Math.min(totalPoints, max), 0) / max;
         fluxMeter.setProgress(percent);
 
+        int newStatusLevel;
         if (percent >= tier3Threshold) {
-            if (statusLevel == 3) return;
-            StatusLevelChangeEvent event = new StatusLevelChangeEvent(this, 3, statusLevel);
-            plugin.getServer().getPluginManager().callEvent(event);
-            statusLevel = 3;
+            newStatusLevel = 3;
         } else if (percent >= tier2Threshold) {
-            if (statusLevel == 2) return;
-            StatusLevelChangeEvent event = new StatusLevelChangeEvent(this, 2, statusLevel);
-            plugin.getServer().getPluginManager().callEvent(event);
-            statusLevel = 2;
+            newStatusLevel = 2;
         } else if (percent >= tier1Threshold) {
-            if (statusLevel == 1) return;
-            StatusLevelChangeEvent event = new StatusLevelChangeEvent(this, 1, statusLevel);
-            plugin.getServer().getPluginManager().callEvent(event);
-            statusLevel = 1;
+            newStatusLevel = 1;
         } else {
-            if (statusLevel == 0) return;
-            StatusLevelChangeEvent event = new StatusLevelChangeEvent(this, 0, statusLevel);
-            plugin.getServer().getPluginManager().callEvent(event);
-            statusLevel = 0;
+            newStatusLevel = 0;
         }
+
+        if (newStatusLevel != statusLevel) {
+            StatusLevelChangeEvent event = new StatusLevelChangeEvent(this, newStatusLevel, statusLevel);
+            plugin.getServer().getPluginManager().callEvent(event);
+            statusLevel = newStatusLevel;
+        }
+
         lastRunTime = System.currentTimeMillis();
     }
 
