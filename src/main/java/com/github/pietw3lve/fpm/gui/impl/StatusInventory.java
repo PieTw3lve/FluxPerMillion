@@ -19,14 +19,12 @@ import com.github.pietw3lve.fpm.gui.InventoryGUI;
 import com.github.pietw3lve.fpm.handlers.FluxHandler;
 import com.github.pietw3lve.fpm.handlers.MessageHandler;
 import com.github.pietw3lve.fpm.utils.PlayerSkullUtil;
-import com.github.pietw3lve.fpm.utils.SQLiteUtil;
 
 /**
  * Represents the status inventory GUI for displaying world and player status.
  */
 public class StatusInventory extends InventoryGUI {
 
-    private final SQLiteUtil dbUtil;
     private final FluxHandler fluxMeter;
     private final MessageHandler.StatusMessages statusMessages;
 
@@ -36,7 +34,6 @@ public class StatusInventory extends InventoryGUI {
      * @param plugin the FluxPerMillion plugin instance
      */
     public StatusInventory(FluxPerMillion plugin) {
-        this.dbUtil = plugin.getDbUtil();
         this.fluxMeter = plugin.getFluxMeter();
         this.statusMessages = plugin.getMessageHandler().getStatusMessages();
     }
@@ -59,7 +56,7 @@ public class StatusInventory extends InventoryGUI {
     @Override
     public void decorate(Player player) {
         int inventorySize = this.getInventory().getSize();
-        double playerFlux = dbUtil.getPlayerFlux(player);
+        double playerFlux = fluxMeter.getPlayerFlux(player.getUniqueId());
         double playerPercent = fluxMeter.getPlayerPercent(playerFlux);
 
         double[] newPercents = fluxMeter.getNewFluxPercentages();

@@ -2,7 +2,14 @@ package com.github.pietw3lve.fpm.handlers;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -12,6 +19,7 @@ import org.bukkit.scheduler.BukkitTask;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.StatusLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
+import org.bukkit.OfflinePlayer;
 
 /**
  * Handles the flux meter functionality, including updating the flux meter,
@@ -21,6 +29,7 @@ public class FluxHandler {
     
     private final FluxPerMillion plugin;
     private final Set<String> playersWithBossBar = new HashSet<>();
+    private final Map<UUID, Double> playerFluxMap = new HashMap<>();
     private BukkitTask fluxMeterTask;
     private BossBar fluxMeter;
     private int refreshInterval;
@@ -66,8 +75,10 @@ public class FluxHandler {
 
         updateOldPoints();
         updateNewPoints();
+        updatePlayerFlux();
 
         int newStatusLevel = calculateStatusLevel();
+
         if (newStatusLevel != statusLevel) {
             StatusLevelChangeEvent event = new StatusLevelChangeEvent(this, newStatusLevel, statusLevel);
             plugin.getServer().getPluginManager().callEvent(event);
@@ -95,6 +106,29 @@ public class FluxHandler {
         newAgriculturePoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.AGRICULTURE));
         newPollutionPoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.POLLUTION));
         newWildlifePoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.WILDLIFE));
+    }
+
+    /**
+     * Updates the player flux data asynchronously.
+     */
+    private void updatePlayerFlux() {
+        CompletableFuture.runAsync(() -> {
+            List<UUID> playerUUIDs = plugin.getServer().getOnlinePlayers().stream()
+                .map(Player::getUniqueId)
+                .collect(Collectors.toList());
+
+            for (OfflinePlayer offlinePlayer : plugin.getServer().getOfflinePlayers()) {
+                if (!offlinePlayer.isOnline()) {
+                    playerUUIDs.add(offlinePlayer.getUniqueId());
+                }
+            }
+
+            Map<UUID, Double> newPlayerFluxMap = plugin.getDbUtil().getPlayerFluxBatch(playerUUIDs);
+            synchronized (playerFluxMap) {
+                playerFluxMap.clear();
+                playerFluxMap.putAll(newPlayerFluxMap);
+            }
+        });
     }
 
     /**
@@ -270,6 +304,22 @@ public class FluxHandler {
         return Arrays.stream(oldFlux).map(p -> p / oldTotalFlux * 100).toArray();
     }
 
+    /**
+     * Returns the flux value for a specific player.
+     * @param playerUUID The UUID of the player.
+     * @return The flux value for the player.
+     */
+    public double getPlayerFlux(UUID playerUUID) {
+        synchronized (playerFluxMap) {
+            return playerFluxMap.getOrDefault(playerUUID, Double.NaN);
+        }
+    }
+
+    /**
+     * Returns the flux percentage for a specific player.
+     * @param playerFlux The flux value for the player.
+     * @return The flux percentage for the player.
+     */
     public double getPlayerPercent(double playerFlux) {
         return Math.max(0, playerFlux / totalPoints) * 100;
     }

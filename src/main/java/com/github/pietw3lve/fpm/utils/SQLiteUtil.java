@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import javax.annotation.Nullable;
@@ -200,6 +201,41 @@ public class SQLiteUtil {
         }
     
         return playerFlux;
+    }
+
+    /**
+     * Retrieves the total flux for a batch of players.
+     * @param playerUUIDs The UUIDs of the players to retrieve the total flux for.
+     * @return A map of the player UUIDs and their total flux.
+     */
+    public Map<UUID, Double> getPlayerFluxBatch(List<UUID> playerUUIDs) {
+        Map<UUID, Double> playerFluxMap = new HashMap<>();
+        if (playerUUIDs.isEmpty()) return playerFluxMap;
+
+        StringBuilder queryBuilder = new StringBuilder("SELECT uuid, COALESCE(SUM(points), 0) as total FROM actions WHERE uuid IN (");
+        for (int i = 0; i < playerUUIDs.size(); i++) {
+            queryBuilder.append("?");
+            if (i < playerUUIDs.size() - 1) {
+                queryBuilder.append(", ");
+            }
+        }
+        queryBuilder.append(") GROUP BY uuid");
+
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(queryBuilder.toString())) {
+            for (int i = 0; i < playerUUIDs.size(); i++) {
+                statement.setString(i + 1, playerUUIDs.get(i).toString());
+            }
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                UUID playerUUID = UUID.fromString(resultSet.getString("uuid"));
+                double totalPoints = resultSet.getDouble("total");
+                playerFluxMap.put(playerUUID, totalPoints);
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error retrieving player flux batch", e);
+        }
+
+        return playerFluxMap;
     }
 
     /**
