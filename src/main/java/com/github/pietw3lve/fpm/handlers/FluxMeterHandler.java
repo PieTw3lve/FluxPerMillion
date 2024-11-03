@@ -12,6 +12,10 @@ import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.StatusLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
+/**
+ * Handles the flux meter functionality, including updating the flux meter,
+ * toggling it for players, and managing the flux meter task.
+ */
 public class FluxMeterHandler {
     
     private final FluxPerMillion plugin;
@@ -29,14 +33,18 @@ public class FluxMeterHandler {
     private double offset;
     private int decay;
     private long lastRunTime;
-    private double energyPoints;
-    private double agriculturePoints;
-    private double pollutionPoints;
-    private double wildlifePoints;
+    private double oldEnergyPoints;
+    private double newEnergyPoints;
+    private double oldAgriculturePoints;
+    private double newAgriculturePoints;
+    private double oldPollutionPoints;
+    private double newPollutionPoints;
+    private double oldWildlifePoints;
+    private double newWildlifePoints;
 
     /**
      * FluxMeterHandler Constructor.
-     * @param plugin
+     * @param plugin The main plugin instance.
      */
     public FluxMeterHandler(FluxPerMillion plugin) {
         this.plugin = plugin;
@@ -52,24 +60,13 @@ public class FluxMeterHandler {
     public void update() {
         plugin.getDbUtil().deleteOldActions(decay);
         totalPoints = plugin.getDbUtil().calculateTotalPoints() + offset;
-        energyPoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.ENERGY));
-        agriculturePoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.AGRICULTURE));
-        pollutionPoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.POLLUTION));
-        wildlifePoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.WILDLIFE));
         percent = Math.max(Math.min(totalPoints, max), 0) / max;
         fluxMeter.setProgress(percent);
 
-        int newStatusLevel;
-        if (percent >= tier3Threshold) {
-            newStatusLevel = 3;
-        } else if (percent >= tier2Threshold) {
-            newStatusLevel = 2;
-        } else if (percent >= tier1Threshold) {
-            newStatusLevel = 1;
-        } else {
-            newStatusLevel = 0;
-        }
+        updateOldPoints();
+        updateNewPoints();
 
+        int newStatusLevel = calculateStatusLevel();
         if (newStatusLevel != statusLevel) {
             StatusLevelChangeEvent event = new StatusLevelChangeEvent(this, newStatusLevel, statusLevel);
             plugin.getServer().getPluginManager().callEvent(event);
@@ -77,6 +74,42 @@ public class FluxMeterHandler {
         }
 
         lastRunTime = System.currentTimeMillis();
+    }
+
+    /**
+     * Updates the old points with the current new points.
+     */
+    private void updateOldPoints() {
+        oldEnergyPoints = newEnergyPoints;
+        oldAgriculturePoints = newAgriculturePoints;
+        oldPollutionPoints = newPollutionPoints;
+        oldWildlifePoints = newWildlifePoints;
+    }
+
+    /**
+     * Updates the new points by calculating the total points for each category.
+     */
+    private void updateNewPoints() {
+        newEnergyPoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.ENERGY));
+        newAgriculturePoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.AGRICULTURE));
+        newPollutionPoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.POLLUTION));
+        newWildlifePoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.WILDLIFE));
+    }
+
+    /**
+     * Calculates the status level based on the current percent.
+     * @return The new status level.
+     */
+    private int calculateStatusLevel() {
+        if (percent >= tier3Threshold) {
+            return 3;
+        } else if (percent >= tier2Threshold) {
+            return 2;
+        } else if (percent >= tier1Threshold) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -115,10 +148,8 @@ public class FluxMeterHandler {
         fluxMeterTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> update(), 0, refreshInterval);
     }
 
-    
     /**
      * Checks if a player has a boss bar.
-     *
      * @param player The player to check.
      * @return true if the player has a boss bar, false otherwise.
      */
@@ -128,6 +159,7 @@ public class FluxMeterHandler {
 
     /**
      * Returns the current flux meter task.
+     * @return The current BukkitTask for the flux meter.
      */
     public BukkitTask getFluxMeterTask() {
         return fluxMeterTask;
@@ -135,7 +167,7 @@ public class FluxMeterHandler {
 
     /**
      * Returns the flux meter.
-     * @return BossBar
+     * @return The BossBar instance representing the flux meter.
      */
     public BossBar getFluxMeter() {
         return fluxMeter;
@@ -143,7 +175,7 @@ public class FluxMeterHandler {
 
     /**
      * Returns the total flux points.
-     * @return double
+     * @return The total flux points.
      */
     public double getTotalPoints() {
         return totalPoints;
@@ -151,7 +183,7 @@ public class FluxMeterHandler {
 
     /**
      * Returns the flux meter percent.
-     * @return double
+     * @return The flux meter percent.
      */
     public double getProgress() {
         return percent;
@@ -167,7 +199,7 @@ public class FluxMeterHandler {
      * 2 = Moderate concern (50-75%)
      * <p>
      * 3 = Major concern (75-100%)
-     * @return int
+     * @return The flux meter status level.
      */
     public int getStatusLevel() {
         return statusLevel;
@@ -175,7 +207,7 @@ public class FluxMeterHandler {
 
     /**
      * Returns the maximum flux capacity.
-     * @param task
+     * @return The maximum flux capacity.
      */
     public double getMax() {
         return max;
@@ -183,7 +215,7 @@ public class FluxMeterHandler {
 
     /**
      * Returns the offset flux.
-     * @param task
+     * @return The offset flux.
      */
     public double getOffset() {
         return offset;
@@ -191,6 +223,7 @@ public class FluxMeterHandler {
 
     /**
      * Sets the current flux meter task.
+     * @param task The new BukkitTask for the flux meter.
      */
     public void setFluxMeterTask(BukkitTask task) {
         fluxMeterTask = task;
@@ -198,7 +231,7 @@ public class FluxMeterHandler {
 
     /**
      * Returns the time until the next run.
-     * @return long
+     * @return The time in milliseconds until the next run.
      */
     public long getTimeUntilNextRun() {
         long currentTime = System.currentTimeMillis();
@@ -207,34 +240,66 @@ public class FluxMeterHandler {
     }
 
     /**
-     * Returns the energy points.
-     * @return double
+     * Returns the new energy points.
+     * @return The new energy points.
      */
-    public double getEnergyPoints() {
-        return energyPoints;
+    public double getNewEnergyPoints() {
+        return newEnergyPoints;
     }
 
     /**
-     * Returns the agriculture points.
-     * @return double
+     * Returns the old energy points.
+     * @return The old energy points.
      */
-    public double getAgriculturePoints() {
-        return agriculturePoints;
+    public double getOldEnergyPoints() {
+        return oldEnergyPoints;
     }
 
     /**
-     * Returns the pollution points.
-     * @return double
+     * Returns the new agriculture points.
+     * @return The new agriculture points.
      */
-    public double getPollutionPoints() {
-        return pollutionPoints;
+    public double getNewAgriculturePoints() {
+        return newAgriculturePoints;
     }
 
     /**
-     * Returns the wildlife points.
-     * @return double
+     * Returns the old agriculture points.
+     * @return The old agriculture points.
      */
-    public double getWildlifePoints() {
-        return wildlifePoints;
+    public double getOldAgriculturePoints() {
+        return oldAgriculturePoints;
+    }
+
+    /**
+     * Returns the new pollution points.
+     * @return The new pollution points.
+     */
+    public double getNewPollutionPoints() {
+        return newPollutionPoints;
+    }
+
+    /**
+     * Returns the old pollution points.
+     * @return The old pollution points.
+     */
+    public double getOldPollutionPoints() {
+        return oldPollutionPoints;
+    }
+
+    /**
+     * Returns the new wildlife points.
+     * @return The new wildlife points.
+     */
+    public double getNewWildlifePoints() {
+        return newWildlifePoints;
+    }
+
+    /**
+     * Returns the old wildlife points.
+     * @return The old wildlife points.
+     */
+    public double getOldWildlifePoints() {
+        return oldWildlifePoints;
     }
 }
