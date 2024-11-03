@@ -42,6 +42,7 @@ public class FluxLevelChangeListener implements Listener {
 
         if (points == 0) return;
 
+        // Asynchronously record the action to avoid blocking the main thread
         plugin.getDbUtil().recordAction(player, actionType, type, points, location, category);
 
         if (event.isPlayerAction()) {
