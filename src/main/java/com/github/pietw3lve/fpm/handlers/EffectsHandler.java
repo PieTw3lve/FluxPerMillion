@@ -49,7 +49,7 @@ public class EffectsHandler {
             if (effectTask != null) plugin.getServer().getScheduler().cancelTask(effectTask.getTaskId());
         }
 
-        effectTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> applyEffects(), 0, interval);
+        effectTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> applyEffects(), 0, Math.max(20, interval - 100));
     }
 
     /**
