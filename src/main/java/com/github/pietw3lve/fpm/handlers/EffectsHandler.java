@@ -49,7 +49,7 @@ public class EffectsHandler {
             if (effectTask != null) plugin.getServer().getScheduler().cancelTask(effectTask.getTaskId());
         }
 
-        effectTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> applyEffects(), 0, Math.max(20, interval - 100));
+        effectTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> applyEffects(), 0, interval);
     }
 
     /**
@@ -151,7 +151,7 @@ public class EffectsHandler {
                 int amplifier = config.getInt(key + ".amplifier");
                 PotionEffectType type = Registry.EFFECT.match(identifier);
                 if (type != null) {
-                    innerMap.put(type, new PotionEffect(type, interval, amplifier));
+                    innerMap.put(type, new PotionEffect(type, interval + 100, amplifier));
                 }
             }
 
