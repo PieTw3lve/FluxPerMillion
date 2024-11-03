@@ -45,13 +45,16 @@ public class SQLiteUtil {
 
     /**
      * SQLiteHandler Constructor.
-     * @param plugin
+     * @param plugin The plugin instance.
      */
     public SQLiteUtil(FluxPerMillion plugin) {
         this.plugin = plugin;
         startWriteProcessor();
     }
 
+    /**
+     * Starts the write processor to handle database write operations asynchronously.
+     */
     private void startWriteProcessor() {
         writeExecutor.submit(() -> {
             while (true) {
@@ -119,10 +122,19 @@ public class SQLiteUtil {
             this.value = value;
         }
 
+        /**
+         * Gets the integer value of the category.
+         * @return The integer value of the category.
+         */
         public int getValue() {
             return value;
         }
 
+        /**
+         * Gets the ActionCategory from an integer value.
+         * @param value The integer value.
+         * @return The corresponding ActionCategory.
+         */
         public static ActionCategory fromValue(int value) {
             for (ActionCategory category : values()) {
                 if (category.value == value) {
@@ -140,6 +152,7 @@ public class SQLiteUtil {
      * @param type The type of action to record.
      * @param points The amount of points to record.
      * @param location The location of the action.
+     * @param category The category of the action.
      */
     public void recordAction(@Nullable Player player, String actionType, String type, double points, Location location, ActionCategory category) {
         if (points == 0) return;
@@ -334,12 +347,30 @@ public class SQLiteUtil {
         }
     }
 
+    /**
+     * Checks if a table exists in the database.
+     * @param statement The statement to execute the query on.
+     * @param tableName The name of the table to check.
+     * @return True if the table exists, false otherwise.
+     * @throws SQLException If an error occurs while checking the table.
+     */
     private boolean tableExists(Statement statement, String tableName) throws SQLException {
         try (ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + tableName + "'")) {
             return rs.next();
         }
     }
 
+    /**
+     * Sets the parameters for an action statement.
+     * @param statement The statement to set the parameters on.
+     * @param player The player who performed the action.
+     * @param actionType The type of action.
+     * @param type The type of action.
+     * @param points The points associated with the action.
+     * @param location The location of the action.
+     * @param category The category of the action.
+     * @throws SQLException If an error occurs while setting the parameters.
+     */
     private void setActionStatement(PreparedStatement statement, @Nullable Player player, String actionType, String type, double points, Location location, ActionCategory category) throws SQLException {
         statement.setString(1, player != null ? player.getUniqueId().toString() : null);
         statement.setString(2, actionType);
@@ -352,6 +383,13 @@ public class SQLiteUtil {
         statement.setInt(9, category.getValue());
     }
 
+    /**
+     * Extracts action information from a ResultSet.
+     * @param resultSet The ResultSet to extract the information from.
+     * @param player The player who performed the action.
+     * @return A list of action information.
+     * @throws SQLException If an error occurs while extracting the information.
+     */
     private List<Object> extractActionInfo(ResultSet resultSet, OfflinePlayer player) throws SQLException {
         List<Object> actionInfo = new ArrayList<>();
         LocalDateTime actionTime = resultSet.getTimestamp("timestamp").toLocalDateTime().atZone(ZoneId.of("UTC")).toLocalDateTime();
@@ -372,6 +410,11 @@ public class SQLiteUtil {
         return actionInfo;
     }
 
+    /**
+     * Builds a batch query for retrieving player flux.
+     * @param size The number of players in the batch.
+     * @return The batch query string.
+     */
     private String buildBatchQuery(int size) {
         StringBuilder queryBuilder = new StringBuilder("SELECT uuid, COALESCE(SUM(points), 0) as total FROM actions WHERE uuid IN (");
         for (int i = 0; i < size; i++) {
@@ -384,14 +427,25 @@ public class SQLiteUtil {
         return queryBuilder.toString();
     }
 
+    /**
+     * Gets the data source.
+     * @return The data source.
+     */
     public SQLiteDataSource getDataSource() {
         return dataSource;
     }
 
+    /**
+     * Gets the action columns.
+     * @return The action columns.
+     */
     public Map<String, String> getActionColumns() {
         return actionColumns;
     }
 
+    /**
+     * Class representing an action record.
+     */
     public static class ActionRecord {
         private final Player player;
         private final String actionType;
@@ -400,6 +454,15 @@ public class SQLiteUtil {
         private final Location location;
         private final ActionCategory category;
 
+        /**
+         * Constructor for ActionRecord.
+         * @param player The player who performed the action.
+         * @param actionType The type of action.
+         * @param type The type of action.
+         * @param points The points associated with the action.
+         * @param location The location of the action.
+         * @param category The category of the action.
+         */
         public ActionRecord(Player player, String actionType, String type, double points, Location location, ActionCategory category) {
             this.player = player;
             this.actionType = actionType;
@@ -409,26 +472,50 @@ public class SQLiteUtil {
             this.category = category;
         }
 
+        /**
+         * Gets the player who performed the action.
+         * @return The player.
+         */
         public Player getPlayer() {
             return player;
         }
 
+        /**
+         * Gets the action type.
+         * @return The action type.
+         */
         public String getActionType() {
             return actionType;
         }
 
+        /**
+         * Gets the type of action.
+         * @return The type of action.
+         */
         public String getType() {
             return type;
         }
 
+        /**
+         * Gets the points associated with the action.
+         * @return The points.
+         */
         public double getPoints() {
             return points;
         }
 
+        /**
+         * Gets the location of the action.
+         * @return The location.
+         */
         public Location getLocation() {
             return location;
         }
 
+        /**
+         * Gets the category of the action.
+         * @return The category.
+         */
         public ActionCategory getCategory() {
             return category;
         }
