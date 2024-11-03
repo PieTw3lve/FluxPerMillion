@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
-import com.github.pietw3lve.fpm.handlers.FluxMeterHandler;
+import com.github.pietw3lve.fpm.handlers.FluxHandler;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -31,7 +31,7 @@ public class Toggle {
 
         Player player = (Player) sender;
         List<String> toggleMessages = plugin.getMessageHandler().getToggleMessages();
-        FluxMeterHandler fluxMeter = plugin.getFluxMeter();
+        FluxHandler fluxMeter = plugin.getFluxMeter();
 
         if (fluxMeter.toggle(player)) {
             try {

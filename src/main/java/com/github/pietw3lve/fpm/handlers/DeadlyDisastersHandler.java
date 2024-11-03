@@ -39,7 +39,7 @@ import deadlydisasters.events.disasters.Tsunami;
 public class DeadlyDisastersHandler {
     
     private final FluxPerMillion plugin;
-    private final FluxMeterHandler fluxMeter;
+    private final FluxHandler fluxMeter;
     private BukkitTask disastersTask;
     private long minInterval;
     private long maxInterval;

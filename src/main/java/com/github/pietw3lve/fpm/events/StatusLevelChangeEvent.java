@@ -4,12 +4,12 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.github.pietw3lve.fpm.handlers.FluxMeterHandler;
+import com.github.pietw3lve.fpm.handlers.FluxHandler;
 
 public class StatusLevelChangeEvent extends Event implements Cancellable {
     
     private static final HandlerList handlers = new HandlerList();
-    private FluxMeterHandler fluxMeter;
+    private FluxHandler fluxMeter;
     private int newStatusLevel;
     private int prevStatusLevel;
     private boolean isCancelled;
@@ -18,7 +18,7 @@ public class StatusLevelChangeEvent extends Event implements Cancellable {
      * FluxStatusChange Constructor.
      * @param plugin The FluxPerMillion plugin.
      */
-    public StatusLevelChangeEvent(FluxMeterHandler fluxMeter, int newStatusLevel, int prevStatusLevel) {
+    public StatusLevelChangeEvent(FluxHandler fluxMeter, int newStatusLevel, int prevStatusLevel) {
         this.fluxMeter = fluxMeter;
         this.newStatusLevel = newStatusLevel;
         this.prevStatusLevel = prevStatusLevel;
@@ -56,7 +56,7 @@ public class StatusLevelChangeEvent extends Event implements Cancellable {
      * Returns the flux meter handler.
      * @return The flux meter handler.
      */
-    public FluxMeterHandler getFluxMeter() {
+    public FluxHandler getFluxMeter() {
         return fluxMeter;
     }
 

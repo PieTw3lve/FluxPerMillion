@@ -4,12 +4,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
-import com.github.pietw3lve.fpm.handlers.FluxMeterHandler;
+import com.github.pietw3lve.fpm.handlers.FluxHandler;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
 public class UpdateFPMBarAction implements EventActionUtil<PlayerJoinEvent> {
     
-    private final FluxMeterHandler fluxMeterHandler;
+    private final FluxHandler fluxMeterHandler;
 
     public UpdateFPMBarAction(FluxPerMillion plugin) {
         this.fluxMeterHandler = plugin.getFluxMeter();

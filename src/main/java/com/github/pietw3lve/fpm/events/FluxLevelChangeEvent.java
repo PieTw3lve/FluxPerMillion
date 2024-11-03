@@ -8,13 +8,13 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.github.pietw3lve.fpm.handlers.FluxMeterHandler;
+import com.github.pietw3lve.fpm.handlers.FluxHandler;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class FluxLevelChangeEvent extends Event implements Cancellable {
     
     private static final HandlerList handlers = new HandlerList();
-    private FluxMeterHandler fluxMeter;
+    private FluxHandler fluxMeter;
     private Location location;
     private Player player;
     private String actionType;
@@ -27,7 +27,7 @@ public class FluxLevelChangeEvent extends Event implements Cancellable {
      * FluxLevelChangeEvent Constructor.
      * @param plugin The FluxPerMillion plugin.
      */
-    public FluxLevelChangeEvent(FluxMeterHandler fluxMeter, Location location, @Nullable Player player, String actionType, String type, double points, ActionCategory category) {
+    public FluxLevelChangeEvent(FluxHandler fluxMeter, Location location, @Nullable Player player, String actionType, String type, double points, ActionCategory category) {
         this.fluxMeter = fluxMeter;
         this.location = location;
         this.player = player;
@@ -82,7 +82,7 @@ public class FluxLevelChangeEvent extends Event implements Cancellable {
      * Returns the flux meter handler.
      * @return The flux meter handler.
      */
-    public FluxMeterHandler getFluxMeter() {
+    public FluxHandler getFluxMeter() {
         return fluxMeter;
     }
 

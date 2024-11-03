@@ -13,7 +13,7 @@ import com.github.pietw3lve.fpm.commands.FPMCommands;
 import com.github.pietw3lve.fpm.handlers.DeadlyDisastersHandler;
 import com.github.pietw3lve.fpm.handlers.EffectsHandler;
 import com.github.pietw3lve.fpm.handlers.FishTrackerHandler;
-import com.github.pietw3lve.fpm.handlers.FluxMeterHandler;
+import com.github.pietw3lve.fpm.handlers.FluxHandler;
 import com.github.pietw3lve.fpm.handlers.MessageHandler;
 import com.github.pietw3lve.fpm.handlers.PlaceholderHandler;
 import com.github.pietw3lve.fpm.handlers.TreeHandler;
@@ -36,7 +36,7 @@ public class FluxPerMillion extends JavaPlugin {
 	private SQLiteUtil dbHandler;
 	private GUIUtil guiUtil;
 	private MessageHandler messageHandler;
-	private FluxMeterHandler fluxMeter;
+	private FluxHandler fluxMeter;
 	private DeadlyDisastersHandler deadlyDisasters;
 	private EffectsHandler effectsHandler;
 	private PlaceholderHandler placeholderHandler;
@@ -58,7 +58,7 @@ public class FluxPerMillion extends JavaPlugin {
 		this.commandManager = new PaperCommandManager(this);
 		this.guiUtil = new GUIUtil();
 		this.messageHandler = new MessageHandler(this);
-		this.fluxMeter = new FluxMeterHandler(this);
+		this.fluxMeter = new FluxHandler(this);
 		this.deadlyDisasters = new DeadlyDisastersHandler(this);
 		this.effectsHandler = new EffectsHandler(this);
 		this.placeholderHandler = new PlaceholderHandler(this);
@@ -202,7 +202,7 @@ public class FluxPerMillion extends JavaPlugin {
 	 * Returns the FluxMeterHandler instance.
 	 * @return FluxMeterHandler
 	 */
-	public FluxMeterHandler getFluxMeter() {
+	public FluxHandler getFluxMeter() {
 		return this.fluxMeter;
 	}
 

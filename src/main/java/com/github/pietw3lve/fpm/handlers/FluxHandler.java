@@ -1,5 +1,6 @@
 package com.github.pietw3lve.fpm.handlers;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.bukkit.boss.BarColor;
@@ -16,7 +17,7 @@ import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
  * Handles the flux meter functionality, including updating the flux meter,
  * toggling it for players, and managing the flux meter task.
  */
-public class FluxMeterHandler {
+public class FluxHandler {
     
     private final FluxPerMillion plugin;
     private final Set<String> playersWithBossBar = new HashSet<>();
@@ -43,10 +44,10 @@ public class FluxMeterHandler {
     private double newWildlifePoints;
 
     /**
-     * FluxMeterHandler Constructor.
+     * FluxHandler Constructor.
      * @param plugin The main plugin instance.
      */
-    public FluxMeterHandler(FluxPerMillion plugin) {
+    public FluxHandler(FluxPerMillion plugin) {
         this.plugin = plugin;
         this.fluxMeterTask = null;
         this.fluxMeter = plugin.getServer().createBossBar("Flux Meter", BarColor.RED, BarStyle.SEGMENTED_12);
@@ -240,66 +241,36 @@ public class FluxMeterHandler {
     }
 
     /**
-     * Returns the new energy points.
-     * @return The new energy points.
+     * Returns the new flux percentages.
+     * @return The new flux percentages.
      */
-    public double getNewEnergyPoints() {
-        return newEnergyPoints;
+    public double[] getNewFluxPercentages() {
+        double[] newFlux = {
+            newEnergyPoints,
+            newAgriculturePoints,
+            newPollutionPoints,
+            newWildlifePoints
+        };
+        double newTotalFlux = Arrays.stream(newFlux).sum();
+        return Arrays.stream(newFlux).map(p -> p / newTotalFlux * 100).toArray();
     }
 
     /**
-     * Returns the old energy points.
-     * @return The old energy points.
+     * Returns the old flux percentages.
+     * @return The old flux percentages.
      */
-    public double getOldEnergyPoints() {
-        return oldEnergyPoints;
+    public double[] getOldFluxPercentages() {
+        double[] oldFlux = {
+            oldEnergyPoints,
+            oldAgriculturePoints,
+            oldPollutionPoints,
+            oldWildlifePoints
+        };
+        double oldTotalFlux = Arrays.stream(oldFlux).sum();
+        return Arrays.stream(oldFlux).map(p -> p / oldTotalFlux * 100).toArray();
     }
 
-    /**
-     * Returns the new agriculture points.
-     * @return The new agriculture points.
-     */
-    public double getNewAgriculturePoints() {
-        return newAgriculturePoints;
-    }
-
-    /**
-     * Returns the old agriculture points.
-     * @return The old agriculture points.
-     */
-    public double getOldAgriculturePoints() {
-        return oldAgriculturePoints;
-    }
-
-    /**
-     * Returns the new pollution points.
-     * @return The new pollution points.
-     */
-    public double getNewPollutionPoints() {
-        return newPollutionPoints;
-    }
-
-    /**
-     * Returns the old pollution points.
-     * @return The old pollution points.
-     */
-    public double getOldPollutionPoints() {
-        return oldPollutionPoints;
-    }
-
-    /**
-     * Returns the new wildlife points.
-     * @return The new wildlife points.
-     */
-    public double getNewWildlifePoints() {
-        return newWildlifePoints;
-    }
-
-    /**
-     * Returns the old wildlife points.
-     * @return The old wildlife points.
-     */
-    public double getOldWildlifePoints() {
-        return oldWildlifePoints;
+    public double getPlayerPercent(double playerFlux) {
+        return Math.max(0, playerFlux / totalPoints) * 100;
     }
 }

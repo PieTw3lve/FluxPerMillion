@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.gui.InventoryButton;
 import com.github.pietw3lve.fpm.gui.InventoryGUI;
-import com.github.pietw3lve.fpm.handlers.FluxMeterHandler;
+import com.github.pietw3lve.fpm.handlers.FluxHandler;
 import com.github.pietw3lve.fpm.handlers.MessageHandler;
 import com.github.pietw3lve.fpm.utils.PlayerSkullUtil;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil;
@@ -27,7 +27,7 @@ import com.github.pietw3lve.fpm.utils.SQLiteUtil;
 public class StatusInventory extends InventoryGUI {
 
     private final SQLiteUtil dbUtil;
-    private final FluxMeterHandler fluxMeter;
+    private final FluxHandler fluxMeter;
     private final MessageHandler.StatusMessages statusMessages;
 
     /**
@@ -60,27 +60,10 @@ public class StatusInventory extends InventoryGUI {
     public void decorate(Player player) {
         int inventorySize = this.getInventory().getSize();
         double playerFlux = dbUtil.getPlayerFlux(player);
-        double playerPercent = Math.max(0, playerFlux / dbUtil.calculateTotalPoints()) * 100;
+        double playerPercent = fluxMeter.getPlayerPercent(playerFlux);
 
-        double[] newFlux = {
-            fluxMeter.getNewEnergyPoints(),
-            fluxMeter.getNewAgriculturePoints(),
-            fluxMeter.getNewPollutionPoints(),
-            fluxMeter.getNewWildlifePoints()
-        };
-
-        double[] oldFlux = {
-            fluxMeter.getOldEnergyPoints(),
-            fluxMeter.getOldAgriculturePoints(),
-            fluxMeter.getOldPollutionPoints(),
-            fluxMeter.getOldWildlifePoints()
-        };
-
-        double newTotalFlux = Arrays.stream(newFlux).sum();
-        double oldTotalFlux = Arrays.stream(oldFlux).sum();
-
-        double[] newPercents = Arrays.stream(newFlux).map(p -> p / newTotalFlux * 100).toArray();
-        double[] oldPercents = Arrays.stream(oldFlux).map(p -> p / oldTotalFlux * 100).toArray();
+        double[] newPercents = fluxMeter.getNewFluxPercentages();
+        double[] oldPercents = fluxMeter.getOldFluxPercentages();
 
         for (int i = 0; i < inventorySize; i++) {
             this.addButton(i, createFillerIcon(Material.GRAY_STAINED_GLASS_PANE));
