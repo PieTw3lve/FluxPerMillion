@@ -17,7 +17,7 @@ fishing:
   threshold: 50
 flux_meter:
   # Refresh interval is in ticks (20 ticks = 1 second).
-  refresh_interval: 72000
+  refresh_interval: 144000
   # Total Flux can exceed the minimum and maximum values, but the meter will not display it.
   maximum_flux_capacity: 1000000.0
   flux_capacity_offset: 0.0

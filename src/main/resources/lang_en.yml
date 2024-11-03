@@ -6,11 +6,39 @@ fpm-messages:
     footer: ' §7(§r{action} §6entries§7)'
   reload: '§aConfiguration file has been reloaded.'
   status:
-    conditions:
-      tier_0: '§aFlourishing'
-      tier_1: '§eStable'
-      tier_2: '§6Strained'
-      tier_3: '§4Peril'
+    menu:
+      name: '§2World Status'
+      history: '§7({sign}{change}§7)'
+    world:
+      name: '§eWorld'
+      health: '§7Overall Condition: {health}'
+      conditions:
+        tier_0: '§aFlourishing'
+        tier_1: '§eStable'
+        tier_2: '§6Strained'
+        tier_3: '§4Peril'
+      check: '§7Next Check: §e{time}'
+      lore: '§8This world changes based on its inhabitants and thrives or suffers from their choices.'
+    player:
+      name: '§eYou'
+      contribution: '§7Flux Contribution: §e{contribution}'
+      lore: '§8Your actions affect the world around you and determine its future for better or worse.'
+    energy:
+      name: '§6Energy and Combustion {history}'
+      contribution: '§7Flux Contribution: §e{contribution}'
+      lore: '§8The use of energy sources, including fossil fuels and biomass, contribute significantly to greenhouse gas emissions.'
+    agriculture:
+      name: '§2Agriculture {history}'
+      contribution: '§7Flux Contribution: §e{contribution}'
+      lore: '§8Agricultural practices, including crop production and tree management, exert a critical role in carbon storage and ecosystem health.'
+    pollution:
+      name: '§5Pollution {history}'
+      contribution: '§7Flux Contribution: §e{contribution}'
+      lore: '§8The generation and mismanagement of waste lead to environmental degradation, releasing pollutants that threaten air and water quality.'
+    wildlife:
+      name: '§3Wildlife {history}'
+      contribution: '§7Flux Contribution: §e{contribution}'
+      lore: '§8Human activities like fishing and other practices that disrupt ecosystems, resulting in biodiversity loss and altering the delicate balance of the environment.'
   toggle:
     enabled: '§aFlux meter is now visible.'
     disabled: '§cFlux meter is now hidden.'

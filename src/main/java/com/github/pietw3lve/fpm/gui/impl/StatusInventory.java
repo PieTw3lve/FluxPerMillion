@@ -28,7 +28,7 @@ public class StatusInventory extends InventoryGUI {
 
     private final SQLiteUtil dbUtil;
     private final FluxMeterHandler fluxMeter;
-    private final MessageHandler messageHandler;
+    private final MessageHandler.StatusMessages statusMessages;
 
     /**
      * Constructs a new StatusInventory.
@@ -38,7 +38,7 @@ public class StatusInventory extends InventoryGUI {
     public StatusInventory(FluxPerMillion plugin) {
         this.dbUtil = plugin.getDbUtil();
         this.fluxMeter = plugin.getFluxMeter();
-        this.messageHandler = plugin.getMessageHandler();
+        this.statusMessages = plugin.getMessageHandler().getStatusMessages();
     }
 
     /**
@@ -86,62 +86,63 @@ public class StatusInventory extends InventoryGUI {
             this.addButton(i, createFillerIcon(Material.GRAY_STAINED_GLASS_PANE));
         }
 
+        // ChatColor.translateAlternateColorCodes('&', inspectMessage.replace("{player}", player.getName()).replace("{points}", points))
         this.addButton(12, createIcon(
             PlayerSkullUtil.getPlayerSkull("http://textures.minecraft.net/texture/2e2cc42015e6678f8fd49ccc01fbf787f1ba2c32bcf559a015332fc5db50"),
-            ChatColor.YELLOW + "World",
+            ChatColor.translateAlternateColorCodes('&', statusMessages.world.name),
             Arrays.asList(
-                ChatColor.GRAY + "Overall Condition: " + messageHandler.getStatusMessages().get(fluxMeter.getStatusLevel()),
-                ChatColor.GRAY + "Next Check: " + ChatColor.YELLOW + String.format("%dh %dm %ds", 
+                ChatColor.translateAlternateColorCodes('&', statusMessages.world.health.replace("{health}", statusMessages.world.conditions.get(fluxMeter.getStatusLevel()))),
+                ChatColor.translateAlternateColorCodes('&', statusMessages.world.check.replace("{time}", String.format("%dh %dm %ds", 
                     TimeUnit.MILLISECONDS.toHours(fluxMeter.getTimeUntilNextRun()), 
                     TimeUnit.MILLISECONDS.toMinutes(fluxMeter.getTimeUntilNextRun()) % 60, 
-                    TimeUnit.MILLISECONDS.toSeconds(fluxMeter.getTimeUntilNextRun()) % 60),
+                    TimeUnit.MILLISECONDS.toSeconds(fluxMeter.getTimeUntilNextRun()) % 60))),
                 "",
-                ChatColor.DARK_GRAY + "This world changes based on its inhabitants and thrives or suffers from their choices."
+                ChatColor.translateAlternateColorCodes('&', statusMessages.world.lore)
             )
         ));
         this.addButton(14, createIcon(
             PlayerSkullUtil.getPlayerSkull(player),
-            ChatColor.YELLOW + "You",
+            ChatColor.translateAlternateColorCodes('&', statusMessages.player.name),
             Arrays.asList(
-                ChatColor.GRAY + "Flux Contribution: " + getColorForPlayerContribution(playerPercent) + String.format("%.1f%%", playerPercent),
+                ChatColor.translateAlternateColorCodes('&', statusMessages.player.contribution.replace("{contribution}", String.format("%s%.1f%%", getColorForPlayerContribution(playerPercent), playerPercent))),
                 "",
-                ChatColor.DARK_GRAY + "Your actions affect the world around you and determine its future for better or worse."
+                ChatColor.translateAlternateColorCodes('&', statusMessages.player.lore)
             )
         ));
         this.addButton(28, createIcon(
             new ItemStack(Material.FIRE_CHARGE),
-            ChatColor.GOLD + "Energy and Combustion " + formatChange(newPercents[0] - oldPercents[0]),
+            ChatColor.translateAlternateColorCodes('&', statusMessages.energy.name.replace("{history}", formatChange(newPercents[0] - oldPercents[0]))),
             Arrays.asList(
-                ChatColor.GRAY + "Flux Contribution: " + ChatColor.YELLOW + String.format("%.1f%%", newPercents[0]),
+                ChatColor.translateAlternateColorCodes('&', statusMessages.energy.contribution.replace("{contribution}", String.format("%.1f%%", newPercents[0]))),
                 "",
-                ChatColor.DARK_GRAY + "The use of energy sources, including fossil fuels and biomass, contribute significantly to greenhouse gas emissions."
+                ChatColor.translateAlternateColorCodes('&', statusMessages.energy.lore)
             )
         ));
         this.addButton(30, createIcon(
             new ItemStack(Material.SPRUCE_SAPLING),
-            ChatColor.DARK_GREEN + "Agriculture " + formatChange(newPercents[1] - oldPercents[1]),
+            ChatColor.translateAlternateColorCodes('&', statusMessages.agriculture.name.replace("{history}", formatChange(newPercents[1] - oldPercents[1]))),
             Arrays.asList(
-                ChatColor.GRAY + "Flux Contribution: " + ChatColor.YELLOW + String.format("%.1f%%", newPercents[1]), 
+                ChatColor.translateAlternateColorCodes('&', statusMessages.agriculture.contribution.replace("{contribution}", String.format("%.1f%%", newPercents[1]))),
                 "",
-                ChatColor.DARK_GRAY + "Agricultural practices, including crop production and tree management, exert a critical role in carbon storage and ecosystem health."
+                ChatColor.translateAlternateColorCodes('&', statusMessages.agriculture.lore)
             )
         ));
         this.addButton(32, createIcon(
             new ItemStack(Material.MINECART),
-            ChatColor.DARK_GRAY + "Pollution " + formatChange(newPercents[2] - oldPercents[2]),
+            ChatColor.translateAlternateColorCodes('&', statusMessages.pollution.name.replace("{history}", formatChange(newPercents[2] - oldPercents[2]))),
             Arrays.asList(
-                ChatColor.GRAY + "Flux Contribution: " + ChatColor.YELLOW + String.format("%.1f%%", newPercents[2]), 
+                ChatColor.translateAlternateColorCodes('&', statusMessages.pollution.contribution.replace("{contribution}", String.format("%.1f%%", newPercents[2]))),
                 "",
-                ChatColor.DARK_GRAY + "The generation and mismanagement of waste lead to environmental degradation, releasing pollutants that threaten air and water quality."
+                ChatColor.translateAlternateColorCodes('&', statusMessages.pollution.lore)
             )
         ));
         this.addButton(34, createIcon(
             new ItemStack(Material.TURTLE_EGG),
-            ChatColor.DARK_AQUA + "Wildlife " + formatChange(newPercents[3] - oldPercents[3]),
+            ChatColor.translateAlternateColorCodes('&', statusMessages.wildlife.name.replace("{history}", formatChange(newPercents[3] - oldPercents[3]))),
             Arrays.asList(
-                ChatColor.GRAY + "Flux Contribution: " + ChatColor.YELLOW + String.format("%.1f%%", newPercents[3]), 
+                ChatColor.translateAlternateColorCodes('&', statusMessages.wildlife.contribution.replace("{contribution}", String.format("%.1f%%", newPercents[3]))),
                 "",
-                ChatColor.DARK_GRAY + "Human activities like fishing and other practices that disrupt ecosystems, resulting in biodiversity loss and altering the delicate balance of the environment."
+                ChatColor.translateAlternateColorCodes('&', statusMessages.wildlife.lore)
             )
         ));
 
@@ -160,7 +161,7 @@ public class StatusInventory extends InventoryGUI {
         } else if (contribution < 50) {
             return ChatColor.YELLOW.toString();
         } else if (contribution < 75) {
-            return ChatColor.GOLD.toString(); // Orange color
+            return ChatColor.GOLD.toString();
         } else {
             return ChatColor.RED.toString();
         }
@@ -252,6 +253,6 @@ public class StatusInventory extends InventoryGUI {
     private String formatChange(double change) {
         if (change == 0 || Double.isNaN(change)) return "";
         String sign = change > 0 ? ChatColor.RED + "+" : ChatColor.GREEN + "-";
-        return String.format(ChatColor.GRAY + "(%s%.0f%%" + ChatColor.GRAY + ")", sign, Math.abs(change));
+        return ChatColor.translateAlternateColorCodes('&', statusMessages.menu.history.replace("{sign}", sign).replace("{change}", String.format("%.1f%%", Math.abs(change))));
     }
 }
