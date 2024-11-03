@@ -3,7 +3,9 @@ package com.github.pietw3lve.fpm.handlers;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Registry;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -15,8 +17,8 @@ import com.github.pietw3lve.fpm.FluxPerMillion;
 public class EffectsHandler {
     
     private final FluxPerMillion plugin;
-    private Map<Integer, Map<String, Double>> attributes;
-    private Map<Integer, Map<String, Integer>> potions;
+    private Map<Integer, Map<Attribute, Double>> attributes;
+    private Map<Integer, Map<PotionEffectType, PotionEffect>> potions;
     private int interval;
     private BukkitTask effectTask;
     private boolean enabled;
@@ -56,54 +58,46 @@ public class EffectsHandler {
     private void applyEffects() {
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             int statusLevel = plugin.getFluxMeter().getStatusLevel();
-            Map<String, Double> attributes = this.attributes.get(statusLevel);
-            Map<String, Integer> potions = this.potions.get(statusLevel);
+            Map<Attribute, Double> configAttributes = this.attributes.get(statusLevel);
+            Map<PotionEffectType, PotionEffect> potions = this.potions.get(statusLevel);
 
-            if (attributes != null) {
-                for (Map.Entry<String, Double> entry : attributes.entrySet()) {
-                    String attribute = entry.getKey();
-                    double value = entry.getValue();
-                    player.getAttribute(convertToAttribute(attribute)).setBaseValue(value);
-                }
-            }
+            applyAttributes(player, configAttributes);
+            applyPotions(player, potions);
+        }
+    }
 
-            if (potions != null) {
-                for (Map.Entry<String, Integer> entry : potions.entrySet()) {
-                    String potion = entry.getKey();
-                    int amplifier = entry.getValue();
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.getByName(potion), interval, amplifier));
-                }
+    /**
+     * Apply the attributes to the player.
+     * @param player The player
+     * @param attributes The attributes
+     */
+    private void applyAttributes(Player player, Map<Attribute, Double> attributes) {
+        if (attributes == null) return;
+
+        Map<Attribute, Double> defaultAttributes = getDefaultPlayerAttributes();
+
+        for (Map.Entry<Attribute, Double> entry : attributes.entrySet()) {
+            defaultAttributes.put(entry.getKey(), entry.getValue());
+        }
+
+        for (Map.Entry<Attribute, Double> entry : defaultAttributes.entrySet()) {
+            AttributeInstance instance = player.getAttribute(entry.getKey());
+            if (instance != null) {
+                instance.setBaseValue(entry.getValue());
             }
         }
     }
 
     /**
-     * Convert the string to an attribute.
-     * @param attribute The attribute to convert
-     * @return The attribute
+     * Apply the potions to the player.
+     * @param player The player
+     * @param potions The potions
      */
-    private Attribute convertToAttribute(String attribute) {
-        switch (attribute) {
-            case "max_health":
-                return Attribute.GENERIC_MAX_HEALTH;
-            case "follow_range":
-                return Attribute.GENERIC_FOLLOW_RANGE;
-            case "knockback_resistance":
-                return Attribute.GENERIC_KNOCKBACK_RESISTANCE;
-            case "movement_speed":
-                return Attribute.GENERIC_MOVEMENT_SPEED;
-            case "attack_damage":
-                return Attribute.GENERIC_ATTACK_DAMAGE;
-            case "attack_speed":
-                return Attribute.GENERIC_ATTACK_SPEED;
-            case "armor":
-                return Attribute.GENERIC_ARMOR;
-            case "armor_toughness":
-                return Attribute.GENERIC_ARMOR_TOUGHNESS;
-            case "luck":
-                return Attribute.GENERIC_LUCK;
-            default:
-                return null;
+    private void applyPotions(Player player, Map<PotionEffectType, PotionEffect> potions) {
+        if (potions == null) return;
+
+        for (PotionEffect effect : potions.values()) {
+            player.addPotionEffect(effect);
         }
     }
 
@@ -113,17 +107,23 @@ public class EffectsHandler {
      * @param config The configuration section
      * @return A map of attributes
      */
-    private Map<Integer, Map<String, Double>> configToAttributes() {
-        Map<Integer, Map<String, Double>> attributes = new HashMap<>();
+    private Map<Integer, Map<Attribute, Double>> configToAttributes() {
+        Map<Integer, Map<Attribute, Double>> attributes = new HashMap<>();
 
         for (int i = 0; i <= 3; i++) {
-            String path = "effects."+ "tier_" + i +".player.attributes";
+            String path = "effects.tier_" + i + ".attributes";
             ConfigurationSection config = plugin.getConfig().getConfigurationSection(path);
-            Map<String, Double> innerMap = new HashMap<>();
+            Map<Attribute, Double> innerMap = new HashMap<>();
 
-            for (String key : config.getKeys(false)) {
-                double value = config.getDouble(key);
-                innerMap.put(key, value);
+            if (config != null) {
+                for (String key : config.getKeys(false)) {
+                    String identifier = config.getString(key + ".identifier");
+                    double value = config.getDouble(key + ".value");
+                    Attribute attribute = Registry.ATTRIBUTE.match(identifier);
+                    if (attribute != null) {
+                        innerMap.put(attribute, value);
+                    }
+                }
             }
 
             attributes.put(i, innerMap);
@@ -138,22 +138,65 @@ public class EffectsHandler {
      * @param config The configuration section
      * @return A map of potions
      */
-    private Map<Integer, Map<String, Integer>> configToPotions() {
-        Map<Integer, Map<String, Integer>> potions = new HashMap<>();
+    private Map<Integer, Map<PotionEffectType, PotionEffect>> configToPotions() {
+        Map<Integer, Map<PotionEffectType, PotionEffect>> potions = new HashMap<>();
 
         for (int i = 0; i <= 3; i++) {
-            String path = "effects."+ "tier_" + i +".player.potion_effects";
+            String path = "effects.tier_" + i + ".potion_effects";
             ConfigurationSection config = plugin.getConfig().getConfigurationSection(path);
-            Map<String, Integer> innerMap = new HashMap<>();
+            Map<PotionEffectType, PotionEffect> innerMap = new HashMap<>();
 
             for (String key : config.getKeys(false)) {
-                int value = config.getInt(key + ".amplifier");
-                innerMap.put(key, value);
+                String identifier = config.getString(key + ".identifier");
+                int amplifier = config.getInt(key + ".amplifier");
+                PotionEffectType type = Registry.EFFECT.match(identifier);
+                if (type != null) {
+                    innerMap.put(type, new PotionEffect(type, interval, amplifier));
+                }
             }
 
             potions.put(i, innerMap);
         }
 
         return potions;
+    }
+
+    /**
+     * Get the default player attributes.
+     * <p>
+     * PLEASE ADD A RESET TO DEFAULTS ATTRIBUTE METHOD
+     * @return A map of default player attributes
+     */
+    private Map<Attribute, Double> getDefaultPlayerAttributes() {
+        Map<Attribute, Double> attributes = new HashMap<>();
+        attributes.put(Attribute.GENERIC_MAX_HEALTH, 20.0);
+        attributes.put(Attribute.GENERIC_KNOCKBACK_RESISTANCE, 0.0);
+        attributes.put(Attribute.GENERIC_MOVEMENT_SPEED, 0.1);
+        attributes.put(Attribute.GENERIC_ATTACK_DAMAGE, 1.0);
+        attributes.put(Attribute.GENERIC_ATTACK_KNOCKBACK, 0.0);
+        attributes.put(Attribute.GENERIC_ATTACK_SPEED, 4.0);
+        attributes.put(Attribute.GENERIC_ARMOR, 0.0);
+        attributes.put(Attribute.GENERIC_ARMOR_TOUGHNESS, 0.0);
+        attributes.put(Attribute.GENERIC_FALL_DAMAGE_MULTIPLIER, 1.0);
+        attributes.put(Attribute.GENERIC_LUCK, 0.0);
+        attributes.put(Attribute.GENERIC_MAX_ABSORPTION, 0.0);
+        attributes.put(Attribute.GENERIC_SAFE_FALL_DISTANCE, 3.0);
+        attributes.put(Attribute.GENERIC_SCALE, 1.0);
+        attributes.put(Attribute.GENERIC_STEP_HEIGHT, 0.6);
+        attributes.put(Attribute.GENERIC_GRAVITY, 0.08);
+        attributes.put(Attribute.GENERIC_JUMP_STRENGTH, 0.41999998688697815);
+        attributes.put(Attribute.GENERIC_BURNING_TIME, 1.0);
+        attributes.put(Attribute.GENERIC_EXPLOSION_KNOCKBACK_RESISTANCE, 0.0);
+        attributes.put(Attribute.GENERIC_MOVEMENT_EFFICIENCY, 0.0);
+        attributes.put(Attribute.GENERIC_OXYGEN_BONUS, 0.0);
+        attributes.put(Attribute.GENERIC_WATER_MOVEMENT_EFFICIENCY, 0.0);
+        attributes.put(Attribute.PLAYER_BLOCK_INTERACTION_RANGE, 4.5);
+        attributes.put(Attribute.PLAYER_ENTITY_INTERACTION_RANGE, 3.0);
+        attributes.put(Attribute.PLAYER_BLOCK_BREAK_SPEED, 1.0);
+        attributes.put(Attribute.PLAYER_MINING_EFFICIENCY, 0.0);
+        attributes.put(Attribute.PLAYER_SNEAKING_SPEED, 0.3);
+        attributes.put(Attribute.PLAYER_SUBMERGED_MINING_SPEED, 0.2);
+        attributes.put(Attribute.PLAYER_SWEEPING_DAMAGE_RATIO, 0.0);
+        return attributes;
     }
 }

@@ -54,74 +54,67 @@ flux_points:
 effects:
   # Effects are applied to players when the flux meter reaches a specific tier.
   # Interval is in ticks (20 ticks = 1 second).
-  refresh_interval: 1200
+  refresh_interval: 300
   enabled: true
   tier_0:
-    player:
-      attributes:
-        # More information about attributes can be found at https://minecraft.fandom.com/wiki/Attribute
-        armor: 0
-        armor_toughness: 0
-        attack_damage: 1.0
-        attack_speed: 4.0
-        knockback_resistance: 0
-        luck: 0
-        max_health: 20
-        movement_speed: 0.1
-      potion_effects:
-        # More information about potion effects can be found at https://minecraft.fandom.com/wiki/Status_effect
-        fast_digging:
-          amplifier: 0
-        speed:
-          amplifier: 0
+    attributes:
+      # You may want to reference https://minecraft.wiki/w/Attribute
+      health:
+        identifier: 'minecraft:generic.max_health'
+        value: 24
+      armor:
+        identifier: 'minecraft:generic.armor'
+        value: 3
+      luck:
+        identifier: 'minecraft:generic.luck'
+        value: 1
+    potion_effects:
+      # You may want to reference https://minecraft.wiki/w/Effect
+      haste:
+        identifier: 'minecraft:haste'
+        amplifier: 0
+      speed:
+        identifier: 'minecraft:speed'
+        amplifier: 0
   tier_1:
-    player:
-      attributes:
-        armor: 0
-        armor_toughness: 0
-        attack_damage: 1.0
-        attack_speed: 4.0
-        knockback_resistance: 0
-        luck: 0
-        max_health: 20
-        movement_speed: 0.1
-      potion_effects:
-        weakness:
-          amplifier: 0
+    attributes:
+      armor:
+        identifier: 'minecraft:generic.armor'
+        value: 2
+    potion_effects:
+      weakness:
+        identifier: 'minecraft:weakness'
+        amplifier: 0
   tier_2:
-    player:
-      attributes:
-        armor: 0
-        armor_toughness: 0
-        attack_damage: 1.0
-        attack_speed: 4.0
-        knockback_resistance: 0
-        luck: 0
-        max_health: 20
-        movement_speed: 0.1
-      potion_effects:
-        slow:
-          amplifier: 0
-        weakness:
-          amplifier: 0
+    attributes:
+      health:
+        identifier: 'minecraft:generic.max_health'
+        value: 16
+    potion_effects:
+      slowness:
+        identifier: 'minecraft:slowness'
+        amplifier: 0
+      weakness:
+        identifier: 'minecraft:weakness'
+        amplifier: 0
   tier_3:
-    player:
-      attributes:
-        armor: 0
-        armor_toughness: 0
-        attack_damage: 1.0
-        attack_speed: 4.0
-        knockback_resistance: 0
-        luck: 0
-        max_health: 20
-        movement_speed: 0.1
-      potion_effects:
-        slow_digging:
-          amplifier: 0
-        slow:
-          amplifier: 0
-        weakness:
-          amplifier: 0
+    attributes:
+      health:
+        identifier: 'minecraft:generic.max_health'
+        value: 16
+      luck:
+        identifier: 'minecraft:generic.luck'
+        value: -1
+    potion_effects:
+      mining_fatigue:
+        identifier: 'minecraft:mining_fatigue'
+        amplifier: 0
+      slow:
+        identifier: 'minecraft:slowness'
+        amplifier: 0
+      weakness:
+        identifier: 'minecraft:weakness'
+        amplifier: 0
 custom_mechanics:
   minecart:
     surge_boost:
