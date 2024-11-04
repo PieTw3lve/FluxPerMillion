@@ -43,7 +43,8 @@ public class TreeHandler {
         this.treeLeaves = new HashSet<>(Arrays.asList(
                 Material.OAK_LEAVES, Material.BIRCH_LEAVES, Material.SPRUCE_LEAVES,
                 Material.JUNGLE_LEAVES, Material.ACACIA_LEAVES, Material.DARK_OAK_LEAVES,
-                Material.MANGROVE_LEAVES, Material.CHERRY_LEAVES
+                Material.MANGROVE_LEAVES, Material.CHERRY_LEAVES, Material.AZALEA_LEAVES,
+                Material.FLOWERING_AZALEA_LEAVES
         ));
     }
 
