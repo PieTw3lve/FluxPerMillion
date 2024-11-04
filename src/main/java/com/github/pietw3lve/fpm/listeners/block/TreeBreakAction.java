@@ -40,6 +40,7 @@ public class TreeBreakAction implements EventActionUtil<BlockBreakEvent> {
             double points = plugin.getConfig().getDouble(FLUX_POINTS_TREE_BREAK) * treeUtils.getTreeLogsCount(tree);
             FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "cut", "tree", points, ActionCategory.AGRICULTURE);
             plugin.getServer().getPluginManager().callEvent(fluxEvent);
+            treeUtils.markTreeAsDead(tree);
             if (plugin.getConfig().getBoolean(DEBUG_TREE_FELLER)) treeUtils.breakTree(tree);
         }
     }

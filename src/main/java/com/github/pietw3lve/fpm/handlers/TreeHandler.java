@@ -2,6 +2,8 @@ package com.github.pietw3lve.fpm.handlers;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 
 import org.bukkit.Material;
@@ -55,15 +57,11 @@ public class TreeHandler {
         Set<Block> treeBlocks = new HashSet<>();
         traverseTree(block, treeBlocks);
 
-        int naturalLeaves = 0;
-        for (Block treeBlock : treeBlocks) {
-            if (treeLeaves.contains(treeBlock.getType())) {
-                Leaves leaves = (Leaves) treeBlock.getBlockData();
-                if (!leaves.isPersistent()) {
-                    naturalLeaves++;
-                }
-            }
-        }
+        long naturalLeaves = treeBlocks.stream()
+            .filter(b -> treeLeaves.contains(b.getType()))
+            .map(b -> (Leaves) b.getBlockData())
+            .filter(leaves -> !leaves.isPersistent())
+            .count();
 
         if (naturalLeaves <= NATURAL_LEAVES_THRESHOLD) {
             treeBlocks.clear();
@@ -75,30 +73,45 @@ public class TreeHandler {
     /**
      * Traverse the tree to find all connected logs and leaves
      * and add them to the treeBlocks set.
-     * @param block The block to start the tree search from.
+     * @param startBlock The block to start the tree search from.
      * @param treeBlocks An empty set to store the tree blocks.
      */
-    private void traverseTree(Block block, Set<Block> treeBlocks) {
-        if (!treeBlocks.contains(block) && treeBlocks.size() < MAX_TREE_LENGTH) {
-            BlockFace[] directions = {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+    private void traverseTree(Block startBlock, Set<Block> treeBlocks) {
+        Queue<Block> queue = new LinkedList<>();
+        queue.add(startBlock);
+
+        BlockFace[] directions = BlockFace.values();
+
+        while (!queue.isEmpty() && treeBlocks.size() < MAX_TREE_LENGTH) {
+            Block block = queue.poll();
+            if (treeBlocks.contains(block)) {
+                continue;
+            }
+
             treeBlocks.add(block);
+
             for (BlockFace direction : directions) {
                 Block adjacentBlock = block.getRelative(direction);
-                if (adjacentBlock.getLocation().distanceSquared(block.getLocation()) <= 1) { // Check for adjacent logs
-                    if ((treeLogs.contains(adjacentBlock.getType()) || strippedTreeLogs.contains(adjacentBlock.getType())) && (!adjacentBlock.hasMetadata("fpm:placed") || adjacentBlock.hasMetadata("fpm:stripped"))) {
-                        adjacentBlock.setMetadata("fpm:tree_dead", new FixedMetadataValue(plugin, true));
-                        traverseTree(adjacentBlock, treeBlocks);
-                    } else if (adjacentBlock.getType() == Material.AIR || adjacentBlock.getType() == Material.VINE) { // Check for diagonal logs
-                        for (BlockFace face : directions) {
-                            Block diagonalBlock = adjacentBlock.getRelative(face);
-                            if (treeLogs.contains(diagonalBlock.getType()) && !diagonalBlock.hasMetadata("fpm:placed")) {
-                                traverseTree(diagonalBlock, treeBlocks);
+                if (treeLogs.contains(adjacentBlock.getType()) || strippedTreeLogs.contains(adjacentBlock.getType())) {
+                    queue.add(adjacentBlock);
+                } else if (treeLeaves.contains(adjacentBlock.getType())) {
+                    Leaves leaves = (Leaves) adjacentBlock.getBlockData();
+                    if (!leaves.isPersistent()) {
+                        queue.add(adjacentBlock);
+                    }
+                }
+
+                // Check for diagonal blocks
+                for (BlockFace diagonalDirection : directions) {
+                    if (diagonalDirection != direction) {
+                        Block diagonalBlock = adjacentBlock.getRelative(diagonalDirection);
+                        if (treeLogs.contains(diagonalBlock.getType()) || strippedTreeLogs.contains(diagonalBlock.getType())) {
+                            queue.add(diagonalBlock);
+                        } else if (treeLeaves.contains(diagonalBlock.getType())) {
+                            Leaves leaves = (Leaves) diagonalBlock.getBlockData();
+                            if (!leaves.isPersistent()) {
+                                queue.add(diagonalBlock);
                             }
-                        }
-                    } else if (treeLeaves.contains(adjacentBlock.getType())) { // Check for leaves
-                        Leaves leaves = (Leaves) adjacentBlock.getBlockData();
-                        if (!leaves.isPersistent()) {
-                            traverseTree(adjacentBlock, treeBlocks);
                         }
                     }
                 }
@@ -128,7 +141,17 @@ public class TreeHandler {
     public void breakTree(Set<Block> tree) {
         for (Block block : tree) {
             block.removeMetadata("fpm:tree_dead", plugin);
-            block.breakNaturally();
+            block.setType(Material.AIR);
+        }
+    }
+
+    /**
+     * Sets the "fpm:tree_dead" metadata on all blocks in the tree.
+     * @param tree The set of blocks in the tree.
+     */
+    public void markTreeAsDead(Set<Block> tree) {
+        for (Block block : tree) {
+            block.setMetadata("fpm:tree_dead", new FixedMetadataValue(plugin, true));
         }
     }
 

@@ -11,12 +11,12 @@ import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.handlers.TreeHandler;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
 
-public class TreeStripAction implements EventActionUtil<PlayerInteractEvent> {
+public class LogStripAction implements EventActionUtil<PlayerInteractEvent> {
 
     private final FluxPerMillion plugin;
     private final TreeHandler treeHandler;
 
-    public TreeStripAction(FluxPerMillion plugin) {
+    public LogStripAction(FluxPerMillion plugin) {
         this.plugin = plugin;
         this.treeHandler = plugin.getTreeUtils();
     }
