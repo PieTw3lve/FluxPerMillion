@@ -7,8 +7,8 @@ fpm-messages:
   reload: '§aConfiguration file has been reloaded.'
   status:
     menu:
-      name: '§2World Status'
       history: '§7({sign}{change}§7)'
+      graph: '§6'
     world:
       name: '§eWorld'
       health: '§7Overall Condition: {health}'

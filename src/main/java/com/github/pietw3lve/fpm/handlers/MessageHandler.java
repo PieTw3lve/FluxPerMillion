@@ -261,6 +261,7 @@ public class MessageHandler {
 
             public final String name;
             public final String history;
+            public final String graph;
 
             /**
              * MenuMessages constructor.
@@ -269,6 +270,7 @@ public class MessageHandler {
             public MenuMessages(ConfigurationSection menuSection) {
                 name = menuSection.getString("name");
                 history = menuSection.getString("history");
+                graph = menuSection.getString("graph");
             }
         }
 

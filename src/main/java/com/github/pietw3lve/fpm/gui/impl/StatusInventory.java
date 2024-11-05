@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.Deque;
+import java.util.stream.Collectors;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.gui.InventoryButton;
@@ -27,6 +29,7 @@ public class StatusInventory extends InventoryGUI {
 
     private final FluxHandler fluxMeter;
     private final MessageHandler.StatusMessages statusMessages;
+    private final int lineLength = 45;
 
     /**
      * Constructs a new StatusInventory.
@@ -56,73 +59,78 @@ public class StatusInventory extends InventoryGUI {
     @Override
     public void decorate(Player player) {
         int inventorySize = this.getInventory().getSize();
+        
         double playerFlux = fluxMeter.getPlayerFlux(player.getUniqueId());
         double playerPercent = fluxMeter.getPlayerPercent(playerFlux);
-
-        double[] newPercents = fluxMeter.getNewFluxPercentages();
-        double[] oldPercents = fluxMeter.getOldFluxPercentages();
+        
+        double[] newPercents = getLatestPercentages();
+        double[] oldPercents = getPreviousPercentages();
 
         for (int i = 0; i < inventorySize; i++) {
             this.addButton(i, createFillerIcon(Material.GRAY_STAINED_GLASS_PANE));
         }
-
-        // ChatColor.translateAlternateColorCodes('&', inspectMessage.replace("{player}", player.getName()).replace("{points}", points))
+        
         this.addButton(12, createIcon(
             PlayerSkullUtil.getPlayerSkull("http://textures.minecraft.net/texture/2e2cc42015e6678f8fd49ccc01fbf787f1ba2c32bcf559a015332fc5db50"),
             ChatColor.translateAlternateColorCodes('&', statusMessages.world.name),
-            Arrays.asList(
-                ChatColor.translateAlternateColorCodes('&', statusMessages.world.health.replace("{health}", statusMessages.world.conditions.get(fluxMeter.getStatusLevel()))),
-                ChatColor.translateAlternateColorCodes('&', statusMessages.world.check.replace("{time}", String.format("%dh %dm %ds", 
+            new ArrayList<String>() {{
+                add(ChatColor.translateAlternateColorCodes('&', statusMessages.world.health.replace("{health}", statusMessages.world.conditions.get(fluxMeter.getStatusLevel()))));
+                add(ChatColor.translateAlternateColorCodes('&', statusMessages.world.check.replace("{time}", String.format("%dh %dm %ds", 
                     TimeUnit.MILLISECONDS.toHours(fluxMeter.getTimeUntilNextRun()), 
                     TimeUnit.MILLISECONDS.toMinutes(fluxMeter.getTimeUntilNextRun()) % 60, 
-                    TimeUnit.MILLISECONDS.toSeconds(fluxMeter.getTimeUntilNextRun()) % 60))),
-                "",
-                ChatColor.translateAlternateColorCodes('&', statusMessages.world.lore)
-            )
+                    TimeUnit.MILLISECONDS.toSeconds(fluxMeter.getTimeUntilNextRun()) % 60))));
+                add("");
+                addAll(wrapLine(ChatColor.translateAlternateColorCodes('&', statusMessages.world.lore), lineLength));
+            }}
         ));
+
         this.addButton(14, createIcon(
             PlayerSkullUtil.getPlayerSkull(player),
             ChatColor.translateAlternateColorCodes('&', statusMessages.player.name),
-            Arrays.asList(
-                ChatColor.translateAlternateColorCodes('&', statusMessages.player.contribution.replace("{contribution}", String.format("%s%.1f%%", getColorForPlayerContribution(playerPercent), playerPercent))),
-                "",
-                ChatColor.translateAlternateColorCodes('&', statusMessages.player.lore)
-            )
+            new ArrayList<String>() {{
+                add(ChatColor.translateAlternateColorCodes('&', statusMessages.player.contribution.replace("{contribution}", String.format("%s%.1f%%", getColorForPlayerContribution(playerPercent), playerPercent))));
+                add("");
+                addAll(wrapLine(ChatColor.translateAlternateColorCodes('&', statusMessages.player.lore), lineLength));
+            }}
         ));
+
         this.addButton(28, createIcon(
             new ItemStack(Material.FIRE_CHARGE),
             ChatColor.translateAlternateColorCodes('&', statusMessages.energy.name.replace("{history}", formatChange(newPercents[0] - oldPercents[0]))),
-            Arrays.asList(
-                ChatColor.translateAlternateColorCodes('&', statusMessages.energy.contribution.replace("{contribution}", String.format("%.1f%%", newPercents[0]))),
-                "",
-                ChatColor.translateAlternateColorCodes('&', statusMessages.energy.lore)
+            createIconLore(
+                statusMessages.energy.contribution.replace("{contribution}", String.format("%.1f%%", newPercents[0])),
+                fluxMeter.generateGraph(fluxMeter.getEnergyPercentages()).stream().map(line -> ChatColor.translateAlternateColorCodes('&', statusMessages.menu.graph) + line).collect(Collectors.toList()),
+                statusMessages.energy.lore
             )
         ));
+
         this.addButton(30, createIcon(
             new ItemStack(Material.SPRUCE_SAPLING),
             ChatColor.translateAlternateColorCodes('&', statusMessages.agriculture.name.replace("{history}", formatChange(newPercents[1] - oldPercents[1]))),
-            Arrays.asList(
-                ChatColor.translateAlternateColorCodes('&', statusMessages.agriculture.contribution.replace("{contribution}", String.format("%.1f%%", newPercents[1]))),
-                "",
-                ChatColor.translateAlternateColorCodes('&', statusMessages.agriculture.lore)
+            createIconLore(
+                statusMessages.agriculture.contribution.replace("{contribution}", String.format("%.1f%%", newPercents[1])),
+                fluxMeter.generateGraph(fluxMeter.getAgriculturePercentages()).stream().map(line -> ChatColor.translateAlternateColorCodes('&', statusMessages.menu.graph) + line).collect(Collectors.toList()),
+                statusMessages.agriculture.lore
             )
         ));
+
         this.addButton(32, createIcon(
             new ItemStack(Material.MINECART),
             ChatColor.translateAlternateColorCodes('&', statusMessages.pollution.name.replace("{history}", formatChange(newPercents[2] - oldPercents[2]))),
-            Arrays.asList(
-                ChatColor.translateAlternateColorCodes('&', statusMessages.pollution.contribution.replace("{contribution}", String.format("%.1f%%", newPercents[2]))),
-                "",
-                ChatColor.translateAlternateColorCodes('&', statusMessages.pollution.lore)
+            createIconLore(
+                statusMessages.pollution.contribution.replace("{contribution}", String.format("%.1f%%", newPercents[2])),
+                fluxMeter.generateGraph(fluxMeter.getPollutionPercentages()).stream().map(line -> ChatColor.translateAlternateColorCodes('&', statusMessages.menu.graph) + line).collect(Collectors.toList()),
+                statusMessages.pollution.lore
             )
         ));
+
         this.addButton(34, createIcon(
             new ItemStack(Material.TURTLE_EGG),
             ChatColor.translateAlternateColorCodes('&', statusMessages.wildlife.name.replace("{history}", formatChange(newPercents[3] - oldPercents[3]))),
-            Arrays.asList(
-                ChatColor.translateAlternateColorCodes('&', statusMessages.wildlife.contribution.replace("{contribution}", String.format("%.1f%%", newPercents[3]))),
-                "",
-                ChatColor.translateAlternateColorCodes('&', statusMessages.wildlife.lore)
+            createIconLore(
+                statusMessages.wildlife.contribution.replace("{contribution}", String.format("%.1f%%", newPercents[3])),
+                fluxMeter.generateGraph(fluxMeter.getWildlifePercentages()).stream().map(line -> ChatColor.translateAlternateColorCodes('&', statusMessages.menu.graph) + line).collect(Collectors.toList()),
+                statusMessages.wildlife.lore
             )
         ));
 
@@ -179,7 +187,7 @@ public class StatusInventory extends InventoryGUI {
                 ItemMeta meta = item.getItemMeta();
                 if (meta != null) {
                     meta.setDisplayName(name);
-                    meta.setLore(wrapLore(lore, 45));
+                    meta.setLore(lore);
                     item.setItemMeta(meta);
                 }
                 return item;
@@ -234,5 +242,72 @@ public class StatusInventory extends InventoryGUI {
         if (change == 0 || Double.isNaN(change)) return "";
         String sign = change > 0 ? ChatColor.RED + "+" : ChatColor.GREEN + "-";
         return ChatColor.translateAlternateColorCodes('&', statusMessages.menu.history.replace("{sign}", sign).replace("{change}", String.format("%.1f%%", Math.abs(change))));
+    }
+
+    /**
+     * Gets the latest percentages for energy, agriculture, pollution, and wildlife.
+     *
+     * @return an array of the latest percentages
+     */
+    private double[] getLatestPercentages() {
+        return new double[] {
+            getLast(fluxMeter.getEnergyPercentages()),
+            getLast(fluxMeter.getAgriculturePercentages()),
+            getLast(fluxMeter.getPollutionPercentages()),
+            getLast(fluxMeter.getWildlifePercentages())
+        };
+    }
+
+    /**
+     * Gets the previous percentages for energy, agriculture, pollution, and wildlife.
+     *
+     * @return an array of the previous percentages
+     */
+    private double[] getPreviousPercentages() {
+        return new double[] {
+            getSecondLast(fluxMeter.getEnergyPercentages()),
+            getSecondLast(fluxMeter.getAgriculturePercentages()),
+            getSecondLast(fluxMeter.getPollutionPercentages()),
+            getSecondLast(fluxMeter.getWildlifePercentages())
+        };
+    }
+
+    /**
+     * Gets the last element from a deque.
+     *
+     * @param deque the deque
+     * @return the last element
+     */
+    private double getLast(Deque<Double> deque) {
+        return deque.isEmpty() ? 0 : deque.getLast();
+    }
+
+    /**
+     * Gets the second last element from a deque.
+     *
+     * @param deque the deque
+     * @return the second last element
+     */
+    private double getSecondLast(Deque<Double> deque) {
+        if (deque.size() < 2) return 0;
+        return deque.stream().skip(deque.size() - 2).findFirst().orElse(0.0);
+    }
+
+    /**
+     * Creates the lore for an icon with a contribution, graph, and lore.
+     *
+     * @param contribution the contribution text
+     * @param graph the graph lines
+     * @param lore the lore text
+     * @return the combined lore as a list of strings
+     */
+    private List<String> createIconLore(String contribution, List<String> graph, String lore) {
+        List<String> iconLore = new ArrayList<>();
+        iconLore.add(ChatColor.translateAlternateColorCodes('&', contribution));
+        iconLore.add("");
+        iconLore.addAll(graph);
+        iconLore.add("");
+        iconLore.addAll(wrapLore(Arrays.asList(ChatColor.translateAlternateColorCodes('&', lore)), lineLength));
+        return iconLore;
     }
 }

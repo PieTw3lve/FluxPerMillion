@@ -1,6 +1,5 @@
 package com.github.pietw3lve.fpm.handlers;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,6 +8,10 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import java.text.DecimalFormat;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Arrays;
 
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -19,6 +22,10 @@ import org.bukkit.scheduler.BukkitTask;
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.StatusLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
+import com.mitchtalmadge.asciidata.graph.ASCIIGraph;
+
+import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.OfflinePlayer;
 
 /**
@@ -30,6 +37,11 @@ public class FluxHandler {
     private final FluxPerMillion plugin;
     private final Set<String> playersWithBossBar = new HashSet<>();
     private final Map<UUID, Double> playerFluxMap = new HashMap<>();
+    private final Deque<Double> energyPercentages;
+    private final Deque<Double> agriculturePercentages;
+    private final Deque<Double> pollutionPercentages;
+    private final Deque<Double> wildlifePercentages;
+    private final int historySize = 28;
     private BukkitTask fluxMeterTask;
     private BossBar fluxMeter;
     private int refreshInterval;
@@ -43,14 +55,6 @@ public class FluxHandler {
     private double offset;
     private int decay;
     private long lastRunTime;
-    private double oldEnergyPoints;
-    private double newEnergyPoints;
-    private double oldAgriculturePoints;
-    private double newAgriculturePoints;
-    private double oldPollutionPoints;
-    private double newPollutionPoints;
-    private double oldWildlifePoints;
-    private double newWildlifePoints;
 
     /**
      * FluxHandler Constructor.
@@ -61,6 +65,10 @@ public class FluxHandler {
         this.fluxMeterTask = null;
         this.fluxMeter = plugin.getServer().createBossBar("Flux Meter", BarColor.RED, BarStyle.SEGMENTED_12);
         this.lastRunTime = System.currentTimeMillis();
+        this.energyPercentages = new ArrayDeque<>(8);
+        this.agriculturePercentages = new ArrayDeque<>(8);
+        this.pollutionPercentages = new ArrayDeque<>(8);
+        this.wildlifePercentages = new ArrayDeque<>(8);
         this.reload();
     }
 
@@ -73,8 +81,7 @@ public class FluxHandler {
         percent = Math.max(Math.min(totalPoints, max), 0) / max;
         fluxMeter.setProgress(percent);
 
-        updateOldPoints();
-        updateNewPoints();
+        updatePercentages();
         updatePlayerFlux();
 
         int newStatusLevel = calculateStatusLevel();
@@ -89,23 +96,26 @@ public class FluxHandler {
     }
 
     /**
-     * Updates the old points with the current new points.
+     * Updates the percentages for energy, agriculture, pollution, and wildlife.
      */
-    private void updateOldPoints() {
-        oldEnergyPoints = newEnergyPoints;
-        oldAgriculturePoints = newAgriculturePoints;
-        oldPollutionPoints = newPollutionPoints;
-        oldWildlifePoints = newWildlifePoints;
+    private void updatePercentages() {
+        double energyPoints = plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.ENERGY);
+        double agriculturePoints = plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.AGRICULTURE);
+        double pollutionPoints = plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.POLLUTION);
+        double wildlifePoints = plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.WILDLIFE);
+        double totalPoints = energyPoints + agriculturePoints + pollutionPoints + wildlifePoints;
+
+        addPercentage(energyPercentages, energyPoints / totalPoints * 100);
+        addPercentage(agriculturePercentages, agriculturePoints / totalPoints * 100);
+        addPercentage(pollutionPercentages, pollutionPoints / totalPoints * 100);
+        addPercentage(wildlifePercentages, wildlifePoints / totalPoints * 100);
     }
 
-    /**
-     * Updates the new points by calculating the total points for each category.
-     */
-    private void updateNewPoints() {
-        newEnergyPoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.ENERGY));
-        newAgriculturePoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.AGRICULTURE));
-        newPollutionPoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.POLLUTION));
-        newWildlifePoints = Math.max(0, plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.WILDLIFE));
+    private void addPercentage(Deque<Double> deque, double percentage) {
+        if (deque.size() >= historySize) {
+            deque.removeFirst();
+        }
+        deque.addLast(percentage);
     }
 
     /**
@@ -145,6 +155,24 @@ public class FluxHandler {
         } else {
             return 0;
         }
+    }
+
+    /**
+     * Generates a graph for the flux meter.
+     * @param data The data to generate the graph from.
+     * @return The generated graph as a list of strings.
+     */
+    public List<String> generateGraph(Deque<Double> data) {
+        String graph = ASCIIGraph
+            .fromSeries(data.stream().mapToDouble(Double::doubleValue).toArray())
+            .withNumRows(7)
+            .withTickFormat(new DecimalFormat("###0.0"))
+            .withTickWidth(5)
+            .plot();
+        String line = ChatColor.YELLOW + "X";
+        String filler = ChatColor.DARK_GRAY + "∙" + ChatColor.translateAlternateColorCodes('&', plugin.getMessageHandler().getStatusMessages().menu.graph);
+        graph = graph.replace("╯", line).replace("╭", line).replace("╰", line).replace("╮", line).replace("│", line).replace("─", line).replace("┼", "┤").replace(" ", filler);
+        return Arrays.asList(graph.split("\n"));
     }
 
     /**
@@ -275,36 +303,6 @@ public class FluxHandler {
     }
 
     /**
-     * Returns the new flux percentages.
-     * @return The new flux percentages.
-     */
-    public double[] getNewFluxPercentages() {
-        double[] newFlux = {
-            newEnergyPoints,
-            newAgriculturePoints,
-            newPollutionPoints,
-            newWildlifePoints
-        };
-        double newTotalFlux = Arrays.stream(newFlux).sum();
-        return Arrays.stream(newFlux).map(p -> p / newTotalFlux * 100).toArray();
-    }
-
-    /**
-     * Returns the old flux percentages.
-     * @return The old flux percentages.
-     */
-    public double[] getOldFluxPercentages() {
-        double[] oldFlux = {
-            oldEnergyPoints,
-            oldAgriculturePoints,
-            oldPollutionPoints,
-            oldWildlifePoints
-        };
-        double oldTotalFlux = Arrays.stream(oldFlux).sum();
-        return Arrays.stream(oldFlux).map(p -> p / oldTotalFlux * 100).toArray();
-    }
-
-    /**
      * Returns the flux value for a specific player.
      * @param playerUUID The UUID of the player.
      * @return The flux value for the player.
@@ -322,5 +320,37 @@ public class FluxHandler {
      */
     public double getPlayerPercent(double playerFlux) {
         return Math.max(0, playerFlux / totalPoints) * 100;
+    }
+
+    /**
+     * Returns the energy percentage.
+     * @return The energy percentage.
+     */
+    public Deque<Double> getEnergyPercentages() {
+        return energyPercentages;
+    }
+
+    /**
+     * Returns the agriculture percentage.
+     * @return The agriculture percentage.
+     */
+    public Deque<Double> getAgriculturePercentages() {
+        return agriculturePercentages;
+    }
+
+    /**
+     * Returns the pollution percentage.
+     * @return The pollution percentage.
+     */
+    public Deque<Double> getPollutionPercentages() {
+        return pollutionPercentages;
+    }
+
+    /**
+     * Returns the wildlife percentage.
+     * @return The wildlife percentage.
+     */
+    public Deque<Double> getWildlifePercentages() {
+        return wildlifePercentages;
     }
 }

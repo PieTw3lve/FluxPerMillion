@@ -52,6 +52,12 @@
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
+		<!--This adds the ASCII Data artifact to the build -->
+		<dependency>
+			<groupId>com.mitchtalmadge</groupId>
+			<artifactId>ascii-data</artifactId>
+			<version>1.4.0</version>
+		</dependency>
 		<!--This adds the Spigot API artifact to the build -->
 		<dependency>
 			<groupId>org.spigotmc</groupId>
