@@ -11,11 +11,12 @@ import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
+import com.github.pietw3lve.fpm.utils.PlayerUtil;
 
 public class FuelSmeltAction implements EventActionUtil<FurnaceBurnEvent> {
     
     private static final String FLUX_POINTS_FUEL_BURN = "flux_points.fuel_burn";
-    private static final int SEARCH_RADIUS = 20;
+    private static final int SEARCH_RADIUS = 96;
 
     private final FluxPerMillion plugin;
 
@@ -34,17 +35,7 @@ public class FuelSmeltAction implements EventActionUtil<FurnaceBurnEvent> {
         Location furnaceLocation = event.getBlock().getLocation();
         Collection<Entity> nearbyEntities = event.getBlock().getWorld().getNearbyEntities(furnaceLocation, SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS);
 
-        Player closestPlayer = null;
-        double closestDistance = Double.MAX_VALUE;
-        for (Entity entity : nearbyEntities) {
-            if (entity instanceof Player) {
-                double distance = entity.getLocation().distance(furnaceLocation);
-                if (distance < closestDistance) {
-                    closestPlayer = (Player) entity;
-                    closestDistance = distance;
-                }
-            }
-        }
+        Player closestPlayer = PlayerUtil.findClosestPlayer(furnaceLocation, nearbyEntities);
 
         double points = plugin.getConfig().getDouble(FLUX_POINTS_FUEL_BURN) * (event.getBurnTime() / 200.0);
         fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), furnaceLocation, closestPlayer, "burned", "fuel", points, ActionCategory.ENERGY);

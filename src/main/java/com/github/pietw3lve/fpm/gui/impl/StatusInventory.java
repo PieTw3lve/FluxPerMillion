@@ -20,7 +20,7 @@ import com.github.pietw3lve.fpm.gui.InventoryButton;
 import com.github.pietw3lve.fpm.gui.InventoryGUI;
 import com.github.pietw3lve.fpm.handlers.FluxHandler;
 import com.github.pietw3lve.fpm.handlers.MessageHandler;
-import com.github.pietw3lve.fpm.utils.PlayerSkullUtil;
+import com.github.pietw3lve.fpm.utils.PlayerUtil;
 
 /**
  * Represents the status inventory GUI for displaying world and player status.
@@ -71,7 +71,7 @@ public class StatusInventory extends InventoryGUI {
         }
         
         this.addButton(12, createIcon(
-            PlayerSkullUtil.getPlayerSkull("http://textures.minecraft.net/texture/2e2cc42015e6678f8fd49ccc01fbf787f1ba2c32bcf559a015332fc5db50"),
+            PlayerUtil.getPlayerSkull("http://textures.minecraft.net/texture/2e2cc42015e6678f8fd49ccc01fbf787f1ba2c32bcf559a015332fc5db50"),
             ChatColor.translateAlternateColorCodes('&', statusMessages.world.name),
             new ArrayList<String>() {{
                 add(ChatColor.translateAlternateColorCodes('&', statusMessages.world.health.replace("{health}", statusMessages.world.conditions.get(fluxMeter.getStatusLevel()))));
@@ -85,7 +85,7 @@ public class StatusInventory extends InventoryGUI {
         ));
 
         this.addButton(14, createIcon(
-            PlayerSkullUtil.getPlayerSkull(player),
+            PlayerUtil.getPlayerSkull(player),
             ChatColor.translateAlternateColorCodes('&', statusMessages.player.name),
             new ArrayList<String>() {{
                 add(ChatColor.translateAlternateColorCodes('&', statusMessages.player.contribution.replace("{contribution}", String.format("%s%.1f%%", getColorForPlayerContribution(playerPercent), playerPercent))));
