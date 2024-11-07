@@ -8,7 +8,7 @@ fpm-messages:
   status:
     menu:
       history: '§7({sign}{change}§7)'
-      graph: '§6'
+      graph: '§7'
     world:
       name: '§eWorld'
       health: '§7Overall Condition: {health}'

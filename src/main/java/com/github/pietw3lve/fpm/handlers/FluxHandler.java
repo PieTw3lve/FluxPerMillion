@@ -37,10 +37,10 @@ public class FluxHandler {
     private final FluxPerMillion plugin;
     private final Set<String> playersWithBossBar = new HashSet<>();
     private final Map<UUID, Double> playerFluxMap = new HashMap<>();
-    private final Deque<Double> energyPercentages;
-    private final Deque<Double> agriculturePercentages;
-    private final Deque<Double> pollutionPercentages;
-    private final Deque<Double> wildlifePercentages;
+    private final Deque<Double> energyPercentages = new ArrayDeque<>();
+    private final Deque<Double> agriculturePercentages = new ArrayDeque<>();
+    private final Deque<Double> pollutionPercentages = new ArrayDeque<>();
+    private final Deque<Double> wildlifePercentages = new ArrayDeque<>();
     private final int historySize = 28;
     private BukkitTask fluxMeterTask;
     private BossBar fluxMeter;
@@ -65,10 +65,12 @@ public class FluxHandler {
         this.fluxMeterTask = null;
         this.fluxMeter = plugin.getServer().createBossBar("Flux Meter", BarColor.RED, BarStyle.SEGMENTED_12);
         this.lastRunTime = System.currentTimeMillis();
-        this.energyPercentages = new ArrayDeque<>(8);
-        this.agriculturePercentages = new ArrayDeque<>(8);
-        this.pollutionPercentages = new ArrayDeque<>(8);
-        this.wildlifePercentages = new ArrayDeque<>(8);
+        for (int i = 0; i < historySize; i++) {
+            this.energyPercentages.addLast(0.0);
+            this.agriculturePercentages.addLast(0.0);
+            this.pollutionPercentages.addLast(0.0);
+            this.wildlifePercentages.addLast(0.0);
+        }
         this.reload();
     }
 
@@ -105,10 +107,17 @@ public class FluxHandler {
         double wildlifePoints = plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.WILDLIFE);
         double totalPoints = energyPoints + agriculturePoints + pollutionPoints + wildlifePoints;
 
-        addPercentage(energyPercentages, energyPoints / totalPoints * 100);
-        addPercentage(agriculturePercentages, agriculturePoints / totalPoints * 100);
-        addPercentage(pollutionPercentages, pollutionPoints / totalPoints * 100);
-        addPercentage(wildlifePercentages, wildlifePoints / totalPoints * 100);
+        if (totalPoints == 0) {
+            addPercentage(energyPercentages, 0);
+            addPercentage(agriculturePercentages, 0);
+            addPercentage(pollutionPercentages, 0);
+            addPercentage(wildlifePercentages, 0);
+        } else {
+            addPercentage(energyPercentages, energyPoints / totalPoints * 100);
+            addPercentage(agriculturePercentages, agriculturePoints / totalPoints * 100);
+            addPercentage(pollutionPercentages, pollutionPoints / totalPoints * 100);
+            addPercentage(wildlifePercentages, wildlifePoints / totalPoints * 100);
+        }
     }
 
     private void addPercentage(Deque<Double> deque, double percentage) {
@@ -169,7 +178,7 @@ public class FluxHandler {
             .withTickFormat(new DecimalFormat("###0.0"))
             .withTickWidth(5)
             .plot();
-        String line = ChatColor.YELLOW + "X";
+        String line = ChatColor.YELLOW + "x";
         String filler = ChatColor.DARK_GRAY + "∙" + ChatColor.translateAlternateColorCodes('&', plugin.getMessageHandler().getStatusMessages().menu.graph);
         graph = graph.replace("╯", line).replace("╭", line).replace("╰", line).replace("╮", line).replace("│", line).replace("─", line).replace("┼", "┤").replace(" ", filler);
         return Arrays.asList(graph.split("\n"));

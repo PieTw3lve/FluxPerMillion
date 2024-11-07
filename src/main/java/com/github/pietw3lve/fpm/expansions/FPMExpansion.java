@@ -44,7 +44,7 @@ public class FPMExpansion extends PlaceholderExpansion {
      */
     @Override
     public String getVersion() {
-        return "1.0.0";
+        return "1.0.1";
     }
     /**
      * Indicates whether the expansion should persist or not.
