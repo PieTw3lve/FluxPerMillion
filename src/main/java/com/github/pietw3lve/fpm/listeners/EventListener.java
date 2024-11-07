@@ -15,6 +15,7 @@ import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.block.BrewingStartEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
@@ -27,6 +28,7 @@ import org.bukkit.event.world.StructureGrowEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.listeners.block.BlockBurnAction;
+import com.github.pietw3lve.fpm.listeners.block.BrewingStartAction;
 import com.github.pietw3lve.fpm.listeners.block.CampfireBreakAction;
 import com.github.pietw3lve.fpm.listeners.block.CampfirePlaceAction;
 import com.github.pietw3lve.fpm.listeners.block.CoalBreakAction;
@@ -75,6 +77,7 @@ public class EventListener implements Listener {
         actions.put(StructureGrowEvent.class, new ArrayList<>(Arrays.asList(new TreeGrowAction(plugin))));
         actions.put(ExplosionPrimeEvent.class, new ArrayList<>(Arrays.asList(new ExplosionPrimeAction(plugin))));
         actions.put(ProjectileHitEvent.class, new ArrayList<>(Arrays.asList(new PotionThrownAction(plugin))));
+        actions.put(BrewingStartEvent.class, new ArrayList<>(Arrays.asList(new BrewingStartAction(plugin))));
     }
 
     @EventHandler
@@ -149,6 +152,11 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
+        handleEvent(event);
+    }
+
+    @EventHandler
+    public void onBrewingStart(BrewingStartEvent event) {
         handleEvent(event);
     }
 

@@ -31,6 +31,7 @@ flux_meter:
 flux_points:
   # Set action value to 0 to disable them.
   block_burn: 2.0
+  brew_potion: 0.25 # Multiply by brew time
   campfire_break: -0.5
   campfire_place: 0.5
   coal_break: 0.25
