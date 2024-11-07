@@ -39,6 +39,7 @@ flux_points:
   elytra_boost: 1.0
   entity_overpopulate: 0.25
   entity_preserve: -2.0
+  explosion: 3.0
   firework_launch: 0.25
   flint_and_steel_use: 0.25
   fuel_burn: 0.25 # Multiply by burn time

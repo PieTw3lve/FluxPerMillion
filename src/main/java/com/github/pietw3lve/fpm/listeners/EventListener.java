@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.player.PlayerFishEvent;
@@ -37,6 +38,7 @@ import com.github.pietw3lve.fpm.listeners.block.TorchBreakAction;
 import com.github.pietw3lve.fpm.listeners.block.TorchPlaceAction;
 import com.github.pietw3lve.fpm.listeners.block.TreeBreakAction;
 import com.github.pietw3lve.fpm.listeners.entity.EntityBreedAction;
+import com.github.pietw3lve.fpm.listeners.entity.ExplosionPrimeAction;
 import com.github.pietw3lve.fpm.listeners.entity.ItemDespawnAction;
 import com.github.pietw3lve.fpm.listeners.inventory.FuelSmeltAction;
 import com.github.pietw3lve.fpm.listeners.player.ComposterAction;
@@ -69,6 +71,7 @@ public class EventListener implements Listener {
         actions.put(PlayerFishEvent.class, new ArrayList<>(Arrays.asList(new FishCaughtAction(plugin))));
         actions.put(PlayerJoinEvent.class, new ArrayList<>(Arrays.asList(new UpdateFPMBarAction(plugin))));
         actions.put(StructureGrowEvent.class, new ArrayList<>(Arrays.asList(new TreeGrowAction(plugin))));
+        actions.put(ExplosionPrimeEvent.class, new ArrayList<>(Arrays.asList(new ExplosionPrimeAction(plugin))));
     }
 
     @EventHandler
@@ -133,6 +136,11 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onStructureGrow(StructureGrowEvent event) {
+        handleEvent(event);
+    }
+
+    @EventHandler
+    public void onExplosionPrime(ExplosionPrimeEvent event) {
         handleEvent(event);
     }
 
