@@ -38,8 +38,8 @@ flux_points:
   compost_complete: -2.0
   crop_growth: -0.25
   elytra_boost: 1.0
-  entity_overpopulate: 0.25
-  entity_preserve: -2.0
+  entity_overpopulate: 2.0
+  entity_preserve: -8.0
   explosion: 3.0
   firework_launch: 0.25
   flint_and_steel_use: 0.25

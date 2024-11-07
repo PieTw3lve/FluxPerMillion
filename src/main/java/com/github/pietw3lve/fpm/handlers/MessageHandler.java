@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -32,6 +33,8 @@ public class MessageHandler {
     private String pageNotFoundMessage;
     private String invalidTimeDurationMessage;
     private String invalidPageNumberMessage;
+    private List<String> overpopulatedMessages;
+    private List<String> preservedMessages;
 
     /**
      * MessageHandler constructor.
@@ -68,6 +71,8 @@ public class MessageHandler {
         statusMessages = new StatusMessages(messagesSection.getConfigurationSection("status"));
         toggleMessages = configToList(messagesSection.getConfigurationSection("toggle"));
         overFishingLines = messagesSection.getStringList("fishing.over_fishing");
+        overpopulatedMessages = messagesSection.getStringList("farming.overpopulated");
+        preservedMessages = messagesSection.getStringList("farming.preserved");
     }
 
     /**
@@ -225,6 +230,14 @@ public class MessageHandler {
      */
     public String getInvalidPageNumberMessage() {
         return invalidPageNumberMessage;
+    }
+
+    public String getRandomOverpopulatedMessage(String entity) {
+        return ChatColor.translateAlternateColorCodes('&', overpopulatedMessages.get(new Random().nextInt(overpopulatedMessages.size())).replace("{entity}", entity));
+    }
+
+    public String getRandomPreservedMessage(String entity) {
+        return ChatColor.translateAlternateColorCodes('&', preservedMessages.get(new Random().nextInt(preservedMessages.size())).replace("{entity}", entity));
     }
 
     /**

@@ -3,7 +3,7 @@ fpm-messages:
   lookup:
     header: '§r----- §6FluxPerMillion | Lookup Results §r-----'
     navigator: ' §6Page §r{index}/{total} '
-    footer: ' §7(§r{action} §6entries§7)'
+    footer: '§7(§r{action} §6entries§7)'
   reload: '§aConfiguration file has been reloaded.'
   status:
     menu:
@@ -42,6 +42,21 @@ fpm-messages:
   toggle:
     enabled: '§aFlux meter is now visible.'
     disabled: '§cFlux meter is now hidden.'
+  farming:
+    # Will randomly select one of the messages when the player has overpopulated or preserved animals.
+    # You can add or remove messages from the list.
+    overpopulated:
+      - '§c§oThe {entity} population is expanding rapidly. It might be necessary to reduce their numbers.'
+      - '§c§oThe {entity}s are multiplying faster than expected. It could be time for a population control.'
+      - '§c§oThere are too many {entity}s for the space available. Consider managing the population soon.'
+      - '§c§oThe {entity}s are growing at a staggering rate. Perhaps it’s time to limit their numbers.'
+      - '§c§oThe {entity}s are breeding in abundance. It may be necessary to intervene before things get out of hand.'
+    preserved:
+      - '§a§oThe {entity}s appear to be in good health and thriving in their surroundings.'
+      - '§a§oThe {entity}s are comfortable and seem to be in their prime.'
+      - '§a§oThe environment is nurturing the animals well, and they’re flourishing.'
+      - '§a§oThe {entity}s are showing signs of happiness and good health.'
+      - '§a§oThe population is steady, and the {entity}s appear well cared for and thriving.'
   fishing:
     # Will randomly select one of the messages when the player has over fished.
     # You can add or remove messages from the list.
