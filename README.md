@@ -13,16 +13,17 @@ FluxPerMillion is a Minecraft plugin that adds an environmental twist to the gam
 
 ## Features
 
--   **Real-time Tracking**: Monitor player actions that contribute to Flux.
--   **Sustainable Practices**: Encourage eco-friendly practices like composting, reforestation, and recycling.
--   **Environmental Awareness**: Raise consciousness about real-world environmental issues, fostering player engagement in conservation efforts, fire prevention, and pollution control.
--   **New Game Mechanics**: With the addition of Flux, players can now execute specific actions that were previously impossible in vanilla Minecraft to either increase or decrease Flux. For instance, players can gain a speed boost while riding a minecart by right-clicking on coal.
--   **Customizable Settings**: Configure Flux values, thresholds, decay rates, custom gameplay mechanics, rewards, and penalties to suit your server's needs.
+- **Real-time Tracking**: Monitor player actions that contribute to Flux.
+- **Sustainable Practices**: Encourage eco-friendly practices like composting, reforestation, and animal preservation.
+- **Environmental Awareness**: Raise consciousness about real-world environmental issues, suc as fire prevention and pollution.
+- **New Game Mechanics**: With the addition of Flux, players can now execute specific actions that were previously impossible in vanilla Minecraft to either increase or decrease Flux.
+- **Customizable Settings**: Configure Flux values, thresholds, decay rates, custom gameplay mechanics, rewards, and penalties to suit your server's needs.
 
 ## Commands
 
 | Command                                  | Description                       | Permission |
 | ---------------------------------------- | --------------------------------- | ---------- |
+| `/fpm help`                              | Display the help menu.            | default    |
 | `/fpm inspect <player>`                  | Examine a player's Flux value.    | default    |
 | `/fpm toggle`                            | Toggle the Flux meter visibility. | default    |
 | `/fpm status`                            | View the Flux meter status.       | default    |
@@ -43,11 +44,11 @@ FluxPerMillion is a Minecraft plugin that adds an environmental twist to the gam
 
 ## Soft Dependencies
 
--   [Deadly Disasters](https://www.spigotmc.org/resources/deadly-disasters.90806/)
-    -   Customize and configure deadly disasters to trigger at specific Flux thresholds.
--   [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
-    -   Offers placeholders to display Flux values in chat, the action bar, and on scoreboards.
+- [Deadly Disasters](https://www.spigotmc.org/resources/deadly-disasters.90806/)
+  - Customize and configure deadly disasters to trigger at specific Flux thresholds.
+- [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
+  - Offers placeholders to display Flux values in chat, the action bar, and on scoreboards.
 
 ## Reporting Issues
 
--   If you encounter any issues with the plugin, please report them [here](https://github.com/PieTw3lve/FluxPerMillion/issues).
+- If you encounter any issues with the plugin, please report them [here](https://github.com/PieTw3lve/FluxPerMillion/issues).
