@@ -48,6 +48,7 @@ flux_points:
   minecart_boost: 0.25
   minecart_overclock: 3.0
   pollution: 0.25
+  potion_throw: 0.25
   torch_break: -0.25
   torch_place: 0.25
   tree_cut: 0.25 # Multiply by number of logs
