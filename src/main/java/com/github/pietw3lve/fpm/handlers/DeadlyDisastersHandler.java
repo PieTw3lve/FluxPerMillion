@@ -9,32 +9,18 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.utils.RandomCollectionUtil;
 
-import deadlydisasters.events.disasters.AcidStorm;
-import deadlydisasters.events.disasters.BlackPlague;
-import deadlydisasters.events.disasters.Blizzard;
-import deadlydisasters.events.disasters.CaveIn;
-import deadlydisasters.events.disasters.Earthquake;
-import deadlydisasters.events.disasters.EndStorm;
-import deadlydisasters.events.disasters.ExtremeWinds;
-import deadlydisasters.events.disasters.Geyser;
-import deadlydisasters.events.disasters.Hurricane;
-import deadlydisasters.events.disasters.MeteorShower;
-import deadlydisasters.events.disasters.Purge;
-import deadlydisasters.events.disasters.SandStorm;
-import deadlydisasters.events.disasters.Sinkhole;
-import deadlydisasters.events.disasters.SoulStorm;
-import deadlydisasters.events.disasters.Supernova;
-import deadlydisasters.events.disasters.Tornado;
-import deadlydisasters.events.disasters.Tsunami;
+import com.github.jewishbanana.deadlydisasters.events.disasters.*;
 
 public class DeadlyDisastersHandler {
     
@@ -68,18 +54,12 @@ public class DeadlyDisastersHandler {
         Random rand = new Random();
         int statusLevel = fluxMeter.getStatusLevel();
         double value = rand.nextDouble();
-        if (value <= probabilities.get(0) && statusLevel == 0) {
-            String disaster = getDisaster(statusLevel);
-            startDisaster(disaster, statusLevel, 0);
-        } else if (value <= probabilities.get(1) && statusLevel == 1) {
-            String disaster = getDisaster(statusLevel);
-            startDisaster(disaster, statusLevel, 0);
-        } else if (value <= probabilities.get(2) && statusLevel == 2) {
-            String disaster = getDisaster(statusLevel);
-            startDisaster(disaster, statusLevel, 0);
-        } else if (value <= probabilities.get(3) && statusLevel == 3) {
-            String disaster = getDisaster(statusLevel);
-            startDisaster(disaster, statusLevel, 0);
+        for (int i = 0; i <= 3; i++) {
+            if (value <= probabilities.get(i) && statusLevel == i) {
+                String disaster = getDisaster(statusLevel);
+                startDisaster(disaster, statusLevel, 0);
+                break;
+            }
         }
         disastersTask = startScheduledDisasters(minInterval, maxInterval);
     }
@@ -113,175 +93,159 @@ public class DeadlyDisastersHandler {
      * @param statusLevel The status level of the flux meter.
      */
     private void startDisaster(String disaster, int statusLevel, int attempts) {
-        World overworld = plugin.getServer().getWorlds().stream().filter(w -> w.getEnvironment() == World.Environment.NORMAL).findAny().get();
-        World nether = plugin.getServer().getWorlds().stream().filter(w -> w.getEnvironment() == World.Environment.NETHER).findAny().get();
-        World end = plugin.getServer().getWorlds().stream().filter(w -> w.getEnvironment() == World.Environment.THE_END).findAny().get();
-        Collection<? extends Player> players = plugin.getServer().getOnlinePlayers();
-        List<Player> selectedPlayers = null;
-        Player player = null;
-        int disasterLevel = 1;
-        Random rand = new Random();
-
-        if (players.isEmpty() && preventDisastersWhenIdle) {
-            plugin.sendDebugMessage("No players found, skipping disaster start event.");
-            return;
-        } else if (disaster == null) {
+        if (disaster == null) {
             plugin.sendDebugMessage("No disasters found for status level: " + statusLevel);
             retryDisasterStartEvent(statusLevel, attempts);
             return;
         }
 
+        World overworld = getWorld(World.Environment.NORMAL);
+        World nether = getWorld(World.Environment.NETHER);
+        World end = getWorld(World.Environment.THE_END);
+        Collection<? extends Player> players = plugin.getServer().getOnlinePlayers();
+        Random rand = new Random();
+
+        if (players.isEmpty() && preventDisastersWhenIdle) {
+            plugin.sendDebugMessage("No players found, skipping disaster start event.");
+            return;
+        }
+
+        Player player = selectPlayer(players, disaster, overworld, nether, end, rand);
+        if (player == null) {
+            retryDisasterStartEvent(statusLevel, attempts);
+            return;
+        }
+
+        int disasterLevel = getDisasterLevel(statusLevel, 1, getMaxDisasterLevel(disaster));
+        startSpecificDisaster(disaster, disasterLevel, player, overworld, nether, end);
+        plugin.sendDebugMessage("Starting " + disaster + " with danger level: " + disasterLevel);
+    }
+
+    /**
+     * Returns the world based on the environment.
+     * @param environment The environment of the world.
+     * @return The world with the specified environment.
+     */
+    private World getWorld(World.Environment environment) {
+        return plugin.getServer().getWorlds().stream().filter(w -> w.getEnvironment() == environment).findAny().orElse(null);
+    }
+
+    /**
+     * Selects a player based on the disaster type.
+     * @param players The collection of players to select from.
+     * @param disaster The disaster to start.
+     * @param overworld The overworld world.
+     * @param nether The nether world.
+     * @param end The end world.
+     * @param rand The random object.
+     * @return The selected player.
+     */
+    private Player selectPlayer(Collection<? extends Player> players, String disaster, World overworld, World nether, World end, Random rand) {
+        List<Player> selectedPlayers = null;
         switch (disaster) {
-            case "acidstorm":
-                disasterLevel = getDisasterLevel(statusLevel, 1, 5);
-                AcidStorm acidStorm = new AcidStorm(disasterLevel);
-                acidStorm.start(overworld, null, true);
-                break;
-            case "blizzard":
-                disasterLevel = getDisasterLevel(statusLevel, 1, 5);
-                Blizzard blizzard = new Blizzard(disasterLevel);
-                blizzard.start(overworld, null, true);
-                break;
             case "cavein":
-                selectedPlayers = players.stream().filter(p -> p.getWorld() == overworld || p.getWorld() == nether).collect(Collectors.toList());
-                if (selectedPlayers.isEmpty()) {
-                    retryDisasterStartEvent(statusLevel, attempts); 
-                    return;
-                }
-                player = selectedPlayers.get(rand.nextInt(selectedPlayers.size()));
-                disasterLevel = getDisasterLevel(statusLevel, 1, 6);
-                CaveIn cavein = new CaveIn(disasterLevel);
-                cavein.start(player.getLocation(), player);
-                break;
-            case "earthquake":
-                selectedPlayers = players.stream().collect(Collectors.toList());
-                if (selectedPlayers.isEmpty()) {
-                    retryDisasterStartEvent(statusLevel, attempts); 
-                    return;
-                }
-                player = selectedPlayers.get(rand.nextInt(selectedPlayers.size()));
-                disasterLevel = getDisasterLevel(statusLevel, 1, 6);
-                Earthquake earthquake = new Earthquake(disasterLevel);
-                earthquake.start(player.getLocation(), player);
-                break;
-            case "endstorm":
-                disasterLevel = getDisasterLevel(statusLevel, 1, 5);
-                EndStorm endStorm = new EndStorm(disasterLevel);
-                endStorm.start(end, null, true);
-                break;
-            case "extremewinds":
-                disasterLevel = getDisasterLevel(statusLevel, 1, 5);
-                ExtremeWinds extremeWinds = new ExtremeWinds(disasterLevel);
-                extremeWinds.start(overworld, null, true);
-                break;
-            case "hurricane":
-                selectedPlayers = players.stream().filter(p -> p.getWorld() == overworld).collect(Collectors.toList());
-                if (selectedPlayers.isEmpty()) {
-                    retryDisasterStartEvent(statusLevel, attempts); 
-                    return;
-                }
-                player = selectedPlayers.get(rand.nextInt(selectedPlayers.size()));
-                disasterLevel = getDisasterLevel(statusLevel, 1, 6);
-                Hurricane hurricane = new Hurricane(disasterLevel);
-                hurricane.start(player.getLocation(), player);
-                break;
             case "geyser":
                 selectedPlayers = players.stream().filter(p -> p.getWorld() == overworld || p.getWorld() == nether).collect(Collectors.toList());
-                if (selectedPlayers.isEmpty()) {
-                    retryDisasterStartEvent(statusLevel, attempts); 
-                    return;
-                }
-                player = selectedPlayers.get(rand.nextInt(selectedPlayers.size()));
-                disasterLevel = getDisasterLevel(statusLevel, 1, 6);
-                Geyser geyser = new Geyser(disasterLevel);
-                geyser.start(player.getLocation(), player);
                 break;
-            case "meteorshowers":
-                disasterLevel = getDisasterLevel(statusLevel, 1, 5);
-                MeteorShower meteorShowers = new MeteorShower(disasterLevel);
-                meteorShowers.start(overworld, null, true);
-                break;
-            case "plague":
-                List<World> worlds = Arrays.asList(overworld, nether, end);
-                disasterLevel = getDisasterLevel(statusLevel, 1, 5);
-                BlackPlague plague = new BlackPlague(disasterLevel);
-                plague.start(worlds.get(rand.nextInt(worlds.size())), null, true);
-                break;
-            case "purge":
-                selectedPlayers = players.stream().collect(Collectors.toList());
-                if (selectedPlayers.isEmpty()) {
-                    retryDisasterStartEvent(statusLevel, attempts); 
-                    return;
-                }
-                player = selectedPlayers.get(rand.nextInt(selectedPlayers.size()));
-                disasterLevel = getDisasterLevel(statusLevel, 1, 6);
-                Purge purge = new Purge(disasterLevel);
-                purge.start(player.getLocation(), player);
-            case "sandstorm":
-                disasterLevel = getDisasterLevel(statusLevel, 1, 5);
-                SandStorm sandstorm = new SandStorm(disasterLevel);
-                sandstorm.start(overworld, null, true);
-                break;
-            case "sinkhole":
-                selectedPlayers = players.stream().collect(Collectors.toList());
-                if (selectedPlayers.isEmpty()) {
-                    retryDisasterStartEvent(statusLevel, attempts); 
-                    return;
-                }
-                player = selectedPlayers.get(rand.nextInt(selectedPlayers.size()));
-                disasterLevel = getDisasterLevel(statusLevel, 1, 6);
-                Sinkhole sinkhole = new Sinkhole(disasterLevel);
-                sinkhole.start(player.getLocation(), player);
-                break;
-            case "soulstorm":
-                disasterLevel = getDisasterLevel(statusLevel, 1, 5);
-                SoulStorm soulstorm = new SoulStorm(disasterLevel);
-                soulstorm.start(nether, null, true);
+            case "hurricane":
+            case "tsunami":
+                selectedPlayers = players.stream().filter(p -> p.getWorld() == overworld).collect(Collectors.toList());
                 break;
             case "supernova":
                 selectedPlayers = players.stream().filter(p -> p.getWorld() == overworld || p.getWorld() == end).collect(Collectors.toList());
-                if (selectedPlayers.isEmpty()) {
-                    retryDisasterStartEvent(statusLevel, attempts); 
-                    return;
-                }
-                player = selectedPlayers.get(rand.nextInt(selectedPlayers.size()));
-                disasterLevel = getDisasterLevel(statusLevel, 1, 6);
-                Supernova supernova = new Supernova(disasterLevel);
-                supernova.start(player.getLocation(), player);
+                break;
+            default:
+                selectedPlayers = new ArrayList<>(players);
+                break;
+        }
+        return selectedPlayers.isEmpty() ? null : selectedPlayers.get(rand.nextInt(selectedPlayers.size()));
+    }
+
+    private int getMaxDisasterLevel(String disaster) {
+        switch (disaster) {
+            case "cavein":
+            case "earthquake":
+            case "extremewinds":
+            case "hurricane":
+            case "geyser":
+            case "plague":
+            case "purge":
+            case "sinkhole":
+            case "supernova":
+            case "tsunami":
+            case "tornado":
+                return 6;
+            default:
+                return 5;
+        }
+    }
+
+    private void startSpecificDisaster(String disaster, int disasterLevel, Player player, World overworld, World nether, World end) {
+        switch (disaster) {
+            case "acidstorm":
+                new AcidStorm(disasterLevel, overworld).start(overworld, null, true);
+                break;
+            case "blizzard":
+                new Blizzard(disasterLevel, overworld).start(overworld, null, true);
+                break;
+            case "cavein":
+                new CaveIn(disasterLevel, player.getWorld()).start(player.getLocation(), player);
+                break;
+            case "earthquake":
+                new Earthquake(disasterLevel, player.getWorld()).start(player.getLocation(), player);
+                break;
+            case "endstorm":
+                new EndStorm(disasterLevel, end).start(end, null, true);
+                break;
+            case "extremewinds":
+                new ExtremeWinds(disasterLevel, overworld).start(overworld, null, true);
+                break;
+            case "hurricane":
+                new Hurricane(disasterLevel, player.getWorld()).start(player.getLocation(), player);
+                break;
+            case "geyser":
+                new Geyser(disasterLevel, player.getWorld()).start(player.getLocation(), player);
+                break;
+            case "meteorshowers":
+                new MeteorShower(disasterLevel, overworld).start(overworld, null, true);
+                break;
+            case "plague":
+                List<World> worlds = Arrays.asList(overworld, nether, end);
+                World world = worlds.get(new Random().nextInt(worlds.size()));
+                new BlackPlague(disasterLevel, world).start(world, player, enabled);
+                break;
+            case "purge":
+                new Purge(disasterLevel, player.getWorld()).start(player.getLocation(), player);
+                break;
+            case "sandstorm":
+                new SandStorm(disasterLevel, overworld).start(overworld, null, true);
+                break;
+            case "sinkhole":
+                new Sinkhole(disasterLevel, player.getWorld()).start(player.getLocation(), player);
+                break;
+            case "soulstorm":
+                new SoulStorm(disasterLevel, nether).start(nether, null, true);
+                break;
+            case "supernova":
+                new Supernova(disasterLevel, player.getWorld()).start(player.getLocation(), player);
                 break;
             case "tsunami":
-                selectedPlayers = players.stream().filter(p -> p.getWorld() == overworld).collect(Collectors.toList());
-                if (selectedPlayers.isEmpty()) {
-                    retryDisasterStartEvent(statusLevel, attempts); 
-                    return;
-                }
-                player = selectedPlayers.get(rand.nextInt(selectedPlayers.size()));
-                disasterLevel = getDisasterLevel(statusLevel, 1, 6);
-                Tsunami tsunami = new Tsunami(disasterLevel);
+                Tsunami tsunami = new Tsunami(disasterLevel, player.getWorld());
                 Location pool = tsunami.findAvailabePool(player.getLocation());
-                if (pool == null) {
-                    retryDisasterStartEvent(statusLevel, attempts); 
-                    return;
+                if (pool != null) {
+                    tsunami.start(pool, player);
                 }
-                tsunami.start(pool, player);
                 break;
             case "tornado":
-                selectedPlayers = players.stream().collect(Collectors.toList());
-                if (selectedPlayers.isEmpty()) {
-                    retryDisasterStartEvent(statusLevel, attempts); 
-                    return;
-                }
-                player = selectedPlayers.get(rand.nextInt(selectedPlayers.size()));
-                disasterLevel = getDisasterLevel(statusLevel, 1, 6);
-                Tornado tornado = new Tornado(disasterLevel);
-                tornado.start(player.getLocation(), player);
+                new Tornado(disasterLevel, player.getWorld()).start(player.getLocation(), player);
+                break;
+            case "solarstorm":
+                new SolarStorm(disasterLevel, overworld).start(overworld, null, true);
                 break;
             default:
                 plugin.sendDebugMessage("Disaster not found: " + disaster);
-                return;
+                break;
         }
-
-        plugin.sendDebugMessage("Starting " + disaster + " with danger level: " + disasterLevel);
     }
 
     /**
@@ -391,7 +355,13 @@ public class DeadlyDisastersHandler {
      * Updates the configuration and starts the scheduled disasters task.
      */
     public void registerDeadlyDisasters() {
-        this.reload();
-		plugin.getLogger().info("DeadlyDisasters has been found, enabling features...");
+        Plugin plugin = Bukkit.getPluginManager().getPlugin("DeadlyDisasters");
+        Double version = Double.valueOf(plugin.getDescription().getVersion());
+        if (version >= 12.0) {
+            this.plugin.getLogger().info("DeadlyDisasters has been found, enabling settings...");
+            this.reload();
+        } else {
+            plugin.getLogger().warning("This version is not compatible with FluxPerMillion. Please update DeadlyDisasters to version 12.0 or higher.");
+        }
 	}
 }

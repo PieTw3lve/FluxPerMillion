@@ -37,7 +37,7 @@ public class FluxPerMillion extends JavaPlugin {
 	private GUIUtil guiUtil;
 	private MessageHandler messageHandler;
 	private FluxHandler fluxMeter;
-	private DeadlyDisastersHandler deadlyDisasters;
+	private DeadlyDisastersHandler deadlyDisastersHandler;
 	private EffectsHandler effectsHandler;
 	private PlaceholderHandler placeholderHandler;
 	private FishTrackerHandler fishTracker;
@@ -59,7 +59,7 @@ public class FluxPerMillion extends JavaPlugin {
 		this.guiUtil = new GUIUtil();
 		this.messageHandler = new MessageHandler(this);
 		this.fluxMeter = new FluxHandler(this);
-		this.deadlyDisasters = new DeadlyDisastersHandler(this);
+		this.deadlyDisastersHandler = new DeadlyDisastersHandler(this);
 		this.effectsHandler = new EffectsHandler(this);
 		this.placeholderHandler = new PlaceholderHandler(this);
 		this.fishTracker = new FishTrackerHandler(this);
@@ -71,7 +71,7 @@ public class FluxPerMillion extends JavaPlugin {
 	 */
 	private void loadDependencies() {
 		if (Bukkit.getPluginManager().isPluginEnabled("DeadlyDisasters")) {
-			deadlyDisasters.registerDeadlyDisasters();
+			deadlyDisastersHandler.registerDeadlyDisasters();
 		}
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			placeholderHandler.registerPlaceholders();
@@ -211,7 +211,7 @@ public class FluxPerMillion extends JavaPlugin {
 	 * @return DeadlyDisastersHandler
 	 */
 	public DeadlyDisastersHandler getDeadlyDisasters() {
-		return this.deadlyDisasters;
+		return this.deadlyDisastersHandler;
 	}
 
 	/**

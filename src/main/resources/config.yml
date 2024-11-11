@@ -1,7 +1,7 @@
 # FluxPerMillion Configuration File
 
 debug:
-  version: 1.1.0 # Do not modify this value.
+  version: 1.1.1 # Do not modify this value.
   language: en
   messages: false
   tree_feller: false
