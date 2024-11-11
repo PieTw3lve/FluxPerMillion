@@ -23,6 +23,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
+      - name: Create lib directory
+        run: mkdir -p lib
       - name: Download Deadly Disasters library
         run: wget -O lib/DeadlyDisasters-V12.1.jar https://www.spigotmc.org/resources/deadly-disasters.90806/download?version=553392
       - name: Install Deadly Disasters library
