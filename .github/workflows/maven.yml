@@ -26,7 +26,7 @@ jobs:
       - name: Create lib directory
         run: mkdir -p lib
       - name: Download Deadly Disasters library
-        run: wget -O lib/DeadlyDisasters-V12.1.jar https://www.spigotmc.org/resources/deadly-disasters.90806/download?version=553392
+        run: wget -O lib/DeadlyDisasters-V12.1.jar https://www.curseforge.com/api/v1/mods/415551/files/5606443/download
       - name: Install Deadly Disasters library
         run: mvn install:install-file -Dfile=lib/DeadlyDisasters-V12.1.jar -DgroupId=com.github.pietw3lve -DartifactId=DeadlyDisasters -Dversion=12.1 -Dpackaging=jar
       - name: Build with Maven
