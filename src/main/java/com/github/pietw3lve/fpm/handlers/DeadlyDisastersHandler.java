@@ -356,12 +356,12 @@ public class DeadlyDisastersHandler {
      */
     public void registerDeadlyDisasters() {
         Plugin plugin = Bukkit.getPluginManager().getPlugin("DeadlyDisasters");
-        Double version = Double.valueOf(plugin.getDescription().getAPIVersion());
-        if (version == 1.14) {
+        Double version = Double.valueOf(plugin.getDescription().getVersion());
+        if (version >= 12.1) {
             this.plugin.getLogger().info("DeadlyDisasters has been found, enabling settings...");
             this.reload();
         } else {
-            plugin.getLogger().warning("This version is not compatible with FluxPerMillion. Please update DeadlyDisasters to version 12.1.");
+            plugin.getLogger().warning("This version is not compatible with FluxPerMillion. Please update DeadlyDisasters to the latest version.");
         }
 	}
 }
