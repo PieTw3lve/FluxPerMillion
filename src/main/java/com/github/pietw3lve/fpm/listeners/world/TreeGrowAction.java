@@ -52,7 +52,7 @@ public class TreeGrowAction implements EventActionUtil<StructureGrowEvent> {
         Collection<Entity> nearbyEntities = event.getWorld().getNearbyEntities(treeLocation, SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS);
         Player closestPlayer = PlayerUtil.findClosestPlayer(treeLocation, nearbyEntities);
 
-        fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getLocation(), closestPlayer, "grown", "tree", points, ActionCategory.AGRICULTURE);
+        fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getLocation(), closestPlayer, null, "grown", "tree", points, ActionCategory.AGRICULTURE);
 
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }

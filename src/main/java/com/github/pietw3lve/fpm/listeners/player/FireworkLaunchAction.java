@@ -31,7 +31,7 @@ public class FireworkLaunchAction implements EventActionUtil<PlayerInteractEvent
     public void execute(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         double points = plugin.getConfig().getDouble(FLUX_POINTS_FIREWORK_LAUNCH);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "used", "firework", points, ActionCategory.POLLUTION);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, null, "used", "firework", points, ActionCategory.POLLUTION);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 

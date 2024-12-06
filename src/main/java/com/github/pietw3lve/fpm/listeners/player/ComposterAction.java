@@ -36,7 +36,7 @@ public class ComposterAction implements EventActionUtil<PlayerInteractEvent> {
         Levelled composter = (Levelled) block.getBlockData();
         if (composter.getLevel() == composter.getMaximumLevel()) {
             double points = plugin.getConfig().getDouble(FLUX_POINTS_COMPOST_COMPLETE);
-            FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "filled", "composter", points, ActionCategory.AGRICULTURE);
+            FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, null, "filled", "composter", points, ActionCategory.AGRICULTURE);
             plugin.getServer().getPluginManager().callEvent(fluxEvent);
         }
     }

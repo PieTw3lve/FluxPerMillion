@@ -34,13 +34,12 @@ public class FluxLevelChangeListener implements Listener {
 
         Location location = event.getLocation();
         Player player = event.getPlayer();
+        String message = event.getMessage();
         String actionType = event.getActionType();
         String type = event.getType();
         BigDecimal bd = new BigDecimal(event.getPoints()).setScale(5, RoundingMode.HALF_UP);
         double points = bd.doubleValue();
         ActionCategory category = event.getCategory();
-
-        if (points == 0) return;
 
         // Asynchronously record the action to avoid blocking the main thread
         plugin.getDbUtil().recordAction(player, actionType, type, points, location, category);
@@ -48,6 +47,7 @@ public class FluxLevelChangeListener implements Listener {
         if (event.isPlayerAction()) {
             plugin.sendDebugMessage(String.format("%s %s %s - Added %.2f point(s). (x%d/y%d/z%d/%s)", 
             player.getName(), actionType, type, points, location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getWorld().getName()));
+            if (message != null) player.sendMessage(message);
         } else {
             plugin.sendDebugMessage(String.format("%s %s - Added %.2f point(s). (x%d/y%d/z%d/%s)", 
             actionType.substring(0, 1).toUpperCase() + actionType.substring(1), type, points, location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getWorld().getName()));

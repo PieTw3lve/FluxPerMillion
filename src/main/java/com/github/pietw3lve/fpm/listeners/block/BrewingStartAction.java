@@ -38,7 +38,7 @@ public class BrewingStartAction implements EventActionUtil<BrewingStartEvent> {
         Player closestPlayer = PlayerUtil.findClosestPlayer(brewingLocation, nearbyEntities);
 
         double points = plugin.getConfig().getDouble(FLUX_POINTS_BREWING_START) * (event.getTotalBrewTime() / 200.0);
-        fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), brewingLocation, closestPlayer, "brewed", "potion", points, ActionCategory.ENERGY);
+        fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), brewingLocation, closestPlayer, null, "brewed", "potion", points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 }

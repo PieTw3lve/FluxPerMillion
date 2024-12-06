@@ -51,11 +51,11 @@ public class EntityBreedAction implements EventActionUtil<EntityBreedEvent> {
 
         if (nearbyEntitiesCount > entityOverpopulateLimit) {
             double points = plugin.getConfig().getDouble(FLUX_POINTS_ENTITY_OVERPOPULATE);
-            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), entity.getLocation(), player, "overpopulated", entityType.toString().toLowerCase(), points, ActionCategory.WILDLIFE);
-            player.sendMessage(plugin.getMessageHandler().getRandomOverpopulatedMessage(entityType.toString().toLowerCase()));
+            String message = plugin.getMessageHandler().getRandomOverpopulatedMessage(entityType.toString().toLowerCase());
+            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), entity.getLocation(), player, message, "overpopulated", entityType.toString().toLowerCase(), points, ActionCategory.WILDLIFE);
         } else if (nearbyEntitiesCount <= entityPreserveLimit) {
             double points = plugin.getConfig().getDouble(FLUX_POINTS_ENTITY_PRESERVE);
-            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), entity.getLocation(), player, "preserved", entityType.toString().toLowerCase(), points, ActionCategory.WILDLIFE);
+            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), entity.getLocation(), player, null, "preserved", entityType.toString().toLowerCase(), points, ActionCategory.WILDLIFE);
             player.sendMessage(plugin.getMessageHandler().getRandomPreservedMessage(entityType.toString().toLowerCase()));
         }
         plugin.getServer().getPluginManager().callEvent(fluxEvent);

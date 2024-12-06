@@ -29,7 +29,7 @@ public class GrassSpreadAction implements EventActionUtil<BlockSpreadEvent> {
     public void execute(BlockSpreadEvent event) {
         Block source = event.getSource();
         double points = plugin.getConfig().getDouble(FLUX_POINTS_GRASS_GROWTH);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), source.getLocation(), null, "grown", "grass", points, ActionCategory.AGRICULTURE);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), source.getLocation(), null, null, "grown", "grass", points, ActionCategory.AGRICULTURE);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 

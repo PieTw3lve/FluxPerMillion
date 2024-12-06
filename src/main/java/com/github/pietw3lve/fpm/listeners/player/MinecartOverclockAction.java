@@ -84,7 +84,7 @@ public class MinecartOverclockAction implements EventActionUtil<PlayerInteractEv
         }, duration);
 
         double points = plugin.getConfig().getDouble(FLUX_POINTS_MINECART_OVERCLOCK);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "overclocked", "minecart", points, ActionCategory.POLLUTION);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, null, "overclocked", "minecart", points, ActionCategory.POLLUTION);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 

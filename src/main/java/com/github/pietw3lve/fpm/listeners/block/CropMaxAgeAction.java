@@ -32,7 +32,7 @@ public class CropMaxAgeAction implements EventActionUtil<BlockGrowEvent> {
         Block block = event.getBlock();
         Player player = block.hasMetadata("fpm:fertilized") ? (Player) block.getMetadata("fpm:fertilized").get(0).value() : null;
         double points = plugin.getConfig().getDouble(FLUX_POINTS_CROP_GROWTH);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "grown", "crop", points, ActionCategory.AGRICULTURE);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, null, "grown", "crop", points, ActionCategory.AGRICULTURE);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 

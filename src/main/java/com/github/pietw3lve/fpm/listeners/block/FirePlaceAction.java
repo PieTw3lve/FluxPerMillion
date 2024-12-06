@@ -31,7 +31,7 @@ public class FirePlaceAction implements EventActionUtil<BlockPlaceEvent> {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         double points = plugin.getConfig().getDouble(FLUX_POINTS_FIRE_PLACE);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "used", "flint and steel", points, ActionCategory.ENERGY);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, null, "used", "flint and steel", points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 

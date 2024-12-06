@@ -38,7 +38,7 @@ public class FuelSmeltAction implements EventActionUtil<FurnaceBurnEvent> {
         Player closestPlayer = PlayerUtil.findClosestPlayer(furnaceLocation, nearbyEntities);
 
         double points = plugin.getConfig().getDouble(FLUX_POINTS_FUEL_BURN) * (event.getBurnTime() / 200.0);
-        fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), furnaceLocation, closestPlayer, "burned", "fuel", points, ActionCategory.ENERGY);
+        fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), furnaceLocation, closestPlayer, null, "burned", "fuel", points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 }

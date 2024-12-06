@@ -2,9 +2,14 @@
 
 debug:
   version: 1.1.1 # Do not modify this value.
-  language: en
+  language: 'en'
   messages: false
   tree_feller: false
+worlds:
+  # Worlds that are listed here will be affected by environmental actions (Case-sensitive).
+  # Deadly Disasters will still affect all worlds regardless of this list (May change in the future).
+  whitelist:
+    - 'world'
 farming:
   # The threshold represents the number of entities of the same type (e.g. cows, pigs, etc.)
   overpopulate_threshold: 20

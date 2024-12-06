@@ -32,7 +32,7 @@ public class TorchBreakAction implements EventActionUtil<BlockBreakEvent> {
         Block block = event.getBlock();
         String blockName = block.getType().toString().replace("_", " ").toLowerCase();
         double points = plugin.getConfig().getDouble(FLUX_POINTS_TORCH_BREAK);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "removed", blockName, points, ActionCategory.ENERGY);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, null, "removed", blockName, points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 

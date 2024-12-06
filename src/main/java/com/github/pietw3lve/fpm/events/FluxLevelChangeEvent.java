@@ -13,10 +13,13 @@ import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class FluxLevelChangeEvent extends Event implements Cancellable {
     
+    private final String ACTIVE_WORLDS = "worlds.whitelist";
+
     private static final HandlerList handlers = new HandlerList();
     private FluxHandler fluxMeter;
     private Location location;
     private Player player;
+    private String message;
     private String actionType;
     private String type;
     private double points;
@@ -27,15 +30,16 @@ public class FluxLevelChangeEvent extends Event implements Cancellable {
      * FluxLevelChangeEvent Constructor.
      * @param plugin The FluxPerMillion plugin.
      */
-    public FluxLevelChangeEvent(FluxHandler fluxMeter, Location location, @Nullable Player player, String actionType, String type, double points, ActionCategory category) {
+    public FluxLevelChangeEvent(FluxHandler fluxMeter, Location location, @Nullable Player player, @Nullable String message, String actionType, String type, double points, ActionCategory category) {
         this.fluxMeter = fluxMeter;
         this.location = location;
         this.player = player;
+        this.message = message;
         this.actionType = actionType;
         this.type = type;
         this.points = points;
         this.category = category;
-        this.isCancelled = points != 0 ? false : true;
+        this.isCancelled = points != 0 && fluxMeter.getFluxMeterTask().getOwner().getConfig().getStringList(ACTIVE_WORLDS).contains(location.getWorld().getName()) ? false : true;
     }
 
     /**
@@ -100,6 +104,14 @@ public class FluxLevelChangeEvent extends Event implements Cancellable {
      */
     public Player getPlayer() {
         return player;
+    }
+
+    /**
+     * Returns the message.
+     * @return The message.
+     */
+    public String getMessage() {
+        return message;
     }
 
     /**

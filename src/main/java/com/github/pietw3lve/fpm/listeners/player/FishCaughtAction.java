@@ -35,13 +35,14 @@ public class FishCaughtAction implements EventActionUtil<PlayerFishEvent> {
         if (fishTracker.hasReachedFishThreshold(player)) {
             List<String> overFishingLines = plugin.getMessageHandler().getOverFishingLines();
             double points = plugin.getConfig().getDouble(FLUX_POINTS_OVER_FISH);
-            Random rand = new Random();
+            String message = null;
             
             if (!overFishingLines.isEmpty()) {
-                player.sendMessage(overFishingLines.get(rand.nextInt(overFishingLines.size())));
+                Random rand = new Random();
+                message = overFishingLines.get(rand.nextInt(overFishingLines.size()));
             }
 
-            FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, "over", "fishing", points, ActionCategory.WILDLIFE);
+            FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, message, "over", "fishing", points, ActionCategory.WILDLIFE);
             plugin.getServer().getPluginManager().callEvent(fluxEvent);
         }
         fishTracker.addFish(event.getPlayer());

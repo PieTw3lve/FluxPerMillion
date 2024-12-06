@@ -32,7 +32,7 @@ public class CampfirePlaceAction implements EventActionUtil<BlockPlaceEvent> {
         Block block = event.getBlock();
         String blockName = block.getType().toString().replace("_", " ").toLowerCase();
         double points = plugin.getConfig().getDouble(FLUX_POINTS_CAMPFIRE_PLACE);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, "placed", blockName, points, ActionCategory.ENERGY);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, null, "placed", blockName, points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 

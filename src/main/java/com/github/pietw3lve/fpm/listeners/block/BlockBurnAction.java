@@ -25,7 +25,7 @@ public class BlockBurnAction implements EventActionUtil<BlockBurnEvent> {
     @Override
     public void execute(BlockBurnEvent event) {
         double points = plugin.getConfig().getDouble(FLUX_POINTS_BLOCK_BURN);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getBlock().getLocation(), null, "burned", "block", points, ActionCategory.ENERGY);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getBlock().getLocation(), null, null, "burned", "block", points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 }
