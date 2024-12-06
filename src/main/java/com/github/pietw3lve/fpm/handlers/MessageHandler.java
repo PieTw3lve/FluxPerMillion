@@ -50,7 +50,7 @@ public class MessageHandler {
      */
     public void reload() {
         String language = plugin.getConfig().getString("debug.language");
-        String langFile = "lang_" + language + ".yml";
+        String langFile = "languages/lang_" + language + ".yml";
         YamlConfiguration config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), langFile));
         ConfigurationSection messagesSection = config.getConfigurationSection("fpm-messages");
 

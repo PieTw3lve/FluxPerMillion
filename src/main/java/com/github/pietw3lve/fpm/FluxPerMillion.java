@@ -89,7 +89,6 @@ public class FluxPerMillion extends JavaPlugin {
 		
 		try {
 			ConfigUpdaterUtil.update(this, "config.yml", new File(getDataFolder(), "config.yml"), Arrays.asList("effects", "deadly_disasters"));
-			ConfigUpdaterUtil.update(this, "lang_en.yml", new File(getDataFolder(), "lang_en.yml"), Arrays.asList());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -101,9 +100,15 @@ public class FluxPerMillion extends JavaPlugin {
 	 * Copy the default language file from the resources to the data folder.
 	 */
 	private void saveDefaultLanguageFile() {
-		File langFile = new File(getDataFolder(), "lang_en.yml");
-		if (!langFile.exists()) {
-			saveResource("lang_en.yml", false);
+		File languagesFolder = new File(getDataFolder(), "languages");
+		if (!languagesFolder.exists()) {
+			languagesFolder.mkdirs();
+		}
+		for (String language : new String[] { "en" }) {
+			File file = new File(languagesFolder, "lang_" + language + ".yml");
+			if (!file.exists()) {
+				saveResource("languages/lang_" + language + ".yml", false);
+			}
 		}
 	}
 
