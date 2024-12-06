@@ -239,7 +239,7 @@ public class StatusInventory extends InventoryGUI {
      * @return the formatted change string
      */
     private String formatChange(double change) {
-        if (change == 0 || Double.isNaN(change)) return "";
+        if (Math.round(change * 10.0) / 10.0 == 0 || Double.isNaN(change)) return "";
         String sign = change > 0 ? ChatColor.RED + "+" : ChatColor.GREEN + "-";
         return ChatColor.translateAlternateColorCodes('&', statusMessages.menu.history.replace("{sign}", sign).replace("{change}", String.format("%.1f%%", Math.abs(change))));
     }
