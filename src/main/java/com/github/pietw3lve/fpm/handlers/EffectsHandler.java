@@ -1,6 +1,7 @@
 package com.github.pietw3lve.fpm.handlers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Registry;
@@ -57,12 +58,17 @@ public class EffectsHandler {
      */
     private void applyEffects() {
         for (Player player : plugin.getServer().getOnlinePlayers()) {
+            List<String> worlds = plugin.getConfig().getStringList("worlds.whitelist");
             int statusLevel = plugin.getFluxMeter().getStatusLevel();
             Map<Attribute, Double> configAttributes = this.attributes.get(statusLevel);
             Map<PotionEffectType, PotionEffect> potions = this.potions.get(statusLevel);
 
-            applyAttributes(player, configAttributes);
-            applyPotions(player, potions);
+            if (worlds.contains(player.getWorld().getName())) {
+                applyAttributes(player, configAttributes);
+                applyPotions(player, potions);
+            } else {
+                applyAttributes(player, new HashMap<>());
+            }
         }
     }
 

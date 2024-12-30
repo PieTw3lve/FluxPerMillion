@@ -1,13 +1,14 @@
 # FluxPerMillion Configuration File
 
 debug:
-  version: 1.1.1 # Do not modify this value.
+  version: 1.1.2 # Do not modify this value.
   language: 'en'
   messages: false
   tree_feller: false
 worlds:
-  # Worlds that are listed here will be affected by environmental actions (Case-sensitive).
+  # Worlds that are listed here will be affected by environmental actions and effects.
   # Deadly Disasters will still affect all worlds regardless of this list (May change in the future).
+  # It is recommended to add only the overworld dimensions.
   whitelist:
     - 'world'
 farming:
