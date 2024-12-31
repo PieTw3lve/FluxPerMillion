@@ -31,8 +31,8 @@ fpm-messages:
       name: '§2Agriculture {history}'
       contribution: '§7Flux Contribution: §e{contribution}'
       lore: '§8Agricultural practices, including crop production and tree management, exert a critical role in carbon storage and ecosystem health.'
-    pollution:
-      name: '§5Pollution {history}'
+    waste:
+      name: '§5Waste {history}'
       contribution: '§7Flux Contribution: §e{contribution}'
       lore: '§8The generation and mismanagement of waste lead to environmental degradation, releasing pollutants that threaten air and water quality.'
     wildlife:

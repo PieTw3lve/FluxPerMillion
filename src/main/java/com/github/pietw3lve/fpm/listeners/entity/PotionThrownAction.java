@@ -34,7 +34,7 @@ public class PotionThrownAction implements EventActionUtil<ProjectileHitEvent> {
         Player player = source instanceof Player ? (Player) source : null;
 
         double points = plugin.getConfig().getDouble(FLUX_POINTS_POTION);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), projectile.getLocation(), player, null, "thrown", projectile.getName().toLowerCase(), points, ActionCategory.POLLUTION);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), projectile.getLocation(), player, null, "thrown", projectile.getName().toLowerCase(), points, ActionCategory.WASTE);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 }

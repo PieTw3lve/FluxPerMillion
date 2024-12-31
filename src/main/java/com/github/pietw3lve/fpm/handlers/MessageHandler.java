@@ -250,7 +250,7 @@ public class MessageHandler {
         public final PlayerMessages player;
         public final EnergyMessages energy;
         public final AgricultureMessages agriculture;
-        public final PollutionMessages pollution;
+        public final WasteMessages waste;
         public final WildlifeMessages wildlife;
 
         /**
@@ -263,7 +263,7 @@ public class MessageHandler {
             player = new PlayerMessages(statusSection.getConfigurationSection("player"));
             energy = new EnergyMessages(statusSection.getConfigurationSection("energy"));
             agriculture = new AgricultureMessages(statusSection.getConfigurationSection("agriculture"));
-            pollution = new PollutionMessages(statusSection.getConfigurationSection("pollution"));
+            waste = new WasteMessages(statusSection.getConfigurationSection("waste"));
             wildlife = new WildlifeMessages(statusSection.getConfigurationSection("wildlife"));
         }
 
@@ -372,22 +372,22 @@ public class MessageHandler {
         }
 
         /**
-         * Class representing pollution messages.
+         * Class representing waste messages.
          */
-        public static class PollutionMessages {
+        public static class WasteMessages {
 
             public final String name;
             public final String contribution;
             public final String lore;
 
             /**
-             * PollutionMessages constructor.
-             * @param pollutionSection The configuration section containing the pollution messages.
+             * WasteMessages constructor.
+             * @param wasteSection The configuration section containing the waste messages.
              */
-            public PollutionMessages(ConfigurationSection pollutionSection) {
-                name = pollutionSection.getString("name");
-                contribution = pollutionSection.getString("contribution");
-                lore = pollutionSection.getString("lore");
+            public WasteMessages(ConfigurationSection wasteSection) {
+                name = wasteSection.getString("name");
+                contribution = wasteSection.getString("contribution");
+                lore = wasteSection.getString("lore");
             }
         }
 

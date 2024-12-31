@@ -37,7 +37,7 @@ public class ExplosionPrimeAction implements EventActionUtil<ExplosionPrimeEvent
         Player closestPlayer = PlayerUtil.findClosestPlayer(explosionLocation, nearbyEntities);
 
         double points = plugin.getConfig().getDouble(FLUX_POINTS_EXPLOSION);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), explosionLocation, closestPlayer, null, "detonated", explosion.getName().toLowerCase(), points, ActionCategory.POLLUTION);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), explosionLocation, closestPlayer, null, "detonated", explosion.getName().toLowerCase(), points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 }

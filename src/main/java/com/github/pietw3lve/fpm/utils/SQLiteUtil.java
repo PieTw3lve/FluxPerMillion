@@ -113,7 +113,7 @@ public class SQLiteUtil {
         DEFAULT(0),
         ENERGY(1),
         AGRICULTURE(2),
-        POLLUTION(3),
+        WASTE(3),
         WILDLIFE(4);
 
         private final int value;

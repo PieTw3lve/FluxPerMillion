@@ -30,7 +30,7 @@ public class ElytraBoostAction implements EventActionUtil<PlayerInteractEvent> {
     public void execute(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         double points = plugin.getConfig().getDouble(FLUX_POINTS_ELYTRA_BOOST);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, null, "boosted", "elytra", points, ActionCategory.POLLUTION);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, null, "boosted", "elytra", points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 

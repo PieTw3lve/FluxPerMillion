@@ -39,7 +39,7 @@ public class FluxHandler {
     private final Map<UUID, Double> playerFluxMap = new HashMap<>();
     private final Deque<Double> energyPercentages = new ArrayDeque<>();
     private final Deque<Double> agriculturePercentages = new ArrayDeque<>();
-    private final Deque<Double> pollutionPercentages = new ArrayDeque<>();
+    private final Deque<Double> wastePercentages = new ArrayDeque<>();
     private final Deque<Double> wildlifePercentages = new ArrayDeque<>();
     private final int historySize = 28;
     private BukkitTask fluxMeterTask;
@@ -68,7 +68,7 @@ public class FluxHandler {
         for (int i = 0; i < historySize; i++) {
             this.energyPercentages.addLast(0.0);
             this.agriculturePercentages.addLast(0.0);
-            this.pollutionPercentages.addLast(0.0);
+            this.wastePercentages.addLast(0.0);
             this.wildlifePercentages.addLast(0.0);
         }
         this.reload();
@@ -98,24 +98,24 @@ public class FluxHandler {
     }
 
     /**
-     * Updates the percentages for energy, agriculture, pollution, and wildlife.
+     * Updates the percentages for energy, agriculture, waste, and wildlife.
      */
     private void updatePercentages() {
         double energyPoints = plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.ENERGY);
         double agriculturePoints = plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.AGRICULTURE);
-        double pollutionPoints = plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.POLLUTION);
+        double wastePoints = plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.WASTE);
         double wildlifePoints = plugin.getDbUtil().calculateTotalPointsForCategory(ActionCategory.WILDLIFE);
-        double totalPoints = energyPoints + agriculturePoints + pollutionPoints + wildlifePoints;
+        double totalPoints = energyPoints + agriculturePoints + wastePoints + wildlifePoints;
 
         if (totalPoints == 0) {
             addPercentage(energyPercentages, 0);
             addPercentage(agriculturePercentages, 0);
-            addPercentage(pollutionPercentages, 0);
+            addPercentage(wastePercentages, 0);
             addPercentage(wildlifePercentages, 0);
         } else {
             addPercentage(energyPercentages, energyPoints / totalPoints * 100);
             addPercentage(agriculturePercentages, agriculturePoints / totalPoints * 100);
-            addPercentage(pollutionPercentages, pollutionPoints / totalPoints * 100);
+            addPercentage(wastePercentages, wastePoints / totalPoints * 100);
             addPercentage(wildlifePercentages, wildlifePoints / totalPoints * 100);
         }
     }
@@ -348,11 +348,11 @@ public class FluxHandler {
     }
 
     /**
-     * Returns the pollution percentage.
-     * @return The pollution percentage.
+     * Returns the waste percentage.
+     * @return The waste percentage.
      */
-    public Deque<Double> getPollutionPercentages() {
-        return pollutionPercentages;
+    public Deque<Double> getWastePercentages() {
+        return wastePercentages;
     }
 
     /**

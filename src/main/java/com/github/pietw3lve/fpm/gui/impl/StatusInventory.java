@@ -115,12 +115,12 @@ public class StatusInventory extends InventoryGUI {
         ));
 
         this.addButton(32, createIcon(
-            new ItemStack(Material.MINECART),
-            ChatColor.translateAlternateColorCodes('&', statusMessages.pollution.name.replace("{history}", formatChange(newPercents[2] - oldPercents[2]))),
+            new ItemStack(Material.GLASS_BOTTLE),
+            ChatColor.translateAlternateColorCodes('&', statusMessages.waste.name.replace("{history}", formatChange(newPercents[2] - oldPercents[2]))),
             createIconLore(
-                statusMessages.pollution.contribution.replace("{contribution}", String.format("%.1f%%", newPercents[2])),
-                fluxMeter.generateGraph(fluxMeter.getPollutionPercentages()).stream().map(line -> ChatColor.translateAlternateColorCodes('&', statusMessages.menu.graph) + line).collect(Collectors.toList()),
-                statusMessages.pollution.lore
+                statusMessages.waste.contribution.replace("{contribution}", String.format("%.1f%%", newPercents[2])),
+                fluxMeter.generateGraph(fluxMeter.getWastePercentages()).stream().map(line -> ChatColor.translateAlternateColorCodes('&', statusMessages.menu.graph) + line).collect(Collectors.toList()),
+                statusMessages.waste.lore
             )
         ));
 
@@ -253,7 +253,7 @@ public class StatusInventory extends InventoryGUI {
         return new double[] {
             getLast(fluxMeter.getEnergyPercentages()),
             getLast(fluxMeter.getAgriculturePercentages()),
-            getLast(fluxMeter.getPollutionPercentages()),
+            getLast(fluxMeter.getWastePercentages()),
             getLast(fluxMeter.getWildlifePercentages())
         };
     }
@@ -267,7 +267,7 @@ public class StatusInventory extends InventoryGUI {
         return new double[] {
             getSecondLast(fluxMeter.getEnergyPercentages()),
             getSecondLast(fluxMeter.getAgriculturePercentages()),
-            getSecondLast(fluxMeter.getPollutionPercentages()),
+            getSecondLast(fluxMeter.getWastePercentages()),
             getSecondLast(fluxMeter.getWildlifePercentages())
         };
     }

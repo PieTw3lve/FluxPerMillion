@@ -38,7 +38,7 @@ public class ItemDespawnAction implements EventActionUtil<ItemDespawnEvent> {
         Player closestPlayer = PlayerUtil.findClosestPlayer(itemLocation, nearbyEntities);
 
         double points = plugin.getConfig().getDouble(FLUX_POINTS_POLLUTION);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), itemLocation, closestPlayer, null, "despawned", "item", points, ActionCategory.POLLUTION);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), itemLocation, closestPlayer, null, "despawned", "item", points, ActionCategory.WASTE);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 }

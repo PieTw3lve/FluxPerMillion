@@ -80,7 +80,7 @@ public class MinecartBoostAction implements EventActionUtil<PlayerInteractEvent>
         }, cooldown);
 
         double points = plugin.getConfig().getDouble(FLUX_POINTS_MINECART_BOOST);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, null, "boosted", "minecart", points, ActionCategory.POLLUTION);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), player.getLocation(), player, null, "boosted", "minecart", points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 
