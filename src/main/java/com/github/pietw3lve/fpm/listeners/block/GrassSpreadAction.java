@@ -1,24 +1,22 @@
 package com.github.pietw3lve.fpm.listeners.block;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockSpreadEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
-import com.github.pietw3lve.fpm.utils.PlayerUtil;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class GrassSpreadAction implements EventActionUtil<BlockSpreadEvent> {
     
     private static final String FLUX_POINTS_GRASS_GROWTH = "flux_points.grass_growth";
-    private static final int SEARCH_RADIUS = 96;
 
     private final FluxPerMillion plugin;
 
@@ -34,14 +32,22 @@ public class GrassSpreadAction implements EventActionUtil<BlockSpreadEvent> {
 
     @Override
     public void execute(BlockSpreadEvent event) {
-        Location blockLocation = event.getSource().getLocation();
-        Collection<Entity> nearbyEntities = event.getBlock().getWorld().getNearbyEntities(blockLocation, SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS);
-
-        Player closestPlayer = PlayerUtil.findClosestPlayer(blockLocation, nearbyEntities);
-
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent();
+        Block grass = event.getBlock();
         double points = plugin.getConfig().getDouble(FLUX_POINTS_GRASS_GROWTH);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), blockLocation, closestPlayer, null, "grown", "grass", points, ActionCategory.AGRICULTURE);
-        plugin.getServer().getPluginManager().callEvent(fluxEvent);
+
+        Collection<Player> players = grass.getChunk().getPlayersSeeingChunk();
+        if (!players.isEmpty()) {
+            for (Player player : players) {
+                double playerPoints = points / players.size();
+                playerPoints = BigDecimal.valueOf(playerPoints).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), grass.getLocation(), player, null, "grown", "grass", playerPoints, ActionCategory.AGRICULTURE);
+                plugin.getServer().getPluginManager().callEvent(fluxEvent);
+            }
+        } else {
+            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), grass.getLocation(), null, null, "grown", "grass", points, ActionCategory.AGRICULTURE);
+            plugin.getServer().getPluginManager().callEvent(fluxEvent);
+        }
     }
 
     private boolean isGrass(Block block) {

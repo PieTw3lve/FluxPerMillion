@@ -1,9 +1,10 @@
 package com.github.pietw3lve.fpm.listeners.inventory;
 
 import java.util.Collection;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 
@@ -11,12 +12,10 @@ import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
-import com.github.pietw3lve.fpm.utils.PlayerUtil;
 
 public class FuelSmeltAction implements EventActionUtil<FurnaceBurnEvent> {
     
     private static final String FLUX_POINTS_FUEL_BURN = "flux_points.fuel_burn";
-    private static final int SEARCH_RADIUS = 96;
 
     private final FluxPerMillion plugin;
 
@@ -32,13 +31,21 @@ public class FuelSmeltAction implements EventActionUtil<FurnaceBurnEvent> {
     @Override
     public void execute(FurnaceBurnEvent event) {
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent();
-        Location furnaceLocation = event.getBlock().getLocation();
-        Collection<Entity> nearbyEntities = event.getBlock().getWorld().getNearbyEntities(furnaceLocation, SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS);
-
-        Player closestPlayer = PlayerUtil.findClosestPlayer(furnaceLocation, nearbyEntities);
+        Block furnace = event.getBlock();
 
         double points = plugin.getConfig().getDouble(FLUX_POINTS_FUEL_BURN) * (event.getBurnTime() / 200.0);
-        fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), furnaceLocation, closestPlayer, null, "burned", "fuel", points, ActionCategory.ENERGY);
-        plugin.getServer().getPluginManager().callEvent(fluxEvent);
+        
+        Collection<Player> players = furnace.getChunk().getPlayersSeeingChunk();
+        if (!players.isEmpty()) {
+            for (Player player : players) {
+                double playerPoints = points / players.size();
+                playerPoints = BigDecimal.valueOf(playerPoints).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), furnace.getLocation(), player, null, "burned", "fuel", playerPoints, ActionCategory.ENERGY);
+                plugin.getServer().getPluginManager().callEvent(fluxEvent);
+            }
+        } else {
+            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), furnace.getLocation(), null, null, "burned", "fuel", points, ActionCategory.ENERGY);
+            plugin.getServer().getPluginManager().callEvent(fluxEvent);
+        }
     }
 }

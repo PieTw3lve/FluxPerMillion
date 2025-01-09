@@ -1,11 +1,11 @@
 package com.github.pietw3lve.fpm.listeners.world;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 
-import org.bukkit.Location;
 import org.bukkit.TreeType;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.world.StructureGrowEvent;
 
@@ -13,13 +13,11 @@ import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.handlers.TreeHandler;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
-import com.github.pietw3lve.fpm.utils.PlayerUtil;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class TreeGrowAction implements EventActionUtil<StructureGrowEvent> {
     
     private static final String FLUX_POINTS_TREE_GROWTH = "flux_points.tree_growth";
-    private static final int SEARCH_RADIUS = 96;
 
     private final FluxPerMillion plugin;
     private final TreeHandler treeUtils;
@@ -48,13 +46,18 @@ public class TreeGrowAction implements EventActionUtil<StructureGrowEvent> {
             }
         }
 
-        Location treeLocation = event.getLocation();
-        Collection<Entity> nearbyEntities = event.getWorld().getNearbyEntities(treeLocation, SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS);
-        Player closestPlayer = PlayerUtil.findClosestPlayer(treeLocation, nearbyEntities);
-
-        fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getLocation(), closestPlayer, null, "grown", "tree", points, ActionCategory.AGRICULTURE);
-
-        plugin.getServer().getPluginManager().callEvent(fluxEvent);
+        Collection<Player> players = event.getLocation().getChunk().getPlayersSeeingChunk();
+        if (!players.isEmpty()) {
+            for (Player player : players) {
+                double playerPoints = points / players.size();
+                playerPoints = BigDecimal.valueOf(playerPoints).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getLocation(), player, null, "grown", "tree", playerPoints, ActionCategory.AGRICULTURE);
+                plugin.getServer().getPluginManager().callEvent(fluxEvent);
+            }
+        } else {
+            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getLocation(), null, null, "grown", "tree", points, ActionCategory.AGRICULTURE);
+            plugin.getServer().getPluginManager().callEvent(fluxEvent);
+        }  
     }
 
     private boolean isNotTree(TreeType species) {
