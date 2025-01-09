@@ -1,5 +1,9 @@
 package com.github.pietw3lve.fpm.listeners.block;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Collection;
+
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
@@ -29,11 +33,28 @@ public class CropMaxAgeAction implements EventActionUtil<BlockGrowEvent> {
 
     @Override
     public void execute(BlockGrowEvent event) {
-        Block block = event.getBlock();
-        Player player = block.hasMetadata("fpm:fertilized") ? (Player) block.getMetadata("fpm:fertilized").get(0).value() : null;
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent();
+        Block crop = event.getBlock();
         double points = plugin.getConfig().getDouble(FLUX_POINTS_CROP_GROWTH);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, null, "grown", "crop", points, ActionCategory.AGRICULTURE);
-        plugin.getServer().getPluginManager().callEvent(fluxEvent);
+
+        if (crop.hasMetadata("fpm:fertilized")) {
+            Player player = (Player) crop.getMetadata("fpm:fertilized").get(0).value();
+            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), crop.getLocation(), player, null, "grown", "crop", points, ActionCategory.AGRICULTURE);
+            plugin.getServer().getPluginManager().callEvent(fluxEvent);
+        } else {
+            Collection<Player> players = crop.getChunk().getPlayersSeeingChunk();
+            if (!players.isEmpty()) {
+                for (Player player : players) {
+                    double playerPoints = points / players.size();
+                    playerPoints = BigDecimal.valueOf(playerPoints).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                    fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), crop.getLocation(), player, null, "grown", "crop", playerPoints, ActionCategory.AGRICULTURE);
+                    plugin.getServer().getPluginManager().callEvent(fluxEvent);
+                }
+            } else {
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), crop.getLocation(), null, null, "grown", "crop", points, ActionCategory.AGRICULTURE);
+                plugin.getServer().getPluginManager().callEvent(fluxEvent);
+            }
+        }
     }
 
     private boolean isCrop(BlockData blockData) {
