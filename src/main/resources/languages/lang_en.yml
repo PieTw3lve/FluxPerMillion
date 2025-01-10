@@ -1,5 +1,7 @@
 fpm-messages:
   inspect: '§7Player §6{player} §7accumulated §6{points} §7Flux.'
+  add: '§7Added §6{points} §7Flux to player §6{player}.'
+  remove: '§7Removed §6{points} §7Flux from player §6{player}.'
   lookup:
     header: '§r----- §6FluxPerMillion | Lookup Results §r-----'
     navigator: ' §6Page §r{index}/{total} '

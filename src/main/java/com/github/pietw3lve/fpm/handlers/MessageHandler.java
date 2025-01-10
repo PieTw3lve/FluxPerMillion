@@ -21,6 +21,8 @@ public class MessageHandler {
     
     private final FluxPerMillion plugin;
     private String inspectMessage;
+    private String addMessage;
+    private String removeMessage;
     private List<String> lookupMessages;
     private String reloadMessage;
     private StatusMessages statusMessages;
@@ -66,6 +68,8 @@ public class MessageHandler {
      */
     private void loadMessages(ConfigurationSection messagesSection) {
         inspectMessage = messagesSection.getString("inspect");
+        addMessage = messagesSection.getString("add");
+        removeMessage = messagesSection.getString("remove");
         lookupMessages = configToList(messagesSection.getConfigurationSection("lookup"));
         reloadMessage = messagesSection.getString("reload");
         statusMessages = new StatusMessages(messagesSection.getConfigurationSection("status"));
@@ -134,6 +138,22 @@ public class MessageHandler {
      */
     public String getInspectMessage() {
         return inspectMessage;
+    }
+
+    /**
+     * Get add message.
+     * @return Add message.
+     */
+    public String getAddMessage() {
+        return addMessage;
+    }
+
+    /**
+     * Get remove message.
+     * @return Remove message.
+     */
+    public String getRemoveMessage() {
+        return removeMessage;
     }
 
     /**

@@ -8,11 +8,13 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+
 import com.github.pietw3lve.fpm.FluxPerMillion;
 
 @CommandAlias("fpm")
@@ -50,13 +52,31 @@ public class FPMCommands extends BaseCommand {
         new Status(plugin).execute(sender);
     }
 
+    @Subcommand("add")
+    @CommandPermission("fpm.add")
+    @CommandCompletion("@players <amount> @range:1-4")
+    @Syntax("<player> <amount> <category>")   
+    @Description("Add Flux to a player.")
+    public void onAdd(CommandSender sender, OfflinePlayer player, @Conditions("positive") Double amount, @Conditions("category") Integer category) {
+        new Add(plugin).execute(sender, player, amount, category);
+    }
+
+    @Subcommand("remove")
+    @CommandPermission("fpm.remove")
+    @CommandCompletion("@players <amount> @range:1-4")
+    @Syntax("<player> <amount> <category>")   
+    @Description("Remove Flux from a player.")
+    public void onRemove(CommandSender sender, OfflinePlayer player, @Conditions("positive") Double amount, @Conditions("category") Integer category) {
+        new Remove(plugin).execute(sender, player, amount, category);
+    }
+
     @Subcommand("lookup")
     @CommandPermission("fpm.lookup")
     @CommandCompletion("@players @duration <page>")
     @Syntax("<player> <duration> [page]")
     @Description("Retrieve a player's Flux activity.")
-    public void onLookup(CommandSender sender, OfflinePlayer player, String duration, @Default("1") int page) {
-        new Lookup(plugin).execute(sender, player, duration, page);
+    public void onLookup(CommandSender sender, OfflinePlayer player, String duration, @Default("1") @Conditions("positive") Double page) {
+        new Lookup(plugin).execute(sender, player, duration, page.intValue());
     }
 
     @Subcommand("reload")

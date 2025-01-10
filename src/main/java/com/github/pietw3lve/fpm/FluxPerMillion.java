@@ -24,6 +24,7 @@ import com.github.pietw3lve.fpm.listeners.fpm.StatusLevelChangeListener;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil;
 import com.google.common.collect.ImmutableList;
 
+import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
 
 import com.github.pietw3lve.fpm.utils.ConfigUpdaterUtil;
@@ -127,6 +128,18 @@ public class FluxPerMillion extends JavaPlugin {
 			}
 			return ImmutableList.of();
 		});
+
+		// Register conditions
+		this.commandManager.getCommandConditions().addCondition(Double.class, "positive", (context, executionContext, value) -> {
+			if (value <= 0) {
+				throw new ConditionFailedException("");
+			}
+        });
+		this.commandManager.getCommandConditions().addCondition(Integer.class, "category", (context, executionContext, value) -> {
+			if (value < 1 || value > 4) {
+				throw new ConditionFailedException("");
+			}
+        });
 	}
 
 	/**
