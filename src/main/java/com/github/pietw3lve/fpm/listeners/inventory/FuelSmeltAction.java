@@ -1,8 +1,6 @@
 package com.github.pietw3lve.fpm.listeners.inventory;
 
 import java.util.Collection;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -41,7 +39,6 @@ public class FuelSmeltAction implements EventActionUtil<FurnaceBurnEvent> {
         if (!players.isEmpty()) {
             for (Player player : players) {
                 double playerPoints = points / players.size();
-                playerPoints = BigDecimal.valueOf(playerPoints).setScale(2, RoundingMode.HALF_UP).doubleValue();
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), furnace.getLocation(), player, null, "burned", "fuel", playerPoints, ActionCategory.ENERGY);
                 plugin.getServer().getPluginManager().callEvent(fluxEvent);
             }

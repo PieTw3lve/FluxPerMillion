@@ -1,7 +1,5 @@
 package com.github.pietw3lve.fpm.listeners.entity;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Collection;
 
 import org.bukkit.entity.Entity;
@@ -38,7 +36,6 @@ public class ItemDespawnAction implements EventActionUtil<ItemDespawnEvent> {
         if (!players.isEmpty()) {
             for (Player player : players) {
                 double playerPoints = points / players.size();
-                playerPoints = BigDecimal.valueOf(playerPoints).setScale(2, RoundingMode.HALF_UP).doubleValue();
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), item.getLocation(), player, null, "despawned", "item", playerPoints, ActionCategory.WASTE);
                 plugin.getServer().getPluginManager().callEvent(fluxEvent);
             }

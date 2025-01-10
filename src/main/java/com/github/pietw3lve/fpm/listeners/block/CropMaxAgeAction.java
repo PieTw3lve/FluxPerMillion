@@ -1,7 +1,5 @@
 package com.github.pietw3lve.fpm.listeners.block;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Collection;
 
 import org.bukkit.block.Block;
@@ -46,7 +44,6 @@ public class CropMaxAgeAction implements EventActionUtil<BlockGrowEvent> {
             if (!players.isEmpty()) {
                 for (Player player : players) {
                     double playerPoints = points / players.size();
-                    playerPoints = BigDecimal.valueOf(playerPoints).setScale(2, RoundingMode.HALF_UP).doubleValue();
                     fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), crop.getLocation(), player, null, "grown", "crop", playerPoints, ActionCategory.AGRICULTURE);
                     plugin.getServer().getPluginManager().callEvent(fluxEvent);
                 }

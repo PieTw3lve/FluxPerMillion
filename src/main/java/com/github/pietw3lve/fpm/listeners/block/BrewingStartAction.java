@@ -1,7 +1,5 @@
 package com.github.pietw3lve.fpm.listeners.block;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Collection;
 
 import org.bukkit.block.Block;
@@ -38,7 +36,6 @@ public class BrewingStartAction implements EventActionUtil<BrewingStartEvent> {
         if (!players.isEmpty()) {
             for (Player player : players) {
                 double playerPoints = points / players.size();
-                playerPoints = BigDecimal.valueOf(playerPoints).setScale(2, RoundingMode.HALF_UP).doubleValue();
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), brewingStand.getLocation(), player, null, "brewed", "potion", playerPoints, ActionCategory.ENERGY);
                 plugin.getServer().getPluginManager().callEvent(fluxEvent);
             }

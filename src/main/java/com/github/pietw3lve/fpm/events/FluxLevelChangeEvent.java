@@ -1,5 +1,8 @@
 package com.github.pietw3lve.fpm.events;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import javax.annotation.Nullable;
 
 import org.bukkit.Location;
@@ -37,7 +40,7 @@ public class FluxLevelChangeEvent extends Event implements Cancellable {
         this.message = message;
         this.actionType = actionType;
         this.type = type;
-        this.points = points;
+        this.points = BigDecimal.valueOf(points).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros().doubleValue();
         this.category = category;
         this.isCancelled = points != 0 && fluxMeter.getFluxMeterTask().getOwner().getConfig().getStringList(ACTIVE_WORLDS).contains(location.getWorld().getName()) ? false : true;
     }

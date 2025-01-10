@@ -1,7 +1,5 @@
 package com.github.pietw3lve.fpm.listeners.block;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Collection;
 
 import org.bukkit.block.Block;
@@ -38,7 +36,6 @@ public class BlockBurnAction implements EventActionUtil<BlockBurnEvent> {
         if (!players.isEmpty()) {
             for (Player player : players) {
                 double playerPoints = points / players.size();
-                playerPoints = BigDecimal.valueOf(playerPoints).setScale(2, RoundingMode.HALF_UP).doubleValue();
                 fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, null, "burned", "block", playerPoints, ActionCategory.ENERGY);
                 plugin.getServer().getPluginManager().callEvent(fluxEvent);
             }

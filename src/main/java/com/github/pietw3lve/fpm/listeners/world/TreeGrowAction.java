@@ -1,7 +1,5 @@
 package com.github.pietw3lve.fpm.listeners.world;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.List;
 
@@ -58,7 +56,6 @@ public class TreeGrowAction implements EventActionUtil<StructureGrowEvent> {
             if (!players.isEmpty()) {
                 for (Player player : players) {
                     double playerPoints = points / players.size();
-                    playerPoints = BigDecimal.valueOf(playerPoints).setScale(2, RoundingMode.HALF_UP).doubleValue();
                     fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), event.getLocation(), player, null, "grown", "tree", playerPoints, ActionCategory.AGRICULTURE);
                     plugin.getServer().getPluginManager().callEvent(fluxEvent);
                 }
