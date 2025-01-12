@@ -73,6 +73,24 @@ fpm-messages:
       - "§c§oYou've reeled in quite a catch; now it's time to let the waters settle and see what else swims by."
       - '§c§oEven the most captivating fishing spots can benefit from a change of scenery.'
       - '§c§oSometimes, a pause in fishing leads to the biggest catches.'
+  custom_items:
+    respiration_mask:
+      name: '§eRespiration Mask'
+      lore:
+        - '§7A mask that will grant §6immunity'
+        - '§7to all §2environmental effects§7.'
+        - ''
+        - '§7Durability: §6{num}§7/§6{max}'
+    respiration_mask_ex:
+      name: '§bRespiration Mask'
+      lore:
+        - '§7A sturdy mask that will grant §6immunity'
+        - '§7to all §2environmental effects§7, consuming'
+        - '§6{item} §7to recharge durability.'
+        - ''
+        - '§8Shift right-click mask to recharge.'
+        - ''
+        - '§7Durability: §6{num}§7/§6{max}'
   errors:
     no_actions_found: '§cFound no actions for {player}.'
     page_not_found: '§cThis page does not exist!'

@@ -26,6 +26,8 @@ public class Reload {
         plugin.getEffectsHandler().reload();
         plugin.getPlaceholderHandler().reload();
         plugin.getFishTracker().reload();
+        plugin.getRespirationMask().reload();
+        plugin.getRespirationMaskEX().reload();
         String reloadMessage = plugin.getMessageHandler().getReloadMessage();
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', reloadMessage));
         return true;

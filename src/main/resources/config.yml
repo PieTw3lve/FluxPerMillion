@@ -1,7 +1,7 @@
 # FluxPerMillion Configuration File
 
 debug:
-  version: 1.1.2 # Do not modify this value.
+  version: 1.1.3 # Do not modify this value.
   language: 'en'
   messages: false
   tree_feller: false
@@ -125,6 +125,26 @@ effects:
         identifier: 'minecraft:weakness'
         amplifier: 0
 custom_mechanics:
+  item:
+    respiration_mask:
+      # Wearing a Respiration Mask will grant immunity to all environmental effects.
+      enabled: true
+      # The item used for the mask.
+      material: 'GLASS'
+      # Durability will decrease by 1 every 1 second while wearing the mask.
+      durability: 900
+    respiration_mask_ex:
+      # Wearing a Respiration Mask will grant immunity to all environmental effects.
+      # It is also rechargeable by left-clicking while holding the Respiration Mask.
+      enabled: true
+      # The item used for the mask.
+      material: 'PURPLE_STAINED_GLASS'
+      # Durability will decrease by 1 every 1 second while wearing the mask.
+      durability: 3600
+      # The item required to recharge the mask.
+      consume: 'REDSTONE'
+      # How much durability is restored per item consumed.
+      durability_per_charge: 225
   minecart:
     surge_boost:
       # Right-clicking coal while in a minecart will apply a speed boost.

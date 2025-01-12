@@ -17,6 +17,7 @@ import com.github.pietw3lve.fpm.handlers.FluxHandler;
 import com.github.pietw3lve.fpm.handlers.MessageHandler;
 import com.github.pietw3lve.fpm.handlers.PlaceholderHandler;
 import com.github.pietw3lve.fpm.handlers.TreeHandler;
+import com.github.pietw3lve.fpm.items.*;
 import com.github.pietw3lve.fpm.listeners.EventListener;
 import com.github.pietw3lve.fpm.listeners.GUIListener;
 import com.github.pietw3lve.fpm.listeners.fpm.FluxLevelChangeListener;
@@ -43,6 +44,8 @@ public class FluxPerMillion extends JavaPlugin {
 	private PlaceholderHandler placeholderHandler;
 	private FishTrackerHandler fishTracker;
 	private TreeHandler treeUtils;
+	private RespirationMask respirationMask;
+	private RespirationMaskEX respirationMaskEX;
 
 	public void onEnable() {
 		loadPersonalData();
@@ -50,6 +53,7 @@ public class FluxPerMillion extends JavaPlugin {
 		loadDependencies();
 		registerCommands();
 		registerEventListeners();
+		registerCustomItems();
 	}
 
 	/**
@@ -153,6 +157,16 @@ public class FluxPerMillion extends JavaPlugin {
 		// Custom Listeners
 		getServer().getPluginManager().registerEvents(new FluxLevelChangeListener(this), this);
 		getServer().getPluginManager().registerEvents(new StatusLevelChangeListener(this), this);
+	}
+
+	/**
+	 * Register custom items.
+	 */
+	private void registerCustomItems() {
+		respirationMask = new RespirationMask(this);
+		respirationMask.reload();
+		respirationMaskEX = new RespirationMaskEX(this);
+		respirationMaskEX.reload();
 	}
 
 	/**
@@ -262,5 +276,21 @@ public class FluxPerMillion extends JavaPlugin {
 	 */
 	public TreeHandler getTreeUtils() {
 		return this.treeUtils;
+	}
+
+	/**
+	 * Returns the RespirationMask instance.
+	 * @return RespirationMask
+	 */
+	public RespirationMask getRespirationMask() {
+		return this.respirationMask;
+	}
+
+	/**
+	 * Returns the RespirationMaskEX instance.
+	 * @return RespirationMaskEX
+	 */
+	public RespirationMaskEX getRespirationMaskEX() {
+		return this.respirationMaskEX;
 	}
 }

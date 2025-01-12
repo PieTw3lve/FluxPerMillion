@@ -14,9 +14,11 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
+import com.github.pietw3lve.fpm.items.RespirationMask;
+import com.github.pietw3lve.fpm.items.RespirationMaskEX;
 
 public class EffectsHandler {
-    
+
     private final FluxPerMillion plugin;
     private Map<Integer, Map<Attribute, Double>> attributes;
     private Map<Integer, Map<PotionEffectType, PotionEffect>> potions;
@@ -81,9 +83,13 @@ public class EffectsHandler {
         if (attributes == null) return;
 
         Map<Attribute, Double> defaultAttributes = getDefaultPlayerAttributes();
-
-        for (Map.Entry<Attribute, Double> entry : attributes.entrySet()) {
-            defaultAttributes.put(entry.getKey(), entry.getValue());
+        
+        if (!RespirationMask.isItem(this.plugin, player.getInventory().getHelmet()) &&
+            (!RespirationMaskEX.isItem(this.plugin, player.getInventory().getHelmet()) || 
+             !RespirationMaskEX.isActivated(this.plugin, player.getInventory().getHelmet()))) {
+            for (Map.Entry<Attribute, Double> entry : attributes.entrySet()) {
+                defaultAttributes.put(entry.getKey(), entry.getValue());
+            }
         }
 
         for (Map.Entry<Attribute, Double> entry : defaultAttributes.entrySet()) {
@@ -102,8 +108,12 @@ public class EffectsHandler {
     private void applyPotions(Player player, Map<PotionEffectType, PotionEffect> potions) {
         if (potions == null) return;
 
-        for (PotionEffect effect : potions.values()) {
-            player.addPotionEffect(effect);
+        if (!RespirationMask.isItem(this.plugin, player.getInventory().getHelmet()) &&
+            (!RespirationMaskEX.isItem(this.plugin, player.getInventory().getHelmet()) || 
+             !RespirationMaskEX.isActivated(this.plugin, player.getInventory().getHelmet()))) {
+            for (PotionEffect effect : potions.values()) {
+                player.addPotionEffect(effect);
+            }
         }
     }
 

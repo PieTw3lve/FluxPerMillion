@@ -37,6 +37,10 @@ public class MessageHandler {
     private String invalidPageNumberMessage;
     private List<String> overpopulatedMessages;
     private List<String> preservedMessages;
+    private String respirationMaskName;
+    private List<String> respirationMaskLore;
+    private String respirationMaskEXName;
+    private List<String> respirationMaskEXLore;
 
     /**
      * MessageHandler constructor.
@@ -77,6 +81,10 @@ public class MessageHandler {
         overFishingLines = messagesSection.getStringList("fishing.over_fishing");
         overpopulatedMessages = messagesSection.getStringList("farming.overpopulated");
         preservedMessages = messagesSection.getStringList("farming.preserved");
+        respirationMaskName = messagesSection.getString("custom_items.respiration_mask.name");
+        respirationMaskLore = messagesSection.getStringList("custom_items.respiration_mask.lore");
+        respirationMaskEXName = messagesSection.getString("custom_items.respiration_mask_ex.name");
+        respirationMaskEXLore = messagesSection.getStringList("custom_items.respiration_mask_ex.lore");
     }
 
     /**
@@ -252,12 +260,54 @@ public class MessageHandler {
         return invalidPageNumberMessage;
     }
 
+    /**
+     * Get random overpopulated message.
+     * @param entity The entity to replace in the message.
+     * @return Random overpopulated message.
+     */
     public String getRandomOverpopulatedMessage(String entity) {
         return ChatColor.translateAlternateColorCodes('&', overpopulatedMessages.get(new Random().nextInt(overpopulatedMessages.size())).replace("{entity}", entity));
     }
 
+    /**
+     * Get random preserved message.
+     * @param entity The entity to replace in the message.
+     * @return Random preserved message.
+     */
     public String getRandomPreservedMessage(String entity) {
         return ChatColor.translateAlternateColorCodes('&', preservedMessages.get(new Random().nextInt(preservedMessages.size())).replace("{entity}", entity));
+    }
+
+    /**
+     * Get respiration mask name.
+     * @return Respiration mask name.
+     */
+    public String getRespirationMaskName() {
+        return respirationMaskName;
+    }
+
+    /**
+     * Get respiration mask lore.
+     * @return Respiration mask lore.
+     */
+    public List<String> getRespirationMaskLore() {
+        return respirationMaskLore;
+    }
+
+    /**
+     * Get respiration mask EX name.
+     * @return Respiration mask EX name.
+     */
+    public String getRespirationMaskEXName() {
+        return respirationMaskEXName;
+    }
+
+    /**
+     * Get respiration mask EX lore.
+     * @return Respiration mask EX lore.
+     */
+    public List<String> getRespirationMaskEXLore() {
+        return respirationMaskEXLore;
     }
 
     /**
