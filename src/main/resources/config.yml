@@ -37,6 +37,7 @@ flux_meter:
 flux_points:
   # Set action value to 0 to disable them.
   block_burn: 2.0
+  block_fertilize: -0.05
   brew_potion: 0.25 # Multiply by brew time
   campfire_break: -0.5
   campfire_place: 0.5
@@ -48,7 +49,7 @@ flux_points:
   entity_preserve: -8.0
   explosion: 3.0
   firework_launch: 0.25
-  flint_and_steel_use: 0.25
+  flint_and_steel: 0.25
   fuel_burn: 0.25 # Multiply by burn time and material weight
   grass_growth: -0.05
   over_fish: 0.25

@@ -28,6 +28,7 @@ import org.bukkit.event.world.StructureGrowEvent;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.listeners.block.BlockBurnAction;
+import com.github.pietw3lve.fpm.listeners.block.BlockFertilizeAction;
 import com.github.pietw3lve.fpm.listeners.block.BrewingStartAction;
 import com.github.pietw3lve.fpm.listeners.block.CampfireBreakAction;
 import com.github.pietw3lve.fpm.listeners.block.CampfirePlaceAction;
@@ -63,7 +64,7 @@ public class EventListener implements Listener {
     public EventListener(FluxPerMillion plugin) {
         actions = new HashMap<>();
         actions.put(BlockBurnEvent.class, new ArrayList<>(Arrays.asList(new BlockBurnAction(plugin))));
-        actions.put(BlockFertilizeEvent.class, new ArrayList<>(Arrays.asList(new CropFertilizeAction(plugin))));
+        actions.put(BlockFertilizeEvent.class, new ArrayList<>(Arrays.asList(new BlockFertilizeAction(plugin), new CropFertilizeAction(plugin))));
         actions.put(BlockGrowEvent.class, new ArrayList<>(Arrays.asList(new CropMaxAgeAction(plugin))));
         actions.put(BlockSpreadEvent.class, new ArrayList<>(Arrays.asList(new GrassSpreadAction(plugin))));
         actions.put(BlockBreakEvent.class, new ArrayList<>(Arrays.asList(new CampfireBreakAction(plugin), new CoalBreakAction(plugin), new TorchBreakAction(plugin), new TreeBreakAction(plugin))));

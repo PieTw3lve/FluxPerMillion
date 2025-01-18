@@ -12,7 +12,7 @@ import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
 public class FirePlaceAction implements EventActionUtil<BlockPlaceEvent> {
     
-    private static final String FLUX_POINTS_FIRE_PLACE = "flux_points.flint_and_steel_use";
+    private static final String FLUX_POINTS_FIRE_PLACE = "flux_points.flint_and_steel";
 
     private final FluxPerMillion plugin;
 
