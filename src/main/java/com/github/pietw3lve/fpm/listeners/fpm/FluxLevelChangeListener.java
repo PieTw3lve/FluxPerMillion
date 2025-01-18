@@ -1,5 +1,7 @@
 package com.github.pietw3lve.fpm.listeners.fpm;
 
+import java.math.BigDecimal;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,12 +43,12 @@ public class FluxLevelChangeListener implements Listener {
         plugin.getDbUtil().recordAction(player, actionType, type, points, location, category);
 
         if (event.isPlayerAction()) {
-            plugin.sendDebugMessage(String.format("%s %s %s - Added %.5f point(s). (x%d/y%d/z%d/%s)", 
-            player.getName(), actionType, type, points, location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getWorld().getName()));
+            plugin.sendDebugMessage(String.format("%s %s %s - Added %s point(s). (x%d/y%d/z%d/%s)", 
+            player.getName(), actionType, type, BigDecimal.valueOf(points).stripTrailingZeros().toString(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getWorld().getName()));
             if (message != null) player.sendMessage(message);
         } else {
-            plugin.sendDebugMessage(String.format("%s %s - Added %.5f point(s). (x%d/y%d/z%d/%s)", 
-            actionType.substring(0, 1).toUpperCase() + actionType.substring(1), type, points, location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getWorld().getName()));
+            plugin.sendDebugMessage(String.format("%s %s - Added %s point(s). (x%d/y%d/z%d/%s)", 
+            actionType.substring(0, 1).toUpperCase() + actionType.substring(1), type, BigDecimal.valueOf(points).stripTrailingZeros().toString(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getWorld().getName()));
         }
     }
 

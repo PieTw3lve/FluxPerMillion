@@ -40,7 +40,7 @@ public class FluxLevelChangeEvent extends Event implements Cancellable {
         this.message = message;
         this.actionType = actionType;
         this.type = type;
-        this.points = BigDecimal.valueOf(points).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros().doubleValue();
+        this.points = BigDecimal.valueOf(points).setScale(5, RoundingMode.HALF_UP).doubleValue();
         this.category = category;
         this.isCancelled = points != 0 && fluxMeter.getFluxMeterTask().getOwner().getConfig().getStringList(ACTIVE_WORLDS).contains(location.getWorld().getName()) ? false : true;
     }
