@@ -41,7 +41,7 @@ import com.github.pietw3lve.fpm.listeners.block.FlowerBreakAction;
 import com.github.pietw3lve.fpm.listeners.block.FlowerPlaceAction;
 import com.github.pietw3lve.fpm.listeners.block.GrassSpreadAction;
 import com.github.pietw3lve.fpm.listeners.block.PlaceMetadataSetAction;
-import com.github.pietw3lve.fpm.listeners.block.TallFlowerPlaceAction;
+import com.github.pietw3lve.fpm.listeners.block.FlowerMultiPlaceAction;
 import com.github.pietw3lve.fpm.listeners.block.TorchBreakAction;
 import com.github.pietw3lve.fpm.listeners.block.TorchPlaceAction;
 import com.github.pietw3lve.fpm.listeners.block.TreeBreakAction;
@@ -84,7 +84,7 @@ public class EventListener implements Listener {
             new TorchPlaceAction(plugin), new FirePlaceAction(plugin), 
             new FlowerPlaceAction(plugin))));
         actions.put(BlockMultiPlaceEvent.class, new ArrayList<>(Arrays.asList(
-            new TallFlowerPlaceAction(plugin))));
+            new FlowerMultiPlaceAction(plugin))));
         actions.put(EntityBreedEvent.class, new ArrayList<>(Arrays.asList(
             new EntityBreedAction(plugin))));
         actions.put(ItemDespawnEvent.class, new ArrayList<>(Arrays.asList(
