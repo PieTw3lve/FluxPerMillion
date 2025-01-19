@@ -53,7 +53,7 @@ flux_points:
   flower_break: 0.05 # Tall flowers are doubled
   flower_place: -0.05 # Tall flowers are doubled
   fuel_burn: 0.25 # Multiply by burn time and material weight
-  grass_growth: -0.05
+  grass_growth: -0.025
   leaves_place: -0.05
   leaves_break: 0.05
   minecart_boost: 0.25
