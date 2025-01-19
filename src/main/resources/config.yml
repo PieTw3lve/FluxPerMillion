@@ -50,6 +50,8 @@ flux_points:
   explosion: 3.0
   firework_launch: 0.25
   flint_and_steel: 0.25
+  flower_break: 0.05
+  flower_place: -0.05
   fuel_burn: 0.25 # Multiply by burn time and material weight
   grass_growth: -0.05
   over_fish: 0.25

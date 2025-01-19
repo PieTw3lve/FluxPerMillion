@@ -13,6 +13,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.BrewingStartEvent;
@@ -36,8 +37,11 @@ import com.github.pietw3lve.fpm.listeners.block.CoalBreakAction;
 import com.github.pietw3lve.fpm.listeners.block.CropFertilizeAction;
 import com.github.pietw3lve.fpm.listeners.block.CropMaxAgeAction;
 import com.github.pietw3lve.fpm.listeners.block.FirePlaceAction;
+import com.github.pietw3lve.fpm.listeners.block.FlowerBreakAction;
+import com.github.pietw3lve.fpm.listeners.block.FlowerPlaceAction;
 import com.github.pietw3lve.fpm.listeners.block.GrassSpreadAction;
 import com.github.pietw3lve.fpm.listeners.block.PlaceMetadataSetAction;
+import com.github.pietw3lve.fpm.listeners.block.TallFlowerPlaceAction;
 import com.github.pietw3lve.fpm.listeners.block.TorchBreakAction;
 import com.github.pietw3lve.fpm.listeners.block.TorchPlaceAction;
 import com.github.pietw3lve.fpm.listeners.block.TreeBreakAction;
@@ -63,22 +67,46 @@ public class EventListener implements Listener {
     
     public EventListener(FluxPerMillion plugin) {
         actions = new HashMap<>();
-        actions.put(BlockBurnEvent.class, new ArrayList<>(Arrays.asList(new BlockBurnAction(plugin))));
-        actions.put(BlockFertilizeEvent.class, new ArrayList<>(Arrays.asList(new BlockFertilizeAction(plugin), new CropFertilizeAction(plugin))));
-        actions.put(BlockGrowEvent.class, new ArrayList<>(Arrays.asList(new CropMaxAgeAction(plugin))));
-        actions.put(BlockSpreadEvent.class, new ArrayList<>(Arrays.asList(new GrassSpreadAction(plugin))));
-        actions.put(BlockBreakEvent.class, new ArrayList<>(Arrays.asList(new CampfireBreakAction(plugin), new CoalBreakAction(plugin), new TorchBreakAction(plugin), new TreeBreakAction(plugin))));
-        actions.put(BlockPlaceEvent.class, new ArrayList<>(Arrays.asList(new PlaceMetadataSetAction(plugin), new CampfirePlaceAction(plugin), new TorchPlaceAction(plugin), new FirePlaceAction(plugin))));
-        actions.put(EntityBreedEvent.class, new ArrayList<>(Arrays.asList(new EntityBreedAction(plugin))));
-        actions.put(ItemDespawnEvent.class, new ArrayList<>(Arrays.asList(new ItemDespawnAction(plugin))));
-        actions.put(FurnaceBurnEvent.class, new ArrayList<>(Arrays.asList(new FuelSmeltAction(plugin))));
-        actions.put(PlayerInteractEvent.class, new ArrayList<>(Arrays.asList(new ComposterAction(plugin), new ElytraBoostAction(plugin), new FireworkLaunchAction(plugin), new LogStripAction(plugin), new MinecartBoostAction(plugin), new MinecartOverclockAction(plugin))));
-        actions.put(PlayerFishEvent.class, new ArrayList<>(Arrays.asList(new FishCaughtAction(plugin))));
-        actions.put(PlayerJoinEvent.class, new ArrayList<>(Arrays.asList(new UpdateFPMBarAction(plugin))));
-        actions.put(StructureGrowEvent.class, new ArrayList<>(Arrays.asList(new TreeGrowAction(plugin))));
-        actions.put(ExplosionPrimeEvent.class, new ArrayList<>(Arrays.asList(new ExplosionPrimeAction(plugin))));
-        actions.put(ProjectileHitEvent.class, new ArrayList<>(Arrays.asList(new PotionThrownAction(plugin))));
-        actions.put(BrewingStartEvent.class, new ArrayList<>(Arrays.asList(new BrewingStartAction(plugin))));
+        actions.put(BlockBurnEvent.class, new ArrayList<>(Arrays.asList(
+            new BlockBurnAction(plugin))));
+        actions.put(BlockFertilizeEvent.class, new ArrayList<>(Arrays.asList(
+            new BlockFertilizeAction(plugin), new CropFertilizeAction(plugin))));
+        actions.put(BlockGrowEvent.class, new ArrayList<>(Arrays.asList(
+            new CropMaxAgeAction(plugin))));
+        actions.put(BlockSpreadEvent.class, new ArrayList<>(Arrays.asList(
+            new GrassSpreadAction(plugin))));
+        actions.put(BlockBreakEvent.class, new ArrayList<>(Arrays.asList(
+            new CampfireBreakAction(plugin), new CoalBreakAction(plugin), 
+            new TorchBreakAction(plugin), new TreeBreakAction(plugin), 
+            new FlowerBreakAction(plugin))));
+        actions.put(BlockPlaceEvent.class, new ArrayList<>(Arrays.asList(
+            new PlaceMetadataSetAction(plugin), new CampfirePlaceAction(plugin), 
+            new TorchPlaceAction(plugin), new FirePlaceAction(plugin), 
+            new FlowerPlaceAction(plugin))));
+        actions.put(BlockMultiPlaceEvent.class, new ArrayList<>(Arrays.asList(
+            new TallFlowerPlaceAction(plugin))));
+        actions.put(EntityBreedEvent.class, new ArrayList<>(Arrays.asList(
+            new EntityBreedAction(plugin))));
+        actions.put(ItemDespawnEvent.class, new ArrayList<>(Arrays.asList(
+            new ItemDespawnAction(plugin))));
+        actions.put(FurnaceBurnEvent.class, new ArrayList<>(Arrays.asList(
+            new FuelSmeltAction(plugin))));
+        actions.put(PlayerInteractEvent.class, new ArrayList<>(Arrays.asList(
+            new ComposterAction(plugin), new ElytraBoostAction(plugin), 
+            new FireworkLaunchAction(plugin), new LogStripAction(plugin), 
+            new MinecartBoostAction(plugin), new MinecartOverclockAction(plugin))));
+        actions.put(PlayerFishEvent.class, new ArrayList<>(Arrays.asList(
+            new FishCaughtAction(plugin))));
+        actions.put(PlayerJoinEvent.class, new ArrayList<>(Arrays.asList(
+            new UpdateFPMBarAction(plugin))));
+        actions.put(StructureGrowEvent.class, new ArrayList<>(Arrays.asList(
+            new TreeGrowAction(plugin))));
+        actions.put(ExplosionPrimeEvent.class, new ArrayList<>(Arrays.asList(
+            new ExplosionPrimeAction(plugin))));
+        actions.put(ProjectileHitEvent.class, new ArrayList<>(Arrays.asList(
+            new PotionThrownAction(plugin))));
+        actions.put(BrewingStartEvent.class, new ArrayList<>(Arrays.asList(
+            new BrewingStartAction(plugin))));
     }
 
     @EventHandler
@@ -108,6 +136,11 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
+        handleEvent(event);
+    }
+
+    @EventHandler
+    public void onBlockMultiPlace(BlockMultiPlaceEvent event) {
         handleEvent(event);
     }
 
