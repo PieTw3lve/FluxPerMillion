@@ -54,9 +54,11 @@ flux_points:
   flower_place: -0.05 # Tall flowers are doubled
   fuel_burn: 0.25 # Multiply by burn time and material weight
   grass_growth: -0.05
-  over_fish: 0.25
+  leaves_place: -0.05
+  leaves_break: 0.05
   minecart_boost: 0.25
   minecart_overclock: 3.0
+  over_fish: 0.25
   pollution: 0.25
   potion_throw: 0.25
   torch_break: -0.25
