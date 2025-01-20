@@ -33,22 +33,23 @@ public class CropMaxAgeAction implements EventActionUtil<BlockGrowEvent> {
     public void execute(BlockGrowEvent event) {
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent();
         Block crop = event.getBlock();
+        String cropName = event.getNewState().getType().toString().replace("_", " ").toLowerCase();
         double points = plugin.getConfig().getDouble(FLUX_POINTS_CROP_GROWTH);
 
         if (crop.hasMetadata("fpm:fertilized")) {
             Player player = (Player) crop.getMetadata("fpm:fertilized").get(0).value();
-            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), crop.getLocation(), player, null, "grown", "crop", points, ActionCategory.AGRICULTURE);
+            fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), crop.getLocation(), player, null, "grown", cropName, points, ActionCategory.AGRICULTURE);
             plugin.getServer().getPluginManager().callEvent(fluxEvent);
         } else {
             Collection<Player> players = crop.getChunk().getPlayersSeeingChunk();
             if (!players.isEmpty()) {
                 for (Player player : players) {
                     double playerPoints = points / players.size();
-                    fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), crop.getLocation(), player, null, "grown", "crop", playerPoints, ActionCategory.AGRICULTURE);
+                    fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), crop.getLocation(), player, null, "grown", cropName, playerPoints, ActionCategory.AGRICULTURE);
                     plugin.getServer().getPluginManager().callEvent(fluxEvent);
                 }
             } else {
-                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), crop.getLocation(), null, null, "grown", "crop", points, ActionCategory.AGRICULTURE);
+                fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), crop.getLocation(), null, null, "grown", cropName, points, ActionCategory.AGRICULTURE);
                 plugin.getServer().getPluginManager().callEvent(fluxEvent);
             }
         }
@@ -59,6 +60,6 @@ public class CropMaxAgeAction implements EventActionUtil<BlockGrowEvent> {
     }
 
     private boolean isMaxAge(Ageable ageable) {
-        return ageable.getAge() == ageable.getMaximumAge();
+        return ageable.getAge() == ageable.getMaximumAge() || ageable.getAge() == 0;
     }
 }
