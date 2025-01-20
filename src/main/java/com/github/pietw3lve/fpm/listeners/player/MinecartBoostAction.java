@@ -2,12 +2,14 @@ package com.github.pietw3lve.fpm.listeners.player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.Tag;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
@@ -35,10 +37,13 @@ public class MinecartBoostAction implements EventActionUtil<PlayerInteractEvent>
     private static final float SOUND_PITCH = 1;
 
     private final FluxPerMillion plugin;
+    private final Set<Material> coals;
+
     private List<String> minecartBoostCooldown = new ArrayList<String>();
 
     public MinecartBoostAction(FluxPerMillion plugin) {
         this.plugin = plugin;
+        this.coals = Tag.ITEMS_COALS.getValues();
     }
 
     @Override
@@ -47,7 +52,7 @@ public class MinecartBoostAction implements EventActionUtil<PlayerInteractEvent>
         Action action = event.getAction();
         Material mainHandItemType = player.getInventory().getItemInMainHand().getType();
         Material offHandItemType = player.getInventory().getItemInOffHand().getType();
-        return isEnabled(BOOST_ENABLED) && !isPlayerOnBoostCooldown(player) && isPlayerInMinecart(player) && isRightClick(action) && (isBoostFuel(mainHandItemType) || isBoostFuel(offHandItemType));
+        return isEnabled(BOOST_ENABLED) && !isPlayerOnBoostCooldown(player) && isPlayerInMinecart(player) && isRightClick(action) && (coals.contains(mainHandItemType) || coals.contains(offHandItemType));
     }
 
     @Override
@@ -92,7 +97,7 @@ public class MinecartBoostAction implements EventActionUtil<PlayerInteractEvent>
     }
 
     private void reduceItemAmountIfFuel(ItemStack item) {
-        if (isBoostFuel(item.getType())) {
+        if (coals.contains(item.getType())) {
             item.setAmount(item.getAmount() - 1);
         }
     }
@@ -111,9 +116,5 @@ public class MinecartBoostAction implements EventActionUtil<PlayerInteractEvent>
 
     private boolean isRightClick(Action action) {
         return action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK;
-    }
-
-    private boolean isBoostFuel(Material type) {
-        return type == Material.COAL || type == Material.CHARCOAL;
     }
 }

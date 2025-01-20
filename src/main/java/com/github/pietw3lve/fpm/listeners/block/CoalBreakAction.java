@@ -1,9 +1,14 @@
 package com.github.pietw3lve.fpm.listeners.block;
 
+import java.util.Set;
+
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.github.pietw3lve.fpm.FluxPerMillion;
 import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
@@ -15,15 +20,18 @@ public class CoalBreakAction implements EventActionUtil<BlockBreakEvent> {
     private static final String FLUX_POINTS_COAL_BREAK = "flux_points.coal_break";
 
     private final FluxPerMillion plugin;
+    private final Set<Material> coal;
 
     public CoalBreakAction(FluxPerMillion plugin) {
         this.plugin = plugin;
+        this.coal = Tag.COAL_ORES.getValues();
     }
 
     @Override
     public boolean matches(BlockBreakEvent event) {
         Block block = event.getBlock();
-        return isCoalOre(block) && !block.hasMetadata("fpm:placed");
+        ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
+        return coal.contains(block.getType()) && (item == null || !item.getEnchantments().containsKey(Enchantment.SILK_TOUCH));
     }
 
     @Override
@@ -34,10 +42,5 @@ public class CoalBreakAction implements EventActionUtil<BlockBreakEvent> {
         double points = plugin.getConfig().getDouble(FLUX_POINTS_COAL_BREAK);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, null, "removed", blockName, points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
-        plugin.sendDebugMessage(String.valueOf(isCoalOre(block) && !block.hasMetadata("fpm:placed")));
-    }
-
-    private boolean isCoalOre(Block block) {
-        return block.getType() == Material.COAL_ORE || block.getType() == Material.DEEPSLATE_COAL_ORE;
     }
 }

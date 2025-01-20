@@ -22,7 +22,7 @@ public class FlowerMultiPlaceAction implements EventActionUtil<BlockMultiPlaceEv
 
     public FlowerMultiPlaceAction(FluxPerMillion plugin) {
         this.plugin = plugin;
-        this.flowers = Tag.TALL_FLOWERS.getValues();
+        this.flowers = Tag.FLOWERS.getValues();
     }
     
     @Override

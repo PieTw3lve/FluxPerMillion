@@ -1,12 +1,12 @@
 package com.github.pietw3lve.fpm.handlers;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Leaves;
@@ -17,9 +17,8 @@ import com.github.pietw3lve.fpm.FluxPerMillion;
 public class TreeHandler {
     
     private final FluxPerMillion plugin;
-    private final Set<Material> treeLogs;
-    private final Set<Material> strippedTreeLogs;
-    private final Set<Material> treeLeaves;
+    private final Set<Material> logs;
+    private final Set<Material> leaves;
     private final int MAX_TREE_LENGTH = 500;
     private final int NATURAL_LEAVES_THRESHOLD = 5;
 
@@ -29,23 +28,8 @@ public class TreeHandler {
      */
     public TreeHandler(FluxPerMillion plugin) {
         this.plugin = plugin;
-        this.treeLogs = new HashSet<>(Arrays.asList(
-                Material.OAK_LOG, Material.BIRCH_LOG, Material.SPRUCE_LOG,
-                Material.JUNGLE_LOG, Material.ACACIA_LOG, Material.DARK_OAK_LOG,
-                Material.MANGROVE_LOG, Material.CHERRY_LOG
-
-        ));
-        this.strippedTreeLogs = new HashSet<>(Arrays.asList(
-                Material.STRIPPED_OAK_LOG, Material.STRIPPED_BIRCH_LOG, Material.STRIPPED_SPRUCE_LOG,
-                Material.STRIPPED_JUNGLE_LOG, Material.STRIPPED_ACACIA_LOG, Material.STRIPPED_DARK_OAK_LOG,
-                Material.STRIPPED_MANGROVE_LOG, Material.STRIPPED_CHERRY_LOG
-        ));
-        this.treeLeaves = new HashSet<>(Arrays.asList(
-                Material.OAK_LEAVES, Material.BIRCH_LEAVES, Material.SPRUCE_LEAVES,
-                Material.JUNGLE_LEAVES, Material.ACACIA_LEAVES, Material.DARK_OAK_LEAVES,
-                Material.MANGROVE_LEAVES, Material.CHERRY_LEAVES, Material.AZALEA_LEAVES,
-                Material.FLOWERING_AZALEA_LEAVES
-        ));
+        this.logs = Tag.LOGS_THAT_BURN.getValues();
+        this.leaves = Tag.LEAVES.getValues();
     }
 
     /**
@@ -59,7 +43,7 @@ public class TreeHandler {
         traverseTree(block, treeBlocks);
 
         long naturalLeaves = treeBlocks.stream()
-            .filter(b -> treeLeaves.contains(b.getType()))
+            .filter(b -> leaves.contains(b.getType()))
             .map(b -> (Leaves) b.getBlockData())
             .filter(leaves -> !leaves.isPersistent())
             .count();
@@ -93,9 +77,9 @@ public class TreeHandler {
 
             for (BlockFace direction : directions) {
                 Block adjacentBlock = block.getRelative(direction);
-                if (treeLogs.contains(adjacentBlock.getType()) || strippedTreeLogs.contains(adjacentBlock.getType())) {
+                if (logs.contains(adjacentBlock.getType())) {
                     queue.add(adjacentBlock);
-                } else if (treeLeaves.contains(adjacentBlock.getType())) {
+                } else if (leaves.contains(adjacentBlock.getType())) {
                     Leaves leaves = (Leaves) adjacentBlock.getBlockData();
                     if (!leaves.isPersistent()) {
                         queue.add(adjacentBlock);
@@ -106,9 +90,9 @@ public class TreeHandler {
                 for (BlockFace diagonalDirection : directions) {
                     if (diagonalDirection != direction) {
                         Block diagonalBlock = adjacentBlock.getRelative(diagonalDirection);
-                        if (treeLogs.contains(diagonalBlock.getType()) || strippedTreeLogs.contains(diagonalBlock.getType())) {
+                        if (logs.contains(diagonalBlock.getType())) {
                             queue.add(diagonalBlock);
-                        } else if (treeLeaves.contains(diagonalBlock.getType())) {
+                        } else if (leaves.contains(diagonalBlock.getType())) {
                             Leaves leaves = (Leaves) diagonalBlock.getBlockData();
                             if (!leaves.isPersistent()) {
                                 queue.add(diagonalBlock);
@@ -128,7 +112,7 @@ public class TreeHandler {
     public int getTreeLogsCount(Set<Block> tree) {
         int count = 0;
         for (Block block : tree) {
-            if (isTreeLog(block) || isStrippedTreeLog(block)) {
+            if (isTreeBlock(block)) {
                 count++;
             }
         }
@@ -162,7 +146,7 @@ public class TreeHandler {
      * @return True if the block is a tree block, false otherwise.
      */
     public boolean isTreeBlock(Block block) {
-        return treeLogs.contains(block.getType()) || treeLeaves.contains(block.getType());
+        return logs.contains(block.getType());
     }
 
     /**
@@ -171,33 +155,7 @@ public class TreeHandler {
      * @return True if the block is a tree leaf, false otherwise.
      */
     public boolean isTreeLeaf(Block block) {
-        return treeLeaves.contains(block.getType());
-    }
-
-    /**
-     * Check if the block is a tree log.
-     * @param block The block to check.
-     * @return True if the block is a tree log, false otherwise.
-     */
-    public boolean isTreeLog(Block block) {
-        return treeLogs.contains(block.getType());
-    }
-
-    /**
-     * Check if the block is a stripped tree log.
-     * @param block The block to check.
-     * @return True if the block is a stripped tree log, false otherwise.
-     */
-    public boolean isStrippedTreeLog(Block block) {
-        return strippedTreeLogs.contains(block.getType());
-    }
-
-    /**
-     * Returns the stripped tree logs set.
-     * @return A set of stripped tree log materials.
-     */
-    public Set<Material> getStrippedTreeLogs() {
-        return strippedTreeLogs;
+        return leaves.contains(block.getType());
     }
 
     /**
@@ -205,7 +163,7 @@ public class TreeHandler {
      * @return A set of tree log materials.
      */
     public Set<Material> getTreeLogs() {
-        return treeLogs;
+        return logs;
     }
 
     /**
@@ -213,6 +171,6 @@ public class TreeHandler {
      * @return A set of tree leaf materials.
      */
     public Set<Material> getTreeLeaves() {
-        return treeLeaves;
+        return leaves;
     }
 }

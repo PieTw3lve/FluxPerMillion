@@ -64,7 +64,7 @@ public class EffectsHandler {
             int statusLevel = plugin.getFluxMeter().getStatusLevel();
             Map<Attribute, Double> configAttributes = this.attributes.get(statusLevel);
             Map<PotionEffectType, PotionEffect> potions = this.potions.get(statusLevel);
-
+            
             if (worlds.contains(player.getWorld().getName())) {
                 applyAttributes(player, configAttributes);
                 applyPotions(player, potions);

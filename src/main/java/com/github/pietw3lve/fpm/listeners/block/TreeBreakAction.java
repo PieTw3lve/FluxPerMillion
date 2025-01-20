@@ -28,7 +28,7 @@ public class TreeBreakAction implements EventActionUtil<BlockBreakEvent> {
     @Override
     public boolean matches(BlockBreakEvent event) {
         Block block = event.getBlock();
-        return isTreeLog(block) && isTreeAlive(block);
+        return this.treeUtils.isTreeBlock(block) && isTreeAlive(block);
     }
 
     @Override
@@ -43,10 +43,6 @@ public class TreeBreakAction implements EventActionUtil<BlockBreakEvent> {
             treeUtils.markTreeAsDead(tree);
             if (plugin.getConfig().getBoolean(DEBUG_TREE_FELLER)) treeUtils.breakTree(tree);
         }
-    }
-
-    private boolean isTreeLog(Block block) {
-        return treeUtils.isTreeLog(block) || treeUtils.isStrippedTreeLog(block);
     }
 
     private boolean isTreeAlive(Block block) {
