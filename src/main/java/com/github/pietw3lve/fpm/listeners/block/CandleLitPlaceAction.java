@@ -5,6 +5,7 @@ import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Candle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 
@@ -13,32 +14,32 @@ import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
-public class FirePlaceAction implements EventActionUtil<BlockPlaceEvent> {
+public class CandleLitPlaceAction implements EventActionUtil<BlockPlaceEvent> {
     
-    private static final String FLUX_POINTS_FIRE_PLACE = "flux_points.flint_and_steel";
+    private final String FLUX_POINTS_CANDLE_LIT = "flux_points.candle_lit";
 
     private final FluxPerMillion plugin;
-    private final Set<Material> fire;
+    private final Set<Material> candles;
 
-    public FirePlaceAction(FluxPerMillion plugin) {
+    public CandleLitPlaceAction(FluxPerMillion plugin) {
         this.plugin = plugin;
-        this.fire = Tag.FIRE.getValues();
+        this.candles = Tag.CANDLES.getValues();
     }
 
     @Override
     public boolean matches(BlockPlaceEvent event) {
         Block block = event.getBlock();
-        return fire.contains(block.getType());
+        return candles.contains(block.getType()) && ((Candle) block.getBlockData()).isLit();
     }
 
     @Override
     public void execute(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
-        Block blockAgainst = event.getBlockAgainst();
-        String blockAgainstName = blockAgainst.getType().toString().replace("_", " ").toLowerCase();
-        double points = plugin.getConfig().getDouble(FLUX_POINTS_FIRE_PLACE);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, null, "lit", blockAgainstName, points, ActionCategory.ENERGY);
+        Candle candle = (Candle) block.getBlockData();
+        String blockName = block.getType().toString().replace("_", " ").toLowerCase();
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_CANDLE_LIT) * candle.getCandles();
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, null, "placed", blockName, points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 }

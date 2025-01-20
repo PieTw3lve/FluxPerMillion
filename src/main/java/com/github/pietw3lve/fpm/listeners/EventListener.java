@@ -34,6 +34,8 @@ import com.github.pietw3lve.fpm.listeners.block.BrewingStartAction;
 import com.github.pietw3lve.fpm.listeners.block.CampfireBreakAction;
 import com.github.pietw3lve.fpm.listeners.block.CampfireLitPlaceAction;
 import com.github.pietw3lve.fpm.listeners.block.CampfireUnlitPlaceAction;
+import com.github.pietw3lve.fpm.listeners.block.CandleLitBreakAction;
+import com.github.pietw3lve.fpm.listeners.block.CandleLitPlaceAction;
 import com.github.pietw3lve.fpm.listeners.block.CoalBreakAction;
 import com.github.pietw3lve.fpm.listeners.block.CropFertilizeAction;
 import com.github.pietw3lve.fpm.listeners.block.CropMaxAgeAction;
@@ -53,6 +55,7 @@ import com.github.pietw3lve.fpm.listeners.entity.ExplosionPrimeAction;
 import com.github.pietw3lve.fpm.listeners.entity.ItemDespawnAction;
 import com.github.pietw3lve.fpm.listeners.entity.PotionThrownAction;
 import com.github.pietw3lve.fpm.listeners.inventory.FuelSmeltAction;
+import com.github.pietw3lve.fpm.listeners.player.CandleExtinguishAction;
 import com.github.pietw3lve.fpm.listeners.player.ComposterAction;
 import com.github.pietw3lve.fpm.listeners.player.ElytraBoostAction;
 import com.github.pietw3lve.fpm.listeners.player.FireworkLaunchAction;
@@ -81,12 +84,13 @@ public class EventListener implements Listener {
         actions.put(BlockBreakEvent.class, new ArrayList<>(Arrays.asList(
             new CampfireBreakAction(plugin), new CoalBreakAction(plugin), 
             new TorchBreakAction(plugin), new TreeBreakAction(plugin), 
-            new FlowerBreakAction(plugin), new LeavesBreakAction(plugin))));
+            new FlowerBreakAction(plugin), new LeavesBreakAction(plugin),
+            new CandleLitBreakAction(plugin))));
         actions.put(BlockPlaceEvent.class, new ArrayList<>(Arrays.asList(
             new PlaceMetadataSetAction(plugin), new CampfireLitPlaceAction(plugin), 
             new CampfireUnlitPlaceAction(plugin), new TorchPlaceAction(plugin),
             new FirePlaceAction(plugin), new FlowerPlaceAction(plugin),
-            new LeavesPlaceAction(plugin))));
+            new LeavesPlaceAction(plugin), new CandleLitPlaceAction(plugin))));
         actions.put(BlockMultiPlaceEvent.class, new ArrayList<>(Arrays.asList(
             new FlowerMultiPlaceAction(plugin))));
         actions.put(EntityBreedEvent.class, new ArrayList<>(Arrays.asList(
@@ -97,8 +101,9 @@ public class EventListener implements Listener {
             new FuelSmeltAction(plugin))));
         actions.put(PlayerInteractEvent.class, new ArrayList<>(Arrays.asList(
             new ComposterAction(plugin), new ElytraBoostAction(plugin), 
-            new FireworkLaunchAction(plugin), new LogStripAction(plugin), 
-            new MinecartBoostAction(plugin), new MinecartOverclockAction(plugin))));
+            new FireworkLaunchAction(plugin), new LogStripAction(plugin),
+            new CandleExtinguishAction(plugin), new MinecartBoostAction(plugin),
+            new MinecartOverclockAction(plugin))));
         actions.put(PlayerFishEvent.class, new ArrayList<>(Arrays.asList(
             new FishCaughtAction(plugin))));
         actions.put(PlayerJoinEvent.class, new ArrayList<>(Arrays.asList(

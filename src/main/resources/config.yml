@@ -41,6 +41,8 @@ flux_points:
   brew_potion: 0.25 # Multiply by brew time
   campfire_break: -0.5
   campfire_place: 0.5
+  candle_lit: 0.5
+  candle_unlit: -0.5
   coal_break: 0.25
   compost_complete: -2.0
   crop_growth: -0.25
