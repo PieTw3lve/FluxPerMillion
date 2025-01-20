@@ -32,7 +32,8 @@ import com.github.pietw3lve.fpm.listeners.block.BlockBurnAction;
 import com.github.pietw3lve.fpm.listeners.block.BlockFertilizeAction;
 import com.github.pietw3lve.fpm.listeners.block.BrewingStartAction;
 import com.github.pietw3lve.fpm.listeners.block.CampfireBreakAction;
-import com.github.pietw3lve.fpm.listeners.block.CampfirePlaceAction;
+import com.github.pietw3lve.fpm.listeners.block.CampfireLitPlaceAction;
+import com.github.pietw3lve.fpm.listeners.block.CampfireUnlitPlaceAction;
 import com.github.pietw3lve.fpm.listeners.block.CoalBreakAction;
 import com.github.pietw3lve.fpm.listeners.block.CropFertilizeAction;
 import com.github.pietw3lve.fpm.listeners.block.CropMaxAgeAction;
@@ -82,9 +83,10 @@ public class EventListener implements Listener {
             new TorchBreakAction(plugin), new TreeBreakAction(plugin), 
             new FlowerBreakAction(plugin), new LeavesBreakAction(plugin))));
         actions.put(BlockPlaceEvent.class, new ArrayList<>(Arrays.asList(
-            new PlaceMetadataSetAction(plugin), new CampfirePlaceAction(plugin), 
-            new TorchPlaceAction(plugin), new FirePlaceAction(plugin), 
-            new FlowerPlaceAction(plugin), new LeavesPlaceAction(plugin))));
+            new PlaceMetadataSetAction(plugin), new CampfireLitPlaceAction(plugin), 
+            new CampfireUnlitPlaceAction(plugin), new TorchPlaceAction(plugin),
+            new FirePlaceAction(plugin), new FlowerPlaceAction(plugin),
+            new LeavesPlaceAction(plugin))));
         actions.put(BlockMultiPlaceEvent.class, new ArrayList<>(Arrays.asList(
             new FlowerMultiPlaceAction(plugin))));
         actions.put(EntityBreedEvent.class, new ArrayList<>(Arrays.asList(

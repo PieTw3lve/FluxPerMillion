@@ -5,6 +5,7 @@ import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Campfire;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 
@@ -13,14 +14,14 @@ import com.github.pietw3lve.fpm.events.FluxLevelChangeEvent;
 import com.github.pietw3lve.fpm.utils.EventActionUtil;
 import com.github.pietw3lve.fpm.utils.SQLiteUtil.ActionCategory;
 
-public class CampfirePlaceAction implements EventActionUtil<BlockPlaceEvent> {
+public class CampfireUnlitPlaceAction implements EventActionUtil<BlockPlaceEvent> {
     
-    private static final String FLUX_POINTS_CAMPFIRE_PLACE = "flux_points.campfire_place";
+    private static final String FLUX_POINTS_CAMPFIRE_EXTINGUISH = "flux_points.campfire_break";
 
     private final FluxPerMillion plugin;
     private final Set<Material> campfires;
 
-    public CampfirePlaceAction(FluxPerMillion plugin) {
+    public CampfireUnlitPlaceAction(FluxPerMillion plugin) {
         this.plugin = plugin;
         this.campfires = Tag.CAMPFIRES.getValues();
     }
@@ -28,7 +29,7 @@ public class CampfirePlaceAction implements EventActionUtil<BlockPlaceEvent> {
     @Override
     public boolean matches(BlockPlaceEvent event) {
         Block block = event.getBlock();
-        return campfires.contains(block.getType());
+        return campfires.contains(block.getType()) && !((Campfire) block.getBlockData()).isLit();
     }
 
     @Override
@@ -36,8 +37,8 @@ public class CampfirePlaceAction implements EventActionUtil<BlockPlaceEvent> {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         String blockName = block.getType().toString().replace("_", " ").toLowerCase();
-        double points = plugin.getConfig().getDouble(FLUX_POINTS_CAMPFIRE_PLACE);
-        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, null, "placed", blockName, points, ActionCategory.ENERGY);
+        double points = plugin.getConfig().getDouble(FLUX_POINTS_CAMPFIRE_EXTINGUISH);
+        FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, null, "removed", blockName, points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
     }
 }
