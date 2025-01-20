@@ -39,10 +39,10 @@ flux_points:
   block_burn: 2.0
   block_fertilize: -0.05
   brew_potion: 0.25 # Multiply by brew time
-  campfire_break: -0.5
-  campfire_place: 0.5
-  candle_lit: 0.5
-  candle_unlit: -0.5
+  campfire_break: -2.0
+  campfire_place: 2.0
+  candle_lit: 0.25 # Multiply by number of candles
+  candle_unlit: -0.25 # Multiply by number of candles
   coal_break: 0.25
   compost_complete: -2.0
   crop_growth: -0.25
@@ -52,15 +52,15 @@ flux_points:
   explosion: 3.0
   firework_launch: 0.25
   flint_and_steel: 0.25
-  flower_break: 0.05 # Tall flowers are doubled
-  flower_place: -0.05 # Tall flowers are doubled
+  flower_break: 0.025 # Tall flowers are doubled
+  flower_place: -0.025 # Tall flowers are doubled
   fuel_burn: 0.25 # Multiply by burn time and material weight
   grass_growth: -0.025
   leaves_place: -0.05
   leaves_break: 0.05
   minecart_boost: 0.25
   minecart_overclock: 3.0
-  over_fish: 0.25
+  over_fish: 2.0
   pollution: 0.25
   potion_throw: 0.25
   torch_break: -0.25
