@@ -1,8 +1,11 @@
 package com.github.pietw3lve.fpm.listeners.block;
 
+import java.util.Random;
 import java.util.Set;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -42,5 +45,17 @@ public class CoalBreakAction implements EventActionUtil<BlockBreakEvent> {
         double points = plugin.getConfig().getDouble(FLUX_POINTS_COAL_BREAK);
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, null, "removed", blockName, points, ActionCategory.ENERGY);
         plugin.getServer().getPluginManager().callEvent(fluxEvent);
+        SpawnCoalParticles(block);
+    }
+
+    private void SpawnCoalParticles(Block block) {
+        Random rand = new Random();
+        int amount = 1 + rand.nextInt(2);
+        for (int i = 0; i < amount; i++) {
+            Location particle = block.getLocation().clone().add(rand.nextDouble() - 0.1, 0.5, rand.nextDouble() - 0.1);
+            double height = rand.nextDouble() * 0.5;
+            double speed = 0.15 + rand.nextDouble() * 0.05;
+            block.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, particle, 0, 0, height, 0, speed);
+        }
     }
 }

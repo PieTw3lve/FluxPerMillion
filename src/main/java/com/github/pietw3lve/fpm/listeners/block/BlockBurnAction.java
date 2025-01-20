@@ -1,7 +1,10 @@
 package com.github.pietw3lve.fpm.listeners.block;
 
 import java.util.Collection;
+import java.util.Random;
 
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBurnEvent;
@@ -42,6 +45,18 @@ public class BlockBurnAction implements EventActionUtil<BlockBurnEvent> {
         } else {
             fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), null, null, "burned", "block", points, ActionCategory.ENERGY);
             plugin.getServer().getPluginManager().callEvent(fluxEvent);
+        }
+        SpawnBurnedParticles(block);
+    }
+
+    private void SpawnBurnedParticles(Block block) {
+        Random rand = new Random();
+        int amount = 10 + rand.nextInt(5);
+        for (int i = 0; i < amount; i++) {
+            Location particle = block.getLocation().clone().add(rand.nextDouble() - 0.1, 0.5, rand.nextDouble() - 0.1);
+            double height = rand.nextDouble() * 0.5;
+            double speed = 0.15 + rand.nextDouble() * 0.05;
+            block.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, particle, 0, 0, height, 0, speed);
         }
     }
 }

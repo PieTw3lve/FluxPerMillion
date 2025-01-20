@@ -1,7 +1,10 @@
 package com.github.pietw3lve.fpm.listeners.entity;
 
 import java.util.Collection;
+import java.util.Random;
 
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
@@ -41,6 +44,18 @@ public class ExplosionPrimeAction implements EventActionUtil<ExplosionPrimeEvent
         } else {
             fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), explosion.getLocation(), null, null, "detonated", explosion.getName().toLowerCase(), points, ActionCategory.ENERGY);
             plugin.getServer().getPluginManager().callEvent(fluxEvent);
-        }        
+        }
+        SpawnExplosionParticles(explosion);        
+    }
+
+    private void SpawnExplosionParticles(Entity explosion) {
+        Random rand = new Random();
+        int amount = 10 + rand.nextInt(5);
+        for (int i = 0; i < amount; i++) {
+            Location particle = explosion.getLocation().clone().add(rand.nextDouble() - 0.1, 0.5, rand.nextDouble() - 0.1);
+            double height = rand.nextDouble() * 0.5;
+            double speed = 0.15 + rand.nextDouble() * 0.05;
+            explosion.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, particle, 0, 0, height, 0, speed);
+        }
     }
 }
