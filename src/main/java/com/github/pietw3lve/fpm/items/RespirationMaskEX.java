@@ -200,7 +200,7 @@ public class RespirationMaskEX implements Listener {
 
     public static boolean isItem(FluxPerMillion plugin, ItemStack item) {
         ItemStack respirationMask = CustomItemUtil.getItemStack(new NamespacedKey(plugin, RESPIRATION_MASK_IDENTIFIER));
-        if (item == null || respirationMask == null || !item.hasItemMeta()) {
+        if (item == null || respirationMask == null || !item.hasItemMeta() || !item.getItemMeta().hasCustomModelData()) {
             return false;
         }
         return item.getItemMeta().getCustomModelData() == respirationMask.getItemMeta().getCustomModelData();
