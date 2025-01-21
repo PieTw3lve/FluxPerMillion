@@ -19,12 +19,12 @@ public class FlowerBreakAction implements EventActionUtil<BlockBreakEvent> {
 
     private final FluxPerMillion plugin;
     private final Set<Material> flowers;
-    private final Set<Material> smallFlowers;
+    private final Set<Material> tallFlowers;
 
     public FlowerBreakAction(FluxPerMillion plugin) {
         this.plugin = plugin;
         this.flowers = Tag.FLOWERS.getValues();
-        this.smallFlowers = Tag.SMALL_FLOWERS.getValues();
+        this.tallFlowers = Tag.TALL_FLOWERS.getValues();
     }
     
     @Override
@@ -38,7 +38,7 @@ public class FlowerBreakAction implements EventActionUtil<BlockBreakEvent> {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         String blockName = block.getType().toString().replace("_", " ").toLowerCase();
-        double points = smallFlowers.contains(block.getType()) 
+        double points = tallFlowers.contains(block.getType()) 
             ? plugin.getConfig().getDouble(FLUX_POINTS_FLOWER_BREAK)
             : plugin.getConfig().getDouble(FLUX_POINTS_FLOWER_BREAK) * 2;
         FluxLevelChangeEvent fluxEvent = new FluxLevelChangeEvent(plugin.getFluxMeter(), block.getLocation(), player, null, "removed", blockName, points, ActionCategory.AGRICULTURE);
